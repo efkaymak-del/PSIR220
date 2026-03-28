@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Literature Map — PSIR220 Research Quest</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .js-warning {
+    background: #fef2f2; border-bottom: 2px solid #fca5a5;
+    padding: 1rem 2rem; text-align: center;
+    font-size: 0.92rem; color: #991b1b; line-height: 1.5;
+  }
+  .js-warning strong { display: block; margin-bottom: 0.2rem; }
+  .js-warning.hidden { display: none; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  h1 {
+    text-align: center; font-size: 1.6rem; margin-bottom: 0.2rem;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .week-badge { text-align: center; margin-bottom: 1.5rem; }
+  .week-badge span {
+    display: inline-block; background: #dbeafe; color: #1d4ed8;
+    padding: 0.2rem 0.8rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 0.2rem; margin-bottom: 1.2rem;
+    border-bottom: 2px solid #e2e8f0; flex-wrap: wrap;
+  }
+
+  .tab {
+    padding: 0.6rem 1rem; border: none; background: transparent;
+    color: #64748b; font-size: 0.84rem; font-weight: 600;
+    cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all 0.2s; font-family: inherit;
+  }
+
+  .tab:hover { color: #1e293b; }
+  .tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Card */
+  .card {
+    background: #fff; border-radius: 14px; padding: 1.4rem;
+    border: 2px solid #e2e8f0; margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .card-head {
+    display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem;
+  }
+
+  .card-ico {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.82rem; flex-shrink: 0;
+  }
+
+  .card-ico.blue { background: #dbeafe; color: #1d4ed8; }
+  .card-ico.purple { background: #ede9fe; color: #6d28d9; }
+  .card-ico.pink { background: #fce7f3; color: #be185d; }
+  .card-ico.green { background: #d1fae5; color: #059669; }
+  .card-ico.amber { background: #fef3c7; color: #b45309; }
+  .card-ico.slate { background: #f1f5f9; color: #475569; }
+
+  .card-t { font-size: 1rem; font-weight: 700; color: #0f172a; }
+  .card-s { font-size: 0.76rem; color: #94a3b8; }
+
+  /* Fields */
+  .field { margin-bottom: 0.9rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  .flabel {
+    display: block; font-size: 0.78rem; font-weight: 600;
+    color: #475569; margin-bottom: 0.3rem;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .fhint { font-size: 0.76rem; color: #94a3b8; margin-bottom: 0.3rem; font-style: italic; }
+
+  input[type="text"], textarea, select {
+    width: 100%; padding: 0.6rem 0.85rem;
+    border-radius: 9px; border: 2px solid #e2e8f0;
+    background: #f8fafc; color: #1e293b;
+    font-size: 0.86rem; font-family: inherit; outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input:focus, textarea:focus, select:focus { border-color: #2563eb; background: #fff; }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.55; }
+
+  /* Paradigm pills */
+  .pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .pill {
+    padding: 0.4rem 0.9rem; border-radius: 999px;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.8rem; font-weight: 600; color: #64748b;
+  }
+
+  .pill:hover { border-color: #94a3b8; }
+  .pill.sel-positivist { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+  .pill.sel-interpretivist { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; }
+  .pill.sel-critical { border-color: #db2777; background: #fdf2f8; color: #be185d; }
+
+  /* ===== VISUAL MAP AREA ===== */
+  .map-container {
+    position: relative;
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    min-height: 550px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .map-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.8rem 1rem; border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc; border-radius: 12px 12px 0 0;
+  }
+
+  .map-header-title { font-weight: 700; font-size: 0.9rem; color: #0f172a; }
+
+  .map-toolbar { display: flex; gap: 0.3rem; }
+
+  .map-btn {
+    padding: 0.35rem 0.7rem; border-radius: 7px;
+    border: 1px solid #e2e8f0; background: #fff;
+    font-size: 0.76rem; font-weight: 600; color: #64748b;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+
+  .map-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .map-btn.active { background: #eff6ff; border-color: #2563eb; color: #1d4ed8; }
+
+  .map-canvas {
+    position: relative;
+    min-height: 500px;
+    padding: 0;
+  }
+
+  /* Column lanes */
+  .map-lanes {
+    display: flex; position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  .map-lane {
+    flex: 1; border-right: 1px dashed #e2e8f0;
+    padding-top: 0.5rem; text-align: center;
+  }
+
+  .map-lane:last-child { border-right: none; }
+
+  .lane-label {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.3rem 0;
+  }
+
+  .lane-label.pos { color: #2563eb; }
+  .lane-label.int { color: #7c3aed; }
+  .lane-label.cri { color: #db2777; }
+
+  /* Draggable nodes */
+  .node {
+    position: absolute;
+    width: 160px;
+    padding: 0.6rem 0.7rem;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    cursor: grab;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+    user-select: none;
+  }
+
+  .node:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); z-index: 20; }
+  .node.dragging { cursor: grabbing; box-shadow: 0 8px 30px rgba(0,0,0,0.15); z-index: 100; opacity: 0.92; }
+
+  .node.positivist { border-color: #93c5fd; background: #eff6ff; }
+  .node.interpretivist { border-color: #c4b5fd; background: #f5f3ff; }
+  .node.critical { border-color: #f9a8d4; background: #fdf2f8; }
+
+  .node .node-author { font-weight: 700; font-size: 0.78rem; color: #0f172a; line-height: 1.3; }
+  .node .node-year { font-size: 0.68rem; color: #94a3b8; }
+  .node .node-claim { font-size: 0.7rem; color: #475569; margin-top: 0.2rem; line-height: 1.3; max-height: 3.2em; overflow: hidden; }
+
+  .node .node-tag {
+    display: inline-block; margin-top: 0.3rem;
+    padding: 0.1rem 0.4rem; border-radius: 999px;
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  }
+
+  .node .node-tag.supports { background: #d1fae5; color: #065f46; }
+  .node .node-tag.rivals { background: #fef2f2; color: #991b1b; }
+  .node .node-tag.extends { background: #dbeafe; color: #1d4ed8; }
+  .node .node-tag.background { background: #f1f5f9; color: #475569; }
+  .node .node-tag.method { background: #fef3c7; color: #92400e; }
+
+  .node .node-remove {
+    position: absolute; top: 4px; right: 6px;
+    width: 18px; height: 18px; border-radius: 50%;
+    border: none; background: transparent;
+    color: #cbd5e1; cursor: pointer; font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .node .node-remove:hover { background: #fef2f2; color: #dc2626; }
+
+  /* SVG Connection Lines */
+  .connections-svg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 5;
+  }
+
+  .conn-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; stroke-dasharray: 5,4; }
+  .conn-line.agrees { stroke: #16a34a; stroke-dasharray: none; }
+  .conn-line.disagrees { stroke: #dc2626; }
+  .conn-line.extends { stroke: #2563eb; stroke-dasharray: 3,3; }
+
+  /* Connection mode */
+  .conn-mode-banner {
+    display: none; background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 10px; padding: 0.6rem 1rem; margin-bottom: 0.5rem;
+    font-size: 0.84rem; color: #92400e; text-align: center;
+  }
+
+  .conn-mode-banner.visible { display: block; }
+
+  /* Gap Analysis */
+  .gap-box {
+    background: #fff; border-radius: 12px; padding: 1rem 1.2rem;
+    border: 2px solid #e2e8f0; margin-bottom: 0.6rem;
+  }
+
+  .gap-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.5rem; }
+
+  .gap-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    padding: 0.4rem 0; font-size: 0.84rem; color: #475569;
+  }
+
+  .gap-icon { flex-shrink: 0; width: 20px; text-align: center; }
+  .gap-icon.warn { color: #d97706; }
+  .gap-icon.ok { color: #16a34a; }
+  .gap-icon.info { color: #2563eb; }
+
+  /* Source add for map */
+  .add-node-form {
+    display: none; background: #fff; border: 2px solid #e2e8f0;
+    border-radius: 12px; padding: 1.2rem;
+    margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  .add-node-form.visible { display: block; }
+
+  /* Import panel */
+  .import-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 0.7rem; border-radius: 8px;
+    border: 1px solid #e2e8f0; margin-bottom: 0.4rem;
+    cursor: pointer; transition: all 0.2s; font-size: 0.84rem;
+  }
+
+  .import-item:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .import-item .ii-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .import-item .ii-text { flex: 1; color: #1e293b; }
+
+  /* Relationship picker */
+  .rel-pills { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.3rem; }
+
+  .rel-pill {
+    padding: 0.3rem 0.7rem; border-radius: 999px;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; font-size: 0.74rem; font-weight: 600;
+    color: #64748b; transition: all 0.2s;
+  }
+
+  .rel-pill:hover { border-color: #94a3b8; }
+  .rel-pill.selected { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+
+  /* Narrative */
+  .narrative-section { margin-top: 1rem; }
+
+  /* Btns */
+  .btn {
+    padding: 0.6rem 1.1rem; border-radius: 9px;
+    border: 2px solid #e2e8f0; background: #fff;
+    color: #475569; font-size: 0.84rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+
+  .btn:hover { border-color: #94a3b8; background: #f1f5f9; }
+  .btn-primary { background: linear-gradient(135deg,#2563eb,#7c3aed); color: #fff; border: none; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
+  .btn-success { background: #16a34a; color: #fff; border: none; }
+  .btn-success:hover { background: #15803d; }
+  .btn-amber { background: #f59e0b; color: #fff; border: none; }
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+
+  .alert {
+    padding: 0.65rem 0.9rem; border-radius: 9px; font-size: 0.82rem;
+    margin-bottom: 0.7rem; line-height: 1.45;
+  }
+  .alert-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .alert-amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+  .alert-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #16a34a; color: #fff;
+    padding: 0.8rem 1.8rem; border-radius: 12px;
+    font-weight: 600; font-size: 0.88rem;
+    transition: transform 0.4s; z-index: 300;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  hr.divider { border: none; border-top: 2px dashed #e2e8f0; margin: 0.8rem 0; }
+
+  @media (max-width: 700px) {
+    .node { width: 130px; }
+    .map-canvas { min-height: 400px; }
+    .debate-columns-ex { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    .tabs, .btn-row, .js-warning, .toast, .map-toolbar, .node-remove,
+    .add-node-form, .conn-mode-banner, #panel-import { display: none !important; }
+    .panel { display: block !important; }
+    .map-container { border: 1px solid #ccc; box-shadow: none; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="js-warning" id="js-warning">
+  <strong>This app needs to run in a browser</strong>
+  If you're viewing this in Teams, SharePoint, or OneDrive, interactive features won't work.<br>
+  <strong>Fix:</strong> Download this file, then open it in Chrome, Firefox, or Edge.
+</div>
+
+<div class="container">
+  <h1>Visual Literature Map</h1>
+  <p class="subtitle">PSIR220 — Week 5: The Literature Gap</p>
+  <div class="week-badge"><span>Baglione Ch. 4–5 · Mapping the Debate</span></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showP('setup')" data-p="setup">Setup</button>
+    <button class="tab" onclick="showP('import')" data-p="import">Import Sources</button>
+    <button class="tab" onclick="showP('map')" data-p="map">Visual Map</button>
+    <button class="tab" onclick="showP('gaps')" data-p="gaps">Gap Analysis</button>
+    <button class="tab" onclick="showP('narrative')" data-p="narrative">Narrative</button>
+    <button class="tab" onclick="showP('export')" data-p="export">Export</button>
+  </div>
+
+  <!-- SETUP -->
+  <div class="panel active" id="panel-setup">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico blue">1</div>
+        <div><div class="card-t">Your Research Setup</div><div class="card-s">Carried forward from your Annotated Bibliography</div></div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">Your Name</label>
+        <input type="text" id="s-name" placeholder="e.g. Elif İmeci" oninput="save()">
+      </div>
+      <div class="field">
+        <label class="flabel">Research Question</label>
+        <textarea id="s-rq" style="min-height:50px" placeholder="Your refined research question" oninput="save()"></textarea>
+      </div>
+      <div class="field">
+        <label class="flabel">Paradigm Track</label>
+        <div class="pills" id="s-par">
+          <span class="pill" onclick="setPar('positivist',this)">Positivist · The Strategist</span>
+          <span class="pill" onclick="setPar('interpretivist',this)">Interpretivist · The Storyteller</span>
+          <span class="pill" onclick="setPar('critical',this)">Critical · The Disruptor</span>
+        </div>
+      </div>
+
+      <div class="alert alert-blue" style="margin-top:0.8rem">
+        <strong>What is a Visual Literature Map?</strong> It's a spatial representation of your sources organized by school of thought. Instead of listing sources, you <em>arrange</em> them to show who agrees, who disagrees, where the debates are, and where your research fits in the gaps. Think of it as a bird's-eye view of the conversation your paper is entering.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="tryImportAB()">Import from Annotated Bibliography</button>
+        <button class="btn btn-primary" onclick="showP('import')">Next: Add Sources →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT SOURCES -->
+  <div class="panel" id="panel-import">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico purple">2</div>
+        <div><div class="card-t">Your Sources</div><div class="card-s">Add the sources from your annotated bibliography — or add new ones</div></div>
+      </div>
+
+      <div id="import-list"></div>
+
+      <hr class="divider">
+
+      <div class="add-node-form visible" id="add-form" style="display:block; border:none; box-shadow:none; padding:0;">
+        <div class="field">
+          <label class="flabel">Author / Short Name</label>
+          <input type="text" id="a-author" placeholder="e.g. Simmons (2009)">
+        </div>
+        <div class="field">
+          <label class="flabel">Core Claim (1 sentence)</label>
+          <input type="text" id="a-claim" placeholder="e.g. Treaties empower domestic groups to mobilize for rights">
+        </div>
+        <div class="field">
+          <label class="flabel">School of Thought</label>
+          <div class="pills" id="a-par">
+            <span class="pill" onclick="setAPar('positivist',this)">Positivist</span>
+            <span class="pill" onclick="setAPar('interpretivist',this)">Interpretivist</span>
+            <span class="pill" onclick="setAPar('critical',this)">Critical</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel">Role in Your Argument</label>
+          <div class="rel-pills" id="a-role">
+            <span class="rel-pill" onclick="setARole('supports',this)">Supports</span>
+            <span class="rel-pill" onclick="setARole('rivals',this)">Rival Explanation</span>
+            <span class="rel-pill" onclick="setARole('extends',this)">Extends</span>
+            <span class="rel-pill" onclick="setARole('background',this)">Background</span>
+            <span class="rel-pill" onclick="setARole('method',this)">Methodological Model</span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addSource()">Add to Map</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISUAL MAP -->
+  <div class="panel" id="panel-map">
+
+    <div class="conn-mode-banner" id="conn-banner">
+      <strong>Connection Mode:</strong> Click a source node, then click another to draw a line between them. Click the button again to exit.
+    </div>
+
+    <div class="map-container" id="map-container">
+      <div class="map-header">
+        <div class="map-header-title">Your Literature Map</div>
+        <div class="map-toolbar">
+          <button class="map-btn" onclick="autoArrange()" title="Auto-arrange nodes by paradigm">Auto-Arrange</button>
+          <button class="map-btn" id="conn-btn" onclick="toggleConnMode()" title="Draw connections between sources">Connect</button>
+          <button class="map-btn" onclick="clearConns()" title="Remove all connection lines">Clear Lines</button>
+        </div>
+      </div>
+      <div class="map-canvas" id="map-canvas">
+        <div class="map-lanes">
+          <div class="map-lane"><div class="lane-label pos">Positivist</div></div>
+          <div class="map-lane"><div class="lane-label int">Interpretivist</div></div>
+          <div class="map-lane"><div class="lane-label cri">Critical</div></div>
+        </div>
+        <svg class="connections-svg" id="conn-svg"></svg>
+        <!-- Nodes rendered here -->
+      </div>
+    </div>
+
+    <div class="alert alert-blue" style="margin-top:0.8rem">
+      <strong>How to use:</strong> Drag source nodes to arrange them spatially. Sources that agree should be close together. Sources that disagree should be far apart. Use the <strong>Connect</strong> tool to draw lines showing relationships. The three columns represent paradigms — but you can move nodes anywhere.
+    </div>
+  </div>
+
+  <!-- GAP ANALYSIS -->
+  <div class="panel" id="panel-gaps">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico amber">!</div>
+        <div><div class="card-t">Gap Analysis</div><div class="card-s">What's missing from your literature map?</div></div>
+      </div>
+
+      <div id="gap-results"></div>
+
+      <div class="field" style="margin-top:1rem">
+        <label class="flabel">Where Does Your Research Fit?</label>
+        <div class="fhint">Based on the map above, describe where your research enters the conversation. What gap does it fill? Which debate does it intervene in? (3–5 sentences)</div>
+        <textarea id="g-fit" style="min-height:100px" placeholder="My research fits into the gap between... I'm intervening in the debate about... Neither the positivist accounts (which argue X) nor the interpretivist accounts (which argue Y) have addressed..." oninput="save()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- NARRATIVE -->
+  <div class="panel" id="panel-narrative">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico green">✎</div>
+        <div><div class="card-t">Literature Map Narrative</div><div class="card-s">This becomes the backbone of your Literature Review (Core Quest 2)</div></div>
+      </div>
+
+      <div class="alert alert-amber">
+        <strong>Bridge to the Literature Review:</strong> The narrative you write here is the first draft of your Lit Review. Organize it by schools of thought — not source by source. Describe the debate, then show where you fit.
+      </div>
+
+      <div class="field">
+        <label class="flabel">School 1: What do the positivist / mainstream accounts argue?</label>
+        <div class="fhint">Which sources from your map fall here? What's their shared logic? Where do they differ?</div>
+        <textarea id="n-pos" style="min-height:90px" oninput="save()"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="flabel">School 2: What do the interpretivist / constructivist accounts argue?</label>
+        <div class="fhint">How do they challenge or complement the positivist story?</div>
+        <textarea id="n-int" style="min-height:90px" oninput="save()"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="flabel">School 3: What do the critical / postmodern accounts argue?</label>
+        <div class="fhint">What do they see that the other two miss? What power dynamics do they expose?</div>
+        <textarea id="n-cri" style="min-height:90px" oninput="save()"></textarea>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field">
+        <label class="flabel">The Gap: Where does your research fit?</label>
+        <div class="fhint">This is the most important paragraph — it's your contribution statement. What hasn't been done? Why does your question matter given this debate?</div>
+        <textarea id="n-gap" style="min-height:100px" oninput="save()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="panel" id="panel-export">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico green">↓</div>
+        <div><div class="card-t">Export Your Literature Map</div><div class="card-s">Save your work or prepare it for the Literature Review</div></div>
+      </div>
+
+      <div id="export-status"></div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveDraft()">Save Draft</button>
+        <button class="btn" onclick="loadDraft()">Load Draft</button>
+        <button class="btn btn-primary" onclick="exportText()">Export as Text</button>
+        <button class="btn btn-success" onclick="exportHTML()">Export as HTML</button>
+        <button class="btn btn-amber" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.getElementById('js-warning').classList.add('hidden');
+
+// State
+let setup = { name:'', rq:'', paradigm:'' };
+let nodes = []; // { id, author, claim, paradigm, role, x, y }
+let connections = []; // { from, to, type }
+let connMode = false;
+let connFrom = null;
+let nodeIdCounter = 0;
+let dragNode = null;
+let dragOffset = { x:0, y:0 };
+
+// Tab
+function showP(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelector(`.tab[data-p="${id}"]`).classList.add('active');
+  if(id === 'map') renderMap();
+  if(id === 'gaps') renderGaps();
+  if(id === 'export') renderExportStatus();
+}
+
+// Setup
+function setPar(v, el) {
+  setup.paradigm = v;
+  el.parentElement.querySelectorAll('.pill').forEach(p => p.className = 'pill');
+  el.classList.add('sel-' + v);
+  save();
+}
+
+let aPar = '', aRole = '';
+
+function setAPar(v, el) {
+  aPar = v;
+  el.parentElement.querySelectorAll('.pill').forEach(p => p.className = 'pill');
+  el.classList.add('sel-' + v);
+}
+
+function setARole(v, el) {
+  aRole = v;
+  el.parentElement.querySelectorAll('.rel-pill').forEach(p => p.className = 'rel-pill');
+  el.classList.add('selected');
+}
+
+// Import from AB
+function tryImportAB() {
+  const raw = localStorage.getItem('abDraft');
+  if(!raw) { toast('No Annotated Bibliography draft found in this browser. Add sources manually.'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) {
+    setup = { name: d.setup.name||'', rq: d.setup.rq||'', paradigm: d.setup.paradigm||'' };
+    document.getElementById('s-name').value = setup.name;
+    document.getElementById('s-rq').value = setup.rq;
+    if(setup.paradigm) {
+      document.querySelectorAll('#s-par .pill').forEach(p => {
+        p.className = 'pill';
+        if(p.textContent.toLowerCase().includes(setup.paradigm.substring(0,4))) p.classList.add('sel-'+setup.paradigm);
+      });
+    }
+  }
+  if(d.sources && d.sources.length) {
+    let imported = 0;
+    d.sources.forEach(s => {
+      const authMatch = s.citation ? s.citation.match(/^([^.(,]+)/) : null;
+      const author = authMatch ? authMatch[1].trim() : s.citation?.substring(0,30) || 'Unknown';
+      const yearMatch = s.citation ? s.citation.match(/\((\d{4})\)/) : null;
+      const year = yearMatch ? yearMatch[1] : '';
+      const label = year ? `${author} (${year})` : author;
+      const claim = s.says ? s.says.substring(0, 100) : '';
+
+      if(!nodes.find(n => n.author === label)) {
+        nodes.push({
+          id: nodeIdCounter++,
+          author: label,
+          claim: claim,
+          paradigm: s.paradigm || '',
+          role: '',
+          x: 0, y: 0
+        });
+        imported++;
+      }
+    });
+    autoArrange();
+    renderImportList();
+    toast(`Imported ${imported} sources from your Annotated Bibliography`);
+  } else {
+    toast('No sources found in your AB draft.');
+  }
+  save();
+}
+
+// Add source manually
+function addSource() {
+  const author = document.getElementById('a-author').value.trim();
+  const claim = document.getElementById('a-claim').value.trim();
+  if(!author) { toast('Enter an author name'); return; }
+
+  nodes.push({
+    id: nodeIdCounter++,
+    author, claim,
+    paradigm: aPar,
+    role: aRole,
+    x: 50 + Math.random() * 200,
+    y: 40 + nodes.length * 55
+  });
+
+  document.getElementById('a-author').value = '';
+  document.getElementById('a-claim').value = '';
+  aPar = ''; aRole = '';
+  document.querySelectorAll('#a-par .pill').forEach(p => p.className = 'pill');
+  document.querySelectorAll('#a-role .rel-pill').forEach(p => p.className = 'rel-pill');
+
+  renderImportList();
+  save();
+  toast('Source added — go to Visual Map to arrange it');
+}
+
+function removeNode(id) {
+  nodes = nodes.filter(n => n.id !== id);
+  connections = connections.filter(c => c.from !== id && c.to !== id);
+  renderImportList();
+  renderMap();
+  save();
+}
+
+function renderImportList() {
+  const el = document.getElementById('import-list');
+  if(nodes.length === 0) { el.innerHTML = '<p style="color:#94a3b8;font-size:0.85rem;padding:0.5rem 0;">No sources yet. Add below or import from your Annotated Bibliography.</p>'; return; }
+
+  el.innerHTML = nodes.map(n => {
+    const dotColor = n.paradigm==='positivist'?'#2563eb':n.paradigm==='interpretivist'?'#7c3aed':n.paradigm==='critical'?'#db2777':'#cbd5e1';
+    return `<div class="import-item">
+      <div class="ii-dot" style="background:${dotColor}"></div>
+      <div class="ii-text"><strong>${n.author}</strong>${n.claim?' — '+n.claim.substring(0,60)+'...':''}</div>
+      <button class="map-btn" onclick="removeNode(${n.id})" style="font-size:0.7rem;padding:0.2rem 0.5rem;">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// Auto arrange
+function autoArrange() {
+  const canvas = document.getElementById('map-canvas');
+  const w = canvas.offsetWidth || 900;
+  const colW = w / 3;
+  const groups = { positivist:[], interpretivist:[], critical:[], other:[] };
+
+  nodes.forEach(n => {
+    if(groups[n.paradigm]) groups[n.paradigm].push(n);
+    else groups.other.push(n);
+  });
+
+  // Also put "other" into the middle column
+  groups.interpretivist.push(...groups.other);
+
+  let col = 0;
+  ['positivist','interpretivist','critical'].forEach(p => {
+    const items = groups[p];
+    items.forEach((n, i) => {
+      n.x = col * colW + 20 + Math.random() * (colW - 190);
+      n.y = 40 + i * 70;
+    });
+    col++;
+  });
+
+  save();
+}
+
+// Render map
+function renderMap() {
+  const canvas = document.getElementById('map-canvas');
+
+  // Remove old nodes
+  canvas.querySelectorAll('.node').forEach(n => n.remove());
+
+  nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = `node ${n.paradigm||''}`;
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+    el.dataset.id = n.id;
+
+    const roleTag = n.role ? `<span class="node-tag ${n.role}">${n.role}</span>` : '';
+
+    el.innerHTML = `
+      <button class="node-remove" onclick="event.stopPropagation();removeNode(${n.id})">✕</button>
+      <div class="node-author">${n.author}</div>
+      <div class="node-claim">${n.claim||''}</div>
+      ${roleTag}
+    `;
+
+    // Drag
+    el.addEventListener('mousedown', e => startDrag(e, n, el));
+    el.addEventListener('touchstart', e => startDragTouch(e, n, el), {passive:false});
+
+    // Connection mode click
+    el.addEventListener('click', () => {
+      if(connMode) handleConnClick(n.id);
+    });
+
+    canvas.appendChild(el);
+  });
+
+  renderConnections();
+}
+
+// Drag
+function startDrag(e, n, el) {
+  if(connMode) return;
+  e.preventDefault();
+  dragNode = { n, el };
+  dragOffset.x = e.clientX - el.offsetLeft;
+  dragOffset.y = e.clientY - el.offsetTop;
+  el.classList.add('dragging');
+
+  const onMove = ev => {
+    const canvas = document.getElementById('map-canvas');
+    const rect = canvas.getBoundingClientRect();
+    n.x = Math.max(0, Math.min(ev.clientX - dragOffset.x, rect.width - 170));
+    n.y = Math.max(20, Math.min(ev.clientY - dragOffset.y, rect.height - 60));
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+    renderConnections();
+  };
+
+  const onUp = () => {
+    el.classList.remove('dragging');
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    save();
+  };
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+}
+
+function startDragTouch(e, n, el) {
+  if(connMode) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  dragOffset.x = touch.clientX - el.offsetLeft;
+  dragOffset.y = touch.clientY - el.offsetTop;
+  el.classList.add('dragging');
+
+  const onMove = ev => {
+    const t = ev.touches[0];
+    const canvas = document.getElementById('map-canvas');
+    const rect = canvas.getBoundingClientRect();
+    n.x = Math.max(0, Math.min(t.clientX - dragOffset.x, rect.width - 170));
+    n.y = Math.max(20, Math.min(t.clientY - dragOffset.y, rect.height - 60));
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+    renderConnections();
+  };
+
+  const onEnd = () => {
+    el.classList.remove('dragging');
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+    save();
+  };
+
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('touchend', onEnd);
+}
+
+// Connections
+function toggleConnMode() {
+  connMode = !connMode;
+  connFrom = null;
+  document.getElementById('conn-btn').classList.toggle('active', connMode);
+  document.getElementById('conn-banner').classList.toggle('visible', connMode);
+}
+
+function handleConnClick(id) {
+  if(connFrom === null) {
+    connFrom = id;
+    highlightNode(id, true);
+  } else if(connFrom !== id) {
+    // Check if connection exists
+    if(!connections.find(c => (c.from===connFrom&&c.to===id)||(c.from===id&&c.to===connFrom))) {
+      connections.push({ from: connFrom, to: id, type: 'default' });
+      save();
+    }
+    highlightNode(connFrom, false);
+    connFrom = null;
+    renderConnections();
+  }
+}
+
+function highlightNode(id, on) {
+  const el = document.querySelector(`.node[data-id="${id}"]`);
+  if(el) el.style.outline = on ? '3px solid #f59e0b' : 'none';
+}
+
+function renderConnections() {
+  const svg = document.getElementById('conn-svg');
+  svg.innerHTML = '';
+  connections.forEach(c => {
+    const fromN = nodes.find(n => n.id === c.from);
+    const toN = nodes.find(n => n.id === c.to);
+    if(!fromN || !toN) return;
+    const x1 = fromN.x + 80, y1 = fromN.y + 30;
+    const x2 = toN.x + 80, y2 = toN.y + 30;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('class','conn-line ' + (c.type||''));
+    svg.appendChild(line);
+  });
+}
+
+function clearConns() {
+  connections = [];
+  renderConnections();
+  save();
+  toast('Connections cleared');
+}
+
+// Gap analysis
+function renderGaps() {
+  const el = document.getElementById('gap-results');
+  const counts = { positivist:0, interpretivist:0, critical:0 };
+  const roles = { supports:0, rivals:0, extends:0, background:0, method:0 };
+
+  nodes.forEach(n => {
+    if(counts.hasOwnProperty(n.paradigm)) counts[n.paradigm]++;
+    if(roles.hasOwnProperty(n.role)) roles[n.role]++;
+  });
+
+  let html = '<div class="gap-box"><div class="gap-title">Paradigm Coverage</div>';
+  const mk = (ok, txt) => `<div class="gap-item"><div class="gap-icon ${ok?'ok':'warn'}">${ok?'✓':'!'}</div><span>${txt}</span></div>`;
+
+  html += mk(counts.positivist>0, `Positivist sources: ${counts.positivist}`);
+  html += mk(counts.interpretivist>0, `Interpretivist sources: ${counts.interpretivist}`);
+  html += mk(counts.critical>0, `Critical sources: ${counts.critical}`);
+
+  const missing = [];
+  if(counts.positivist===0) missing.push('positivist');
+  if(counts.interpretivist===0) missing.push('interpretivist');
+  if(counts.critical===0) missing.push('critical');
+
+  if(missing.length) {
+    html += `<div class="gap-item"><div class="gap-icon warn">!</div><span><strong>Gap:</strong> You have no ${missing.join(' or ')} sources. A literature review must engage with rival explanations.</span></div>`;
+  } else {
+    html += `<div class="gap-item"><div class="gap-icon ok">✓</div><span>You have sources from all three paradigm traditions.</span></div>`;
+  }
+  html += '</div>';
+
+  html += '<div class="gap-box"><div class="gap-title">Argument Roles</div>';
+  html += mk(roles.supports>0, `Supporting sources: ${roles.supports}`);
+  html += mk(roles.rivals>0, `Rival explanations: ${roles.rivals}`);
+  html += mk(roles.extends>0 || roles.background>0, `Background / extending sources: ${roles.extends + roles.background}`);
+  html += mk(roles.method>0, `Methodological models: ${roles.method}`);
+
+  if(roles.rivals===0 && nodes.length>=3) {
+    html += `<div class="gap-item"><div class="gap-icon warn">!</div><span><strong>Critical gap:</strong> You have no rival explanations tagged. Your literature review needs to engage with scholars who disagree with your approach.</span></div>`;
+  }
+  html += '</div>';
+
+  html += `<div class="gap-box"><div class="gap-title">Connections</div>`;
+  html += mk(connections.length>0, `You have ${connections.length} connection(s) drawn between sources.`);
+  if(connections.length===0 && nodes.length>=2) {
+    html += `<div class="gap-item"><div class="gap-icon info">→</div><span>Go to the Visual Map tab and use the Connect tool to show relationships between sources.</span></div>`;
+  }
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// Export status
+function renderExportStatus() {
+  const el = document.getElementById('export-status');
+  const hasRQ = (document.getElementById('s-rq').value||'').trim().length > 0;
+  const hasNodes = nodes.length >= 3;
+  const hasNarrative = ['n-pos','n-int','n-cri','n-gap'].some(id => (document.getElementById(id).value||'').trim().length > 0);
+  const hasFit = (document.getElementById('g-fit').value||'').trim().length > 0;
+
+  let alerts = [];
+  if(!hasRQ) alerts.push('No research question.');
+  if(!hasNodes) alerts.push(`Only ${nodes.length} sources on the map (aim for at least your 10 from the AB).`);
+  if(!hasNarrative) alerts.push('Narrative sections are empty — these become your Literature Review draft.');
+  if(!hasFit) alerts.push('Gap analysis "Where does your research fit?" is empty.');
+
+  if(alerts.length) {
+    el.innerHTML = `<div class="alert alert-amber"><strong>Incomplete:</strong> ${alerts.join(' ')}</div>`;
+  } else {
+    el.innerHTML = `<div class="alert alert-green"><strong>Looking good.</strong> ${nodes.length} sources mapped, narrative drafted, gap identified.</div>`;
+  }
+}
+
+// Export text
+function exportText() {
+  const name = document.getElementById('s-name').value.trim();
+  const rq = document.getElementById('s-rq').value.trim();
+  const fit = document.getElementById('g-fit').value.trim();
+  const nPos = document.getElementById('n-pos').value.trim();
+  const nInt = document.getElementById('n-int').value.trim();
+  const nCri = document.getElementById('n-cri').value.trim();
+  const nGap = document.getElementById('n-gap').value.trim();
+
+  const grouped = {positivist:[],interpretivist:[],critical:[],other:[]};
+  nodes.forEach(n => { if(grouped[n.paradigm]) grouped[n.paradigm].push(n); else grouped.other.push(n); });
+
+  let t = `VISUAL LITERATURE MAP\n${'═'.repeat(50)}\n\n`;
+  t += `Name: ${name}\nResearch Question: ${rq}\nParadigm: ${setup.paradigm}\n\n`;
+
+  t += `${'─'.repeat(50)}\nSOURCES BY SCHOOL OF THOUGHT\n${'─'.repeat(50)}\n\n`;
+
+  ['positivist','interpretivist','critical'].forEach(p => {
+    const label = p==='positivist'?'POSITIVIST':p==='interpretivist'?'INTERPRETIVIST':'CRITICAL / POSTMODERN';
+    const items = grouped[p];
+    if(items.length) {
+      t += `${label}:\n`;
+      items.forEach(n => { t += `  • ${n.author}${n.role?' ['+n.role+']':''}${n.claim?' — '+n.claim:''}\n`; });
+      t += '\n';
+    }
+  });
+
+  if(connections.length) {
+    t += `${'─'.repeat(50)}\nCONNECTIONS\n${'─'.repeat(50)}\n\n`;
+    connections.forEach(c => {
+      const f = nodes.find(n=>n.id===c.from);
+      const to = nodes.find(n=>n.id===c.to);
+      if(f&&to) t += `  ${f.author} ↔ ${to.author}\n`;
+    });
+    t += '\n';
+  }
+
+  t += `${'─'.repeat(50)}\nGAP ANALYSIS\n${'─'.repeat(50)}\n\n`;
+  t += `Where My Research Fits:\n${fit||'(not completed)'}\n\n`;
+
+  t += `${'─'.repeat(50)}\nNARRATIVE (Literature Review Draft)\n${'─'.repeat(50)}\n\n`;
+  if(nPos) t += `POSITIVIST ACCOUNTS:\n${nPos}\n\n`;
+  if(nInt) t += `INTERPRETIVIST ACCOUNTS:\n${nInt}\n\n`;
+  if(nCri) t += `CRITICAL ACCOUNTS:\n${nCri}\n\n`;
+  if(nGap) t += `THE GAP — MY CONTRIBUTION:\n${nGap}\n\n`;
+
+  const blob = new Blob([t],{type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`LitMap_${name.replace(/\s+/g,'_')||'draft'}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Exported as text');
+}
+
+// Export HTML
+function exportHTML() {
+  const name = document.getElementById('s-name').value.trim();
+  const rq = document.getElementById('s-rq').value.trim();
+  const fit = document.getElementById('g-fit').value.trim();
+  const nPos = document.getElementById('n-pos').value.trim();
+  const nInt = document.getElementById('n-int').value.trim();
+  const nCri = document.getElementById('n-cri').value.trim();
+  const nGap = document.getElementById('n-gap').value.trim();
+
+  const grouped = {positivist:[],interpretivist:[],critical:[]};
+  nodes.forEach(n => { if(grouped[n.paradigm]) grouped[n.paradigm].push(n); });
+
+  let h = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Literature Map — ${name}</title>
+  <style>body{font-family:'Segoe UI',system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1.5rem;color:#1e293b;line-height:1.7;background:#fff;}
+  h1{font-size:1.4rem;border-bottom:3px solid #2563eb;padding-bottom:0.4rem;} h2{font-size:1.05rem;margin-top:1.5rem;padding:0.4rem 0.7rem;border-radius:6px;}
+  .pos{background:#eff6ff;color:#1d4ed8;} .int{background:#f5f3ff;color:#6d28d9;} .cri{background:#fdf2f8;color:#be185d;}
+  .meta{color:#64748b;font-size:0.88rem;margin-bottom:1.5rem;}
+  .source{padding:0.3rem 0;font-size:0.9rem;} .source strong{color:#0f172a;} .source .role{font-size:0.78rem;color:#64748b;font-style:italic;}
+  .gap{background:#fffbeb;padding:1rem;border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;margin:1rem 0;}
+  .narr{margin-top:0.5rem;font-size:0.92rem;color:#334155;}
+  </style></head><body>`;
+
+  h += `<h1>Visual Literature Map</h1>`;
+  h += `<div class="meta"><strong>${name}</strong><br>${rq}<br>Paradigm: ${setup.paradigm||''}</div>`;
+
+  const labels = {positivist:['Positivist Sources','pos'],interpretivist:['Interpretivist Sources','int'],critical:['Critical Sources','cri']};
+  ['positivist','interpretivist','critical'].forEach(p => {
+    if(grouped[p].length) {
+      h += `<h2 class="${labels[p][1]}">${labels[p][0]}</h2>`;
+      grouped[p].forEach(n => {
+        h += `<div class="source"><strong>${n.author}</strong>${n.role?' <span class="role">['+n.role+']</span>':''}${n.claim?' — '+n.claim:''}</div>`;
+      });
+    }
+  });
+
+  if(fit) h += `<h2 style="background:#fffbeb;color:#92400e;">Where My Research Fits</h2><div class="gap">${fit}</div>`;
+
+  h += `<h2 style="background:#f0fdf4;color:#166534;">Literature Map Narrative</h2>`;
+  if(nPos) h += `<p><strong>Positivist accounts:</strong></p><div class="narr">${nPos}</div>`;
+  if(nInt) h += `<p><strong>Interpretivist accounts:</strong></p><div class="narr">${nInt}</div>`;
+  if(nCri) h += `<p><strong>Critical accounts:</strong></p><div class="narr">${nCri}</div>`;
+  if(nGap) h += `<p><strong>The gap — my contribution:</strong></p><div class="narr">${nGap}</div>`;
+
+  h += `</body></html>`;
+
+  const blob = new Blob([h],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`LitMap_${name.replace(/\s+/g,'_')||'draft'}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Exported as HTML');
+}
+
+// Save / Load
+function save() {
+  setup.name = document.getElementById('s-name').value.trim();
+  setup.rq = document.getElementById('s-rq').value.trim();
+  localStorage.setItem('litMapDraft', JSON.stringify({
+    setup, nodes, connections,
+    fit: document.getElementById('g-fit').value,
+    nPos: document.getElementById('n-pos').value,
+    nInt: document.getElementById('n-int').value,
+    nCri: document.getElementById('n-cri').value,
+    nGap: document.getElementById('n-gap').value,
+    nodeIdCounter
+  }));
+}
+
+function saveDraft() { save(); toast('Draft saved to browser'); }
+
+function loadDraft() {
+  const raw = localStorage.getItem('litMapDraft');
+  if(!raw) { toast('No saved draft found'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) {
+    setup = d.setup;
+    document.getElementById('s-name').value = setup.name||'';
+    document.getElementById('s-rq').value = setup.rq||'';
+    if(setup.paradigm) {
+      document.querySelectorAll('#s-par .pill').forEach(p => {
+        p.className = 'pill';
+        if(p.textContent.toLowerCase().includes(setup.paradigm.substring(0,4))) p.classList.add('sel-'+setup.paradigm);
+      });
+    }
+  }
+  if(d.nodes) nodes = d.nodes;
+  if(d.connections) connections = d.connections;
+  if(d.nodeIdCounter) nodeIdCounter = d.nodeIdCounter;
+  if(d.fit) document.getElementById('g-fit').value = d.fit;
+  if(d.nPos) document.getElementById('n-pos').value = d.nPos;
+  if(d.nInt) document.getElementById('n-int').value = d.nInt;
+  if(d.nCri) document.getElementById('n-cri').value = d.nCri;
+  if(d.nGap) document.getElementById('n-gap').value = d.nGap;
+
+  renderImportList();
+  toast('Draft loaded');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show';
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// Init
+renderImportList();
+</script>
+
+</body>
+</html>

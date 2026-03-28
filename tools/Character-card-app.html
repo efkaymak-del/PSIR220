@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Character Card — Scholarly Speed Dating</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 760px; margin: 0 auto; }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .instructions {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  /* Progress Bar */
+  .progress-container {
+    background: #e2e8f0;
+    border-radius: 999px;
+    height: 8px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    text-align: right;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 2rem;
+  }
+
+  /* Sections */
+  .section {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.8rem;
+    border: 2px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: border-color 0.3s;
+  }
+
+  .section.complete { border-color: #16a34a; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .section-number.info { background: #dbeafe; color: #1d4ed8; }
+  .section-number.part1 { background: #ede9fe; color: #6d28d9; }
+  .section-number.part2 { background: #fce7f3; color: #be185d; }
+  .section-number.part3 { background: #d1fae5; color: #059669; }
+  .section-number.reflect { background: #fef3c7; color: #b45309; }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .section-subtitle {
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+
+  .section-check {
+    margin-left: auto;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .section-check.done {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #fff;
+  }
+
+  /* Form Elements */
+  .field { margin-bottom: 1.2rem; }
+
+  .field:last-child { margin-bottom: 0; }
+
+  .field-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .field-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-bottom: 0.4rem;
+    font-style: italic;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: #2563eb;
+    background: #fff;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  textarea.short { min-height: 60px; }
+  textarea.tall { min-height: 110px; }
+
+  /* Radio Paradigm Selector */
+  .paradigm-options {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .paradigm-option {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .paradigm-option:hover { border-color: #94a3b8; }
+
+  .paradigm-option.selected-positivist { border-color: #2563eb; background: #eff6ff; }
+  .paradigm-option.selected-interpretivist { border-color: #7c3aed; background: #f5f3ff; }
+  .paradigm-option.selected-critical { border-color: #db2777; background: #fdf2f8; }
+
+  .paradigm-option input { display: none; }
+
+  .paradigm-option .paradigm-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: block;
+  }
+
+  .paradigm-option .paradigm-alias {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    display: block;
+    margin-top: 0.1rem;
+  }
+
+  /* Usefulness selector */
+  .usefulness-options {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .usefulness-option {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  .usefulness-option:hover { border-color: #94a3b8; }
+  .usefulness-option.selected-yes { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+  .usefulness-option.selected-possibly { border-color: #d97706; background: #fffbeb; color: #b45309; }
+  .usefulness-option.selected-no { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+
+  /* Character count */
+  .char-count {
+    text-align: right;
+    font-size: 0.72rem;
+    color: #cbd5e1;
+    margin-top: 0.3rem;
+    transition: color 0.3s;
+  }
+
+  .char-count.warn { color: #d97706; }
+  .char-count.over { color: #dc2626; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 2px dashed #e2e8f0;
+    margin: 0.5rem 0 1.2rem 0;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 180px;
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    font-family: inherit;
+  }
+
+  .btn:hover { border-color: #94a3b8; background: #f1f5f9; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-success {
+    background: #16a34a;
+    color: #fff;
+    border: none;
+  }
+
+  .btn-success:hover {
+    background: #15803d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
+  }
+
+  /* Checklist */
+  .checklist {
+    margin-top: 1rem;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+
+  .checklist-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    transition: all 0.3s;
+  }
+
+  .checklist-dot.done {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #fff;
+  }
+
+  .checklist-item.done-item { color: #1e293b; font-weight: 500; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #16a34a;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.4s ease;
+    z-index: 100;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Preview Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.visible { display: flex; }
+
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+
+  .modal h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+    color: #0f172a;
+  }
+
+  .modal .modal-sub {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal .preview-section {
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .modal .preview-section:last-of-type { border-bottom: none; }
+
+  .modal .preview-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .modal .preview-value {
+    font-size: 0.92rem;
+    color: #1e293b;
+    line-height: 1.5;
+  }
+
+  .modal .preview-value.empty {
+    color: #dc2626;
+    font-style: italic;
+  }
+
+  .modal-btn-row {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-btn-row .btn { min-width: 120px; }
+
+  /* Print-friendly */
+  @media print {
+    body { background: #fff; padding: 1rem; }
+    .btn-row, .progress-container, .progress-label, .modal-overlay { display: none; }
+    .section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+
+  @media (max-width: 600px) {
+    .paradigm-options { flex-direction: column; }
+    .btn-row { flex-direction: column; }
+    h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Character Card</h1>
+  <p class="subtitle">Scholarly Speed Dating</p>
+  <p class="instructions">Complete all sections below. Notes and rough sentences are fine — this is prep, not prose.<br>Fields marked with a sentence guide show a character counter to help you stay concise.</p>
+
+  <!-- Progress -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="progress-label" id="progress-label">0 / 13 fields complete</div>
+
+  <!-- YOUR INFO -->
+  <div class="section" id="section-info">
+    <div class="section-header">
+      <div class="section-number info">i</div>
+      <div>
+        <div class="section-title">Your Information</div>
+        <div class="section-subtitle">From Assignment 1</div>
+      </div>
+      <div class="section-check" id="check-info"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Your Name</label>
+      <input type="text" id="f-name" placeholder="e.g. Elif İmeci" oninput="update()">
+    </div>
+    <div class="field">
+      <label class="field-label">Your Research Question</label>
+      <input type="text" id="f-rq" placeholder="e.g. Why do states fail to comply with international human rights treaties?" oninput="update()">
+    </div>
+    <div class="field">
+      <label class="field-label">Your Paradigm Track</label>
+      <div class="paradigm-options" id="my-paradigm">
+        <label class="paradigm-option" onclick="selectParadigm('my-paradigm','positivist',this)">
+          <input type="radio" name="my-paradigm" value="positivist">
+          <span class="paradigm-name">Positivist</span>
+          <span class="paradigm-alias">The Strategist</span>
+        </label>
+        <label class="paradigm-option" onclick="selectParadigm('my-paradigm','interpretivist',this)">
+          <input type="radio" name="my-paradigm" value="interpretivist">
+          <span class="paradigm-name">Interpretivist</span>
+          <span class="paradigm-alias">The Storyteller</span>
+        </label>
+        <label class="paradigm-option" onclick="selectParadigm('my-paradigm','critical',this)">
+          <input type="radio" name="my-paradigm" value="critical">
+          <span class="paradigm-name">Critical / Postmodern</span>
+          <span class="paradigm-alias">The Critic</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 1 -->
+  <div class="section" id="section-part1">
+    <div class="section-header">
+      <div class="section-number part1">1</div>
+      <div>
+        <div class="section-title">Your Assigned Author</div>
+        <div class="section-subtitle">Research them thoroughly</div>
+      </div>
+      <div class="section-check" id="check-part1"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Author Name</label>
+      <input type="text" id="f-author" placeholder="e.g. Alexander Wendt" oninput="update()">
+    </div>
+    <div class="field">
+      <label class="field-label">Key Work (title + year)</label>
+      <input type="text" id="f-work" placeholder="e.g. Social Theory of International Politics (1999)" oninput="update()">
+    </div>
+    <div class="field">
+      <label class="field-label">Their Paradigm Track</label>
+      <div class="paradigm-options" id="author-paradigm">
+        <label class="paradigm-option" onclick="selectParadigm('author-paradigm','positivist',this)">
+          <input type="radio" name="author-paradigm" value="positivist">
+          <span class="paradigm-name">Positivist</span>
+          <span class="paradigm-alias">The Strategist</span>
+        </label>
+        <label class="paradigm-option" onclick="selectParadigm('author-paradigm','interpretivist',this)">
+          <input type="radio" name="author-paradigm" value="interpretivist">
+          <span class="paradigm-name">Interpretivist</span>
+          <span class="paradigm-alias">The Storyteller</span>
+        </label>
+        <label class="paradigm-option" onclick="selectParadigm('author-paradigm','critical',this)">
+          <input type="radio" name="author-paradigm" value="critical">
+          <span class="paradigm-name">Critical / Postmodern</span>
+          <span class="paradigm-alias">The Critic</span>
+        </label>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label class="field-label">Their Main Argument</label>
+      <div class="field-hint">2 sentences — what are they most famous for arguing?</div>
+      <textarea id="f-argument" placeholder="Write two clear sentences summarizing their central claim..." oninput="update(); charCount(this, 'cc-argument', 300)"></textarea>
+      <div class="char-count" id="cc-argument">0 / ~300 characters</div>
+    </div>
+    <div class="field">
+      <label class="field-label">Method or Evidence They Used</label>
+      <div class="field-hint">Statistics? Case studies? Discourse analysis? Archive?</div>
+      <textarea class="short" id="f-method" placeholder="e.g. Process tracing of US nuclear decision-making across Cold War crises..." oninput="update(); charCount(this, 'cc-method', 200)"></textarea>
+      <div class="char-count" id="cc-method">0 / ~200 characters</div>
+    </div>
+    <div class="field">
+      <label class="field-label">One Criticism of Their Work</label>
+      <div class="field-hint">Every scholar has critics — what is the most common objection?</div>
+      <textarea class="short" id="f-criticism" placeholder="e.g. Critics argue the theory is better at describing than predicting..." oninput="update(); charCount(this, 'cc-criticism', 250)"></textarea>
+      <div class="char-count" id="cc-criticism">0 / ~250 characters</div>
+    </div>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="section" id="section-part2">
+    <div class="section-header">
+      <div class="section-number part2">2</div>
+      <div>
+        <div class="section-title">Connecting to Your Research</div>
+        <div class="section-subtitle">How does this author relate to your question?</div>
+      </div>
+      <div class="section-check" id="check-part2"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">What Would This Author Say About Your Research Question?</label>
+      <div class="field-hint">2–3 sentences in their voice — would they support, challenge, or redirect your approach?</div>
+      <textarea class="tall" id="f-voiceof" placeholder="Speaking as this scholar, how would they respond to your research question?" oninput="update(); charCount(this, 'cc-voiceof', 400)"></textarea>
+      <div class="char-count" id="cc-voiceof">0 / ~400 characters</div>
+    </div>
+    <div class="field">
+      <label class="field-label">Is This Author Useful for Your Bibliography?</label>
+      <div class="usefulness-options" id="usefulness">
+        <div class="usefulness-option" onclick="selectUsefulness('yes',this)">Yes</div>
+        <div class="usefulness-option" onclick="selectUsefulness('possibly',this)">Possibly</div>
+        <div class="usefulness-option" onclick="selectUsefulness('no',this)">No</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Why?</label>
+      <textarea class="short" id="f-why-useful" placeholder="One sentence explaining why this author does or doesn't fit your bibliography..." oninput="update(); charCount(this, 'cc-why', 200)"></textarea>
+      <div class="char-count" id="cc-why">0 / ~200 characters</div>
+    </div>
+  </div>
+
+  <!-- PART 3 -->
+  <div class="section" id="section-part3">
+    <div class="section-header">
+      <div class="section-number part3">3</div>
+      <div>
+        <div class="section-title">In-Class Prep</div>
+        <div class="section-subtitle">Practice out loud before class!</div>
+      </div>
+      <div class="section-check" id="check-part3"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Your Opening Line as This Author</label>
+      <div class="field-hint">2–3 sentences. You'll say this to your speed-dating partner.</div>
+      <textarea class="tall" id="f-opening" placeholder="e.g. 'I'm Alexander Wendt, and I'm here to tell you that anarchy is what states make of it...'" oninput="update(); charCount(this, 'cc-opening', 400)"></textarea>
+      <div class="char-count" id="cc-opening">0 / ~400 characters</div>
+    </div>
+    <div class="field">
+      <label class="field-label">One Question You Will Ask Your Partner</label>
+      <div class="field-hint">As your author — make it sharp.</div>
+      <textarea class="short" id="f-question" placeholder="e.g. 'If anarchy is what states make of it, then what is your theory making of it?'" oninput="update(); charCount(this, 'cc-question', 250)"></textarea>
+      <div class="char-count" id="cc-question">0 / ~250 characters</div>
+    </div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="section" id="section-reflect">
+    <div class="section-header">
+      <div class="section-number reflect">R</div>
+      <div>
+        <div class="section-title">After Class — Reflection</div>
+        <div class="section-subtitle">Submit within 24 hours of class</div>
+      </div>
+      <div class="section-check" id="check-reflect"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">One Author You Met Who Belongs on Your Annotated Bibliography</label>
+      <div class="field-hint">Name + one sentence on why.</div>
+      <textarea class="short" id="f-met-author" placeholder="e.g. Martha Finnemore — her work on norm diffusion through IOs directly addresses how compliance emerges..." oninput="update(); charCount(this, 'cc-met', 250)"></textarea>
+      <div class="char-count" id="cc-met">0 / ~250 characters</div>
+    </div>
+    <div class="field">
+      <label class="field-label">One Thing That Surprised or Challenged Your Thinking</label>
+      <textarea class="short" id="f-surprise" placeholder="One sentence." oninput="update(); charCount(this, 'cc-surprise', 200)"></textarea>
+      <div class="char-count" id="cc-surprise">0 / ~200 characters</div>
+    </div>
+  </div>
+
+  <!-- Checklist -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number info">✓</div>
+      <div>
+        <div class="section-title">Submission Checklist</div>
+      </div>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn" onclick="saveDraft()">Save Draft</button>
+    <button class="btn" onclick="loadDraft()">Load Draft</button>
+    <button class="btn" onclick="openPreview()">Preview</button>
+    <button class="btn btn-primary" id="btn-export" onclick="exportCard()" disabled>Export as Text</button>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closePreview(event)">
+  <div class="modal" id="modal">
+    <h2>Character Card Preview</h2>
+    <div class="modal-sub">Review before exporting or submitting</div>
+    <div id="preview-content"></div>
+    <div class="modal-btn-row">
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.remove('visible')">Close</button>
+      <button class="btn btn-primary" onclick="exportCard()">Export as Text</button>
+      <button class="btn btn-success" onclick="window.print()">Print / PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// State
+let state = {
+  myParadigm: '',
+  authorParadigm: '',
+  usefulness: ''
+};
+
+const fields = [
+  'f-name','f-rq','f-author','f-work','f-argument','f-method',
+  'f-criticism','f-voiceof','f-why-useful','f-opening','f-question',
+  'f-met-author','f-surprise'
+];
+
+const checklistItems = [
+  { label: 'Assignment 1 submitted', auto: false },
+  { label: 'Your information filled in', check: () => val('f-name') && val('f-rq') && state.myParadigm },
+  { label: 'Author researched', check: () => val('f-author') && val('f-work') && state.authorParadigm },
+  { label: 'Main argument written', check: () => val('f-argument') },
+  { label: 'Method identified', check: () => val('f-method') },
+  { label: 'Criticism noted', check: () => val('f-criticism') },
+  { label: 'Connection to your research', check: () => val('f-voiceof') && state.usefulness && val('f-why-useful') },
+  { label: 'Opening line prepared', check: () => val('f-opening') },
+  { label: 'Question for partner written', check: () => val('f-question') },
+  { label: 'Opening line practiced out loud', auto: false },
+];
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function selectParadigm(group, value, el) {
+  document.querySelectorAll(`#${group} .paradigm-option`).forEach(o => {
+    o.className = 'paradigm-option';
+  });
+  el.classList.add(`selected-${value}`);
+  if (group === 'my-paradigm') state.myParadigm = value;
+  else state.authorParadigm = value;
+  update();
+}
+
+function selectUsefulness(value, el) {
+  document.querySelectorAll('#usefulness .usefulness-option').forEach(o => {
+    o.className = 'usefulness-option';
+  });
+  el.classList.add(`selected-${value}`);
+  state.usefulness = value;
+  update();
+}
+
+function charCount(textarea, countId, target) {
+  const el = document.getElementById(countId);
+  const len = textarea.value.length;
+  el.textContent = `${len} / ~${target} characters`;
+  el.className = 'char-count';
+  if (len > target * 1.3) el.classList.add('over');
+  else if (len > target) el.classList.add('warn');
+}
+
+function update() {
+  // Count filled fields
+  let filled = 0;
+  fields.forEach(id => { if (val(id)) filled++; });
+
+  // Add paradigms and usefulness
+  const totalTrackable = fields.length + 3; // +myParadigm, authorParadigm, usefulness
+  if (state.myParadigm) filled++;
+  if (state.authorParadigm) filled++;
+  if (state.usefulness) filled++;
+
+  // Progress
+  const pct = Math.round((filled / totalTrackable) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${filled} / ${totalTrackable} fields complete`;
+
+  // Section checks
+  const infoComplete = val('f-name') && val('f-rq') && state.myParadigm;
+  const p1Complete = val('f-author') && val('f-work') && state.authorParadigm && val('f-argument') && val('f-method') && val('f-criticism');
+  const p2Complete = val('f-voiceof') && state.usefulness && val('f-why-useful');
+  const p3Complete = val('f-opening') && val('f-question');
+  const reflectComplete = val('f-met-author') && val('f-surprise');
+
+  setCheck('check-info', 'section-info', infoComplete);
+  setCheck('check-part1', 'section-part1', p1Complete);
+  setCheck('check-part2', 'section-part2', p2Complete);
+  setCheck('check-part3', 'section-part3', p3Complete);
+  setCheck('check-reflect', 'section-reflect', reflectComplete);
+
+  // Export button
+  const preClassComplete = infoComplete && p1Complete && p2Complete && p3Complete;
+  document.getElementById('btn-export').disabled = !preClassComplete;
+
+  // Checklist
+  renderChecklist();
+}
+
+function setCheck(checkId, sectionId, complete) {
+  const check = document.getElementById(checkId);
+  const section = document.getElementById(sectionId);
+  if (complete) {
+    check.className = 'section-check done';
+    check.innerHTML = '✓';
+    section.classList.add('complete');
+  } else {
+    check.className = 'section-check';
+    check.innerHTML = '';
+    section.classList.remove('complete');
+  }
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  checklistItems.forEach(item => {
+    const done = item.check ? item.check() : false;
+    const div = document.createElement('div');
+    div.className = `checklist-item ${done ? 'done-item' : ''}`;
+    div.innerHTML = `
+      <div class="checklist-dot ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+      <span>${item.label}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Save / Load
+function saveDraft() {
+  const data = {};
+  fields.forEach(id => data[id] = val(id));
+  data.myParadigm = state.myParadigm;
+  data.authorParadigm = state.authorParadigm;
+  data.usefulness = state.usefulness;
+  localStorage.setItem('characterCardDraft', JSON.stringify(data));
+  showToast('Draft saved to browser');
+}
+
+function loadDraft() {
+  const raw = localStorage.getItem('characterCardDraft');
+  if (!raw) { showToast('No saved draft found'); return; }
+  const data = JSON.parse(raw);
+  fields.forEach(id => { if (data[id]) document.getElementById(id).value = data[id]; });
+
+  // Restore paradigms
+  if (data.myParadigm) {
+    state.myParadigm = data.myParadigm;
+    document.querySelectorAll('#my-paradigm .paradigm-option').forEach(o => {
+      const radio = o.querySelector('input');
+      if (radio.value === data.myParadigm) o.classList.add(`selected-${data.myParadigm}`);
+    });
+  }
+  if (data.authorParadigm) {
+    state.authorParadigm = data.authorParadigm;
+    document.querySelectorAll('#author-paradigm .paradigm-option').forEach(o => {
+      const radio = o.querySelector('input');
+      if (radio.value === data.authorParadigm) o.classList.add(`selected-${data.authorParadigm}`);
+    });
+  }
+  if (data.usefulness) {
+    state.usefulness = data.usefulness;
+    document.querySelectorAll('#usefulness .usefulness-option').forEach(o => {
+      if (o.textContent.toLowerCase() === data.usefulness) o.classList.add(`selected-${data.usefulness}`);
+    });
+  }
+
+  update();
+  // Trigger char counts
+  ['f-argument','f-method','f-criticism','f-voiceof','f-why-useful','f-opening','f-question','f-met-author','f-surprise'].forEach(id => {
+    const el = document.getElementById(id);
+    el.dispatchEvent(new Event('input'));
+  });
+  showToast('Draft loaded');
+}
+
+// Preview
+function openPreview() {
+  const previewFields = [
+    { label: 'Student Name', val: val('f-name') },
+    { label: 'Research Question', val: val('f-rq') },
+    { label: 'Your Paradigm Track', val: state.myParadigm || '' },
+    { label: 'Assigned Author', val: val('f-author') },
+    { label: 'Key Work', val: val('f-work') },
+    { label: 'Author\'s Paradigm', val: state.authorParadigm || '' },
+    { label: 'Main Argument', val: val('f-argument') },
+    { label: 'Method / Evidence', val: val('f-method') },
+    { label: 'Criticism', val: val('f-criticism') },
+    { label: 'What Would This Author Say?', val: val('f-voiceof') },
+    { label: 'Useful for Bibliography?', val: state.usefulness ? `${state.usefulness.charAt(0).toUpperCase() + state.usefulness.slice(1)} — ${val('f-why-useful')}` : '' },
+    { label: 'Opening Line', val: val('f-opening') },
+    { label: 'Question for Partner', val: val('f-question') },
+    { label: 'Author Met in Class', val: val('f-met-author') },
+    { label: 'Surprise / Challenge', val: val('f-surprise') },
+  ];
+
+  const html = previewFields.map(f => `
+    <div class="preview-section">
+      <div class="preview-label">${f.label}</div>
+      <div class="preview-value ${f.val ? '' : 'empty'}">${f.val || '(not yet filled in)'}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('preview-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+
+function closePreview(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('visible');
+  }
+}
+
+// Export
+function exportCard() {
+  const paradigmLabel = p => {
+    if (p === 'positivist') return 'Positivist · The Strategist';
+    if (p === 'interpretivist') return 'Interpretivist · The Storyteller';
+    if (p === 'critical') return 'Critical / Postmodern · The Critic';
+    return '(not selected)';
+  };
+
+  const text = `
+═══════════════════════════════════════════════
+  CHARACTER CARD — SCHOLARLY SPEED DATING
+═══════════════════════════════════════════════
+
+YOUR NAME: ${val('f-name')}
+YOUR RESEARCH QUESTION: ${val('f-rq')}
+YOUR PARADIGM TRACK: ${paradigmLabel(state.myParadigm)}
+
+───────────────────────────────────────────────
+PART 1 · YOUR ASSIGNED AUTHOR
+───────────────────────────────────────────────
+
+AUTHOR NAME: ${val('f-author')}
+KEY WORK: ${val('f-work')}
+THEIR PARADIGM TRACK: ${paradigmLabel(state.authorParadigm)}
+
+THEIR MAIN ARGUMENT:
+${val('f-argument')}
+
+METHOD OR EVIDENCE THEY USED:
+${val('f-method')}
+
+ONE CRITICISM OF THEIR WORK:
+${val('f-criticism')}
+
+───────────────────────────────────────────────
+PART 2 · CONNECTING TO YOUR RESEARCH
+───────────────────────────────────────────────
+
+WHAT WOULD THIS AUTHOR SAY ABOUT YOUR RESEARCH QUESTION?
+${val('f-voiceof')}
+
+IS THIS AUTHOR USEFUL FOR YOUR BIBLIOGRAPHY?
+${state.usefulness ? state.usefulness.charAt(0).toUpperCase() + state.usefulness.slice(1) : '(not selected)'}
+${val('f-why-useful')}
+
+───────────────────────────────────────────────
+PART 3 · IN-CLASS PREP
+───────────────────────────────────────────────
+
+YOUR OPENING LINE AS THIS AUTHOR:
+${val('f-opening')}
+
+ONE QUESTION YOU WILL ASK YOUR PARTNER:
+${val('f-question')}
+
+───────────────────────────────────────────────
+AFTER CLASS · REFLECTION
+───────────────────────────────────────────────
+
+ONE AUTHOR YOU MET WHO BELONGS ON YOUR BIBLIOGRAPHY:
+${val('f-met-author')}
+
+ONE THING THAT SURPRISED OR CHALLENGED YOUR THINKING:
+${val('f-surprise')}
+
+═══════════════════════════════════════════════
+`.trim();
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `CharacterCard_${val('f-name').replace(/\s+/g,'_') || 'draft'}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Character card exported!');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show';
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+// Init
+update();
+</script>
+
+</body>
+</html>

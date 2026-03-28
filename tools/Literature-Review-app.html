@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Literature Review Builder — Core Quest 2 · PSIR220</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc; color: #1e293b;
+    min-height: 100vh; padding: 0;
+  }
+
+  .js-warning {
+    background: #fef2f2; border-bottom: 2px solid #fca5a5;
+    padding: 1rem 2rem; text-align: center;
+    font-size: 0.92rem; color: #991b1b; line-height: 1.5;
+  }
+  .js-warning strong { display: block; margin-bottom: 0.2rem; }
+  .js-warning.hidden { display: none; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  h1 {
+    text-align: center; font-size: 1.6rem; margin-bottom: 0.2rem;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 0.15rem; }
+  .due { text-align: center; color: #dc2626; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .badge-row { text-align: center; margin-bottom: 1.5rem; }
+  .badge {
+    display: inline-block; padding: 0.2rem 0.8rem; border-radius: 999px;
+    font-size: 0.74rem; font-weight: 700; margin: 0 0.2rem;
+  }
+  .badge.pts { background: #d1fae5; color: #065f46; }
+  .badge.words { background: #dbeafe; color: #1d4ed8; }
+  .badge.ch { background: #ede9fe; color: #6d28d9; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 0.2rem; margin-bottom: 1.2rem;
+    border-bottom: 2px solid #e2e8f0; flex-wrap: wrap;
+  }
+
+  .tab {
+    padding: 0.6rem 1rem; border: none; background: transparent;
+    color: #64748b; font-size: 0.84rem; font-weight: 600;
+    cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all 0.2s; font-family: inherit;
+  }
+
+  .tab:hover { color: #1e293b; }
+  .tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Card */
+  .card {
+    background: #fff; border-radius: 14px; padding: 1.4rem;
+    border: 2px solid #e2e8f0; margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .card.section-card { position: relative; }
+  .card.complete { border-color: #16a34a; }
+
+  .card-head {
+    display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem;
+  }
+
+  .card-ico {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.82rem; flex-shrink: 0;
+  }
+
+  .card-ico.blue { background: #dbeafe; color: #1d4ed8; }
+  .card-ico.purple { background: #ede9fe; color: #6d28d9; }
+  .card-ico.pink { background: #fce7f3; color: #be185d; }
+  .card-ico.green { background: #d1fae5; color: #059669; }
+  .card-ico.amber { background: #fef3c7; color: #b45309; }
+  .card-ico.slate { background: #f1f5f9; color: #475569; }
+
+  .card-t { font-size: 1rem; font-weight: 700; color: #0f172a; }
+  .card-s { font-size: 0.76rem; color: #94a3b8; }
+
+  .section-check {
+    margin-left: auto; width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid #e2e8f0; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; transition: all 0.3s;
+    font-size: 0.7rem;
+  }
+
+  .section-check.done { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+  /* Fields */
+  .field { margin-bottom: 0.9rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  .flabel {
+    display: block; font-size: 0.78rem; font-weight: 600;
+    color: #475569; margin-bottom: 0.3rem;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .fhint { font-size: 0.76rem; color: #94a3b8; margin-bottom: 0.3rem; font-style: italic; }
+
+  input[type="text"], textarea, select {
+    width: 100%; padding: 0.6rem 0.85rem;
+    border-radius: 9px; border: 2px solid #e2e8f0;
+    background: #f8fafc; color: #1e293b;
+    font-size: 0.88rem; font-family: inherit; outline: none;
+    transition: border-color 0.3s; line-height: 1.6;
+  }
+
+  input:focus, textarea:focus, select:focus { border-color: #2563eb; background: #fff; }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* Pills */
+  .pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .pill {
+    padding: 0.4rem 0.9rem; border-radius: 999px;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.8rem; font-weight: 600; color: #64748b;
+  }
+
+  .pill:hover { border-color: #94a3b8; }
+  .pill.sel-positivist { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+  .pill.sel-interpretivist { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; }
+  .pill.sel-critical { border-color: #db2777; background: #fdf2f8; color: #be185d; }
+
+  /* Word counter */
+  .word-bar {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+
+  .word-bar-track {
+    flex: 1; height: 6px; background: #e2e8f0;
+    border-radius: 999px; overflow: hidden;
+  }
+
+  .word-bar-fill {
+    height: 100%; border-radius: 999px;
+    transition: width 0.3s, background 0.3s;
+    background: #2563eb;
+  }
+
+  .word-bar-fill.low { background: #94a3b8; }
+  .word-bar-fill.good { background: #16a34a; }
+  .word-bar-fill.over { background: #d97706; }
+  .word-bar-fill.way-over { background: #dc2626; }
+
+  .word-count {
+    font-size: 0.74rem; font-weight: 600; color: #64748b;
+    white-space: nowrap; min-width: 80px; text-align: right;
+  }
+
+  /* Progress */
+  .progress-strip {
+    background: #fff; border-radius: 12px; padding: 0.8rem 1.2rem;
+    border: 2px solid #e2e8f0; margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .progress-top {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 0.4rem;
+  }
+
+  .progress-title { font-weight: 700; font-size: 0.88rem; }
+
+  .progress-stats {
+    display: flex; gap: 1rem; font-size: 0.78rem; color: #64748b;
+  }
+
+  .progress-stats strong { color: #1e293b; }
+
+  .progress-bar-outer {
+    height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transition: width 0.4s;
+  }
+
+  /* Quality checklist */
+  .qcheck {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0; font-size: 0.84rem;
+  }
+
+  .qcheck-dot {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 2px solid #e2e8f0; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-size: 0.6rem;
+    transition: all 0.3s;
+  }
+
+  .qcheck-dot.pass { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .qcheck-dot.warn { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .qcheck.done-q { color: #1e293b; font-weight: 500; }
+
+  /* Alerts */
+  .alert {
+    padding: 0.65rem 0.9rem; border-radius: 9px; font-size: 0.82rem;
+    margin-bottom: 0.7rem; line-height: 1.45;
+  }
+  .alert-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .alert-amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+  .alert-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .alert-red { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+  /* Do / Don't columns */
+  .do-dont {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .do-col, .dont-col {
+    border-radius: 10px; padding: 0.8rem 1rem; font-size: 0.82rem; line-height: 1.5;
+  }
+
+  .do-col { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .dont-col { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+  .do-col strong, .dont-col strong { display: block; margin-bottom: 0.3rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  /* Refs list */
+  .ref-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;
+    font-size: 0.84rem;
+  }
+
+  .ref-item:last-child { border-bottom: none; }
+  .ref-num { font-weight: 700; color: #94a3b8; flex-shrink: 0; min-width: 22px; }
+  .ref-text { color: #334155; }
+
+  /* Btns */
+  .btn {
+    padding: 0.6rem 1.1rem; border-radius: 9px;
+    border: 2px solid #e2e8f0; background: #fff;
+    color: #475569; font-size: 0.84rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+
+  .btn:hover { border-color: #94a3b8; background: #f1f5f9; }
+  .btn-primary { background: linear-gradient(135deg,#2563eb,#7c3aed); color: #fff; border: none; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
+  .btn-success { background: #16a34a; color: #fff; border: none; }
+  .btn-success:hover { background: #15803d; }
+  .btn-amber { background: #f59e0b; color: #fff; border: none; }
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+
+  hr.divider { border: none; border-top: 2px dashed #e2e8f0; margin: 0.8rem 0; }
+
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #16a34a; color: #fff;
+    padding: 0.8rem 1.8rem; border-radius: 12px;
+    font-weight: 600; font-size: 0.88rem;
+    transition: transform 0.4s; z-index: 300;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Example toggle */
+  .ex-toggle {
+    background: #f1f5f9; border-radius: 9px; padding: 0.6rem 0.9rem;
+    cursor: pointer; font-size: 0.84rem; font-weight: 600;
+    color: #475569; border: 1px solid #e2e8f0; margin-bottom: 0.5rem;
+    transition: all 0.2s;
+  }
+  .ex-toggle:hover { background: #e2e8f0; }
+  .ex-content {
+    display: none; background: #f8fafc; border-radius: 9px;
+    padding: 1rem; border: 1px solid #e2e8f0;
+    font-size: 0.84rem; line-height: 1.65; color: #475569;
+    margin-bottom: 0.8rem;
+  }
+  .ex-content.visible { display: block; }
+  .ex-content strong { color: #0f172a; }
+
+  @media (max-width: 600px) {
+    .do-dont { grid-template-columns: 1fr; }
+    .tab { padding: 0.5rem 0.7rem; font-size: 0.78rem; }
+  }
+
+  @media print {
+    .tabs, .btn-row, .js-warning, .toast, .progress-strip,
+    .word-bar, .ex-toggle, .ex-content, .do-dont,
+    .section-check, .qcheck-dot { display: none !important; }
+    .panel { display: block !important; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    body { background: #fff; }
+    textarea { border: 1px solid #ccc; min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="js-warning" id="js-warning">
+  <strong>This app needs to run in a browser</strong>
+  If you're viewing this in Teams, SharePoint, or OneDrive, interactive features won't work.<br>
+  <strong>Fix:</strong> Download this file, then open it in Chrome, Firefox, or Edge.
+</div>
+
+<div class="container">
+  <h1>Literature Review Builder</h1>
+  <p class="subtitle">Core Quest 2 — PSIR220 The Research Quest</p>
+  <p class="due">Due: April 25, 2026 · 11:59 PM</p>
+  <div class="badge-row">
+    <span class="badge pts">+10 points</span>
+    <span class="badge words">1,000–1,500 words</span>
+    <span class="badge ch">Baglione Ch. 4–5</span>
+  </div>
+
+  <!-- Progress Strip -->
+  <div class="progress-strip">
+    <div class="progress-top">
+      <div class="progress-title">Overall Progress</div>
+      <div class="progress-stats">
+        <span>Words: <strong id="p-words">0</strong></span>
+        <span>Sections: <strong id="p-sections">0/4</strong></span>
+        <span>Refs: <strong id="p-refs">0</strong></span>
+      </div>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="p-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showP('setup')" data-p="setup">Setup</button>
+    <button class="tab" onclick="showP('write')" data-p="write">Write</button>
+    <button class="tab" onclick="showP('refs')" data-p="refs">References</button>
+    <button class="tab" onclick="showP('check')" data-p="check">Quality Check</button>
+    <button class="tab" onclick="showP('export')" data-p="export">Export</button>
+  </div>
+
+  <!-- SETUP -->
+  <div class="panel active" id="panel-setup">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico blue">i</div>
+        <div><div class="card-t">Your Research Setup</div><div class="card-s">Carried forward — or start fresh</div></div>
+      </div>
+
+      <div class="field">
+        <label class="flabel">Your Name</label>
+        <input type="text" id="s-name" oninput="save()" placeholder="e.g. Elif İmeci">
+      </div>
+      <div class="field">
+        <label class="flabel">Research Question (refined)</label>
+        <textarea id="s-rq" style="min-height:50px" oninput="save()" placeholder="Your refined research question from Assignment 1"></textarea>
+      </div>
+      <div class="field">
+        <label class="flabel">Paradigm Track</label>
+        <div class="pills" id="s-par">
+          <span class="pill" onclick="setPar('positivist',this)">Positivist · The Strategist</span>
+          <span class="pill" onclick="setPar('interpretivist',this)">Interpretivist · The Storyteller</span>
+          <span class="pill" onclick="setPar('critical',this)">Critical · The Disruptor</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="flabel">Citation Style</label>
+        <div class="pills" id="s-cite">
+          <span class="pill" onclick="setCite('apa',this)" id="cite-apa">APA</span>
+          <span class="pill" onclick="setCite('chicago',this)" id="cite-chicago">Chicago Author-Date</span>
+        </div>
+        <div class="fhint" style="margin-top:0.3rem">Must match your Annotated Bibliography</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="tryImport()">Import from Literature Map</button>
+        <button class="btn" onclick="tryImportAB()">Import from Annotated Bib</button>
+        <button class="btn btn-primary" onclick="showP('write')">Start Writing →</button>
+      </div>
+    </div>
+
+    <!-- Instructions card -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico slate">?</div>
+        <div><div class="card-t">What Is a Literature Review?</div><div class="card-s">Read this before you start writing</div></div>
+      </div>
+
+      <div class="alert alert-blue">
+        The Literature Review is a <strong>conversation</strong>, not a list. You are telling the story of a scholarly debate and showing where your research enters it. It is organized by <strong>schools of thought and arguments</strong>, not author by author.
+      </div>
+
+      <div class="do-dont">
+        <div class="do-col">
+          <strong>A strong lit review:</strong>
+          Groups sources by argument, not by author.
+          Shows how schools of thought disagree.
+          Takes rival explanations seriously.
+          Identifies a specific gap.
+          Uses transitions between schools.
+        </div>
+        <div class="dont-col">
+          <strong>A weak lit review:</strong>
+          Summarizes one by one — "Author A says... Author B says..."
+          Ignores rival explanations.
+          Claims a gap without showing it.
+          Has no organizational logic.
+          Reads like an annotated bibliography.
+        </div>
+      </div>
+
+      <div class="ex-toggle" onclick="toggleEx('ex-landscape')">Example: What "The Landscape" looks like ▾</div>
+      <div class="ex-content" id="ex-landscape">
+        <strong>Topic: Populism in Italy vs Germany after 2008</strong><br><br>
+        The rise of populist movements across Western democracies since the 2008 financial crisis has generated one of the most active debates in comparative politics. Why did some countries experience dramatic populist surges while others with similar economic conditions did not? Italy's Five Star Movement and Lega achieved governing power, while Germany's AfD remained a protest party unable to break into coalition politics. This variation in populist success under similar structural pressures is the puzzle that drives the present research. The existing literature offers competing explanations rooted in economic insecurity, cultural backlash, and institutional design — but has struggled to explain why these factors produce such different outcomes in otherwise comparable European democracies.
+      </div>
+
+      <div class="ex-toggle" onclick="toggleEx('ex-schools')">Example: What "Schools of Thought" looks like ▾</div>
+      <div class="ex-content" id="ex-schools">
+        <strong>Note how sources are grouped by argument, not listed one by one:</strong><br><br>
+        The dominant explanation in the positivist literature attributes populist success to economic insecurity. Inglehart and Norris (2016) demonstrate through survey data across 30 countries that voters who perceive themselves as economically "left behind" are significantly more likely to support populist parties. Rodrik (2018) reinforces this with a political economy model showing how trade shocks and financial crises create demand for protectionist, anti-establishment platforms. However, this economic account struggles with the variation in my cases — both Italy and Germany experienced the eurozone crisis, yet populist trajectories diverged sharply.<br><br>
+        A second camp challenges the purely economic story by emphasizing cultural identity. Mudde (2004) argues that populism is fundamentally an ideological phenomenon — a "thin ideology" that divides society into a pure people versus a corrupt elite. Norris and Inglehart (2019), updating their earlier work, find that cultural backlash among older, less-educated voters has stronger predictive power than economic grievance. This framework helps explain why populism takes different <em>forms</em> in different countries, but it does not fully explain why it <em>succeeds</em> electorally in some and not others...
+      </div>
+
+      <div class="ex-toggle" onclick="toggleEx('ex-gap')">Example: What "The Gap" looks like ▾</div>
+      <div class="ex-content" id="ex-gap">
+        Despite the richness of this literature, a significant gap remains. Both the economic and cultural explanations operate at the level of voter demand — they explain why citizens <em>want</em> populism but not why political systems <em>produce</em> it differently. The institutional dimension — specifically, how electoral systems, party structures, and coalition norms mediate between populist demand and populist success — has received surprisingly little comparative attention. Inglehart and Norris treat Western democracies as a single category; Mudde's ideological framework does not engage with institutional variation. The few institutional studies that exist (Kriesi et al. 2008) focus on Western Europe broadly rather than explaining specific paired divergences. My research fills this gap by comparing Italy and Germany as a most-similar-systems design, isolating institutional variables that existing demand-side explanations cannot account for.
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE -->
+  <div class="panel" id="panel-write">
+
+    <!-- Section 1: Landscape -->
+    <div class="card section-card" id="card-s1">
+      <div class="card-head">
+        <div class="card-ico blue">1</div>
+        <div>
+          <div class="card-t">The Landscape</div>
+          <div class="card-s">100–200 words · What is the puzzle or debate? Set the scene.</div>
+        </div>
+        <div class="section-check" id="check-s1"></div>
+      </div>
+      <div class="fhint">What is the big question scholars have been trying to answer? Someone smart but unfamiliar with your topic should understand what is at stake.</div>
+      <textarea id="w-s1" style="min-height:120px" oninput="onWrite()" placeholder="Begin by introducing the broad puzzle or debate your research speaks to..."></textarea>
+      <div class="word-bar">
+        <div class="word-bar-track"><div class="word-bar-fill" id="wb-s1"></div></div>
+        <div class="word-count" id="wc-s1">0 / 100–200</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Schools of Thought -->
+    <div class="card section-card" id="card-s2">
+      <div class="card-head">
+        <div class="card-ico purple">2</div>
+        <div>
+          <div class="card-t">The Schools of Thought</div>
+          <div class="card-s">600–800 words · The core of the review. Group by argument, not by author.</div>
+        </div>
+        <div class="section-check" id="check-s2"></div>
+      </div>
+      <div class="fhint">For each school: What do they argue? What evidence or methods? Where do they agree with each other? Where do they disagree with other schools? You must engage at least 2 schools. Three is expected.</div>
+      <textarea id="w-s2" style="min-height:280px" oninput="onWrite()" placeholder="The dominant explanation in the [positivist/interpretivist/critical] literature argues that...
+
+A second school of thought challenges this by...
+
+A third perspective, rooted in [critical/feminist/postcolonial] theory, argues that..."></textarea>
+      <div class="word-bar">
+        <div class="word-bar-track"><div class="word-bar-fill" id="wb-s2"></div></div>
+        <div class="word-count" id="wc-s2">0 / 600–800</div>
+      </div>
+    </div>
+
+    <!-- Section 3: The Gap -->
+    <div class="card section-card" id="card-s3">
+      <div class="card-head">
+        <div class="card-ico pink">3</div>
+        <div>
+          <div class="card-t">The Gap</div>
+          <div class="card-s">150–250 words · What has the debate missed, overlooked, or left unanswered?</div>
+        </div>
+        <div class="section-check" id="check-s3"></div>
+      </div>
+      <div class="fhint">The gap can be empirical (unstudied case/region), theoretical (frameworks don't explain X), methodological (never studied with method B), or a combination. It must emerge clearly from the literature you reviewed above.</div>
+      <textarea id="w-s3" style="min-height:140px" oninput="onWrite()" placeholder="Despite the richness of this literature, a significant gap remains..."></textarea>
+      <div class="word-bar">
+        <div class="word-bar-track"><div class="word-bar-fill" id="wb-s3"></div></div>
+        <div class="word-count" id="wc-s3">0 / 150–250</div>
+      </div>
+    </div>
+
+    <!-- Section 4: Your Contribution -->
+    <div class="card section-card" id="card-s4">
+      <div class="card-head">
+        <div class="card-ico green">4</div>
+        <div>
+          <div class="card-t">Your Contribution</div>
+          <div class="card-s">100–200 words · What will your research do? Bridge to the Research Design.</div>
+        </div>
+        <div class="section-check" id="check-s4"></div>
+      </div>
+      <div class="fhint">Given the gap you identified, how does your research question respond? This is your promise to the reader — what you will deliver in the Research Design and final paper.</div>
+      <textarea id="w-s4" style="min-height:120px" oninput="onWrite()" placeholder="This research addresses the identified gap by..."></textarea>
+      <div class="word-bar">
+        <div class="word-bar-track"><div class="word-bar-fill" id="wb-s4"></div></div>
+        <div class="word-count" id="wc-s4">0 / 100–200</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="panel" id="panel-refs">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico slate">§</div>
+        <div><div class="card-t">References / Bibliography</div><div class="card-s">All sources cited in-text must appear here. At least 8 from your AB.</div></div>
+      </div>
+
+      <div class="fhint">Enter each full citation on its own line. Use the same style (APA or Chicago) you chose in Setup.</div>
+      <textarea id="r-refs" style="min-height:250px" oninput="countRefs(); save();" placeholder="Inglehart, R., & Norris, P. (2016). Trump, Brexit, and the rise of populism...
+
+Mudde, C. (2004). The populist zeitgeist. Government and Opposition, 39(4), 541–563.
+
+Rodrik, D. (2018). Populism and the economics of globalization..."></textarea>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+        <span style="font-size:0.8rem; color:#64748b;">References detected: <strong id="ref-count">0</strong></span>
+        <span style="font-size:0.8rem; color:#64748b;" id="ref-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUALITY CHECK -->
+  <div class="panel" id="panel-check">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico amber">!</div>
+        <div><div class="card-t">Quality Check</div><div class="card-s">Pre-flight check before submission — based on grading criteria</div></div>
+      </div>
+
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Completeness</p>
+      <div id="qc-complete"></div>
+
+      <hr class="divider">
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Quality Signals</p>
+      <div id="qc-quality"></div>
+
+      <hr class="divider">
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Grading Alignment (10 pts)</p>
+      <div id="qc-grading"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico slate">💡</div>
+        <div><div class="card-t">Common Pitfalls</div><div class="card-s">The things students lose marks for most often</div></div>
+      </div>
+
+      <div class="alert alert-red" style="margin-bottom:0.5rem">
+        <strong>Source-by-source summarizing.</strong> If your Schools section reads like "Author A argues... Author B argues... Author C argues..." you are writing an annotated bibliography, not a literature review. Group by argument.
+      </div>
+      <div class="alert alert-amber" style="margin-bottom:0.5rem">
+        <strong>Strawmanning rivals.</strong> If your rival explanation section is one dismissive sentence, your reviewer will notice. Engage seriously — explain why smart people believe the rival, then show what it misses.
+      </div>
+      <div class="alert alert-amber">
+        <strong>Ghost gaps.</strong> Claiming "no one has studied X" when someone has. Your gap must emerge from your literature review, not from thin air. Show the reader exactly where the existing conversation falls short.
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="panel" id="panel-export">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-ico green">↓</div>
+        <div><div class="card-t">Export for Teams Submission</div><div class="card-s">Download and upload to your Teams assignment</div></div>
+      </div>
+
+      <div id="export-status"></div>
+
+      <div class="field" style="margin-top:0.8rem">
+        <label class="flabel">AI Tool Disclosure</label>
+        <div class="fhint">If you used AI tools to help organize or check grammar, explain how in one sentence. Required.</div>
+        <textarea id="ai-disc" style="min-height:45px" oninput="save()" placeholder="e.g. I used Grammarly for proofreading. All argument structure and synthesis is my own."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveDraft()">Save Draft</button>
+        <button class="btn" onclick="loadDraft()">Load Draft</button>
+        <button class="btn btn-primary" onclick="exportHTML()">Export HTML</button>
+        <button class="btn btn-success" onclick="exportText()">Export Text</button>
+        <button class="btn btn-amber" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.getElementById('js-warning').classList.add('hidden');
+
+let setup = { name:'', rq:'', paradigm:'', cite:'' };
+
+// Sections config: id, min words, max words
+const sections = [
+  { id:'s1', min:100, max:200 },
+  { id:'s2', min:600, max:800 },
+  { id:'s3', min:150, max:250 },
+  { id:'s4', min:100, max:200 },
+];
+
+// Tabs
+function showP(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelector(`.tab[data-p="${id}"]`).classList.add('active');
+  if(id==='check') runQualityCheck();
+  if(id==='export') renderExportStatus();
+}
+
+// Setup
+function setPar(v,el) {
+  setup.paradigm = v;
+  el.parentElement.querySelectorAll('.pill').forEach(p => p.className='pill');
+  el.classList.add('sel-'+v);
+  save();
+}
+
+function setCite(v,el) {
+  setup.cite = v;
+  document.querySelectorAll('#s-cite .pill').forEach(p => {
+    p.className='pill'; p.style.borderColor=''; p.style.color=''; p.style.background='';
+  });
+  el.style.borderColor='#0f766e'; el.style.color='#0f766e'; el.style.background='#f0fdfa';
+  save();
+}
+
+// Word counting
+function countWords(text) {
+  const t = text.trim();
+  if(!t) return 0;
+  return t.split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function onWrite() {
+  sections.forEach(s => {
+    const text = document.getElementById('w-'+s.id).value;
+    const wc = countWords(text);
+    const pct = Math.min(100, (wc / s.max) * 100);
+
+    // Word bar
+    const bar = document.getElementById('wb-'+s.id);
+    bar.style.width = pct + '%';
+    bar.className = 'word-bar-fill ' + (
+      wc === 0 ? 'low' :
+      wc < s.min ? 'low' :
+      wc <= s.max ? 'good' :
+      wc <= s.max * 1.3 ? 'over' : 'way-over'
+    );
+
+    // Word count label
+    document.getElementById('wc-'+s.id).textContent = `${wc} / ${s.min}–${s.max}`;
+
+    // Section check
+    const check = document.getElementById('check-'+s.id);
+    const card = document.getElementById('card-'+s.id);
+    if(wc >= s.min) {
+      check.className = 'section-check done';
+      check.textContent = '✓';
+      card.classList.add('complete');
+    } else {
+      check.className = 'section-check';
+      check.textContent = '';
+      card.classList.remove('complete');
+    }
+  });
+
+  updateProgress();
+  save();
+}
+
+function countRefs() {
+  const text = document.getElementById('r-refs').value.trim();
+  const lines = text ? text.split('\n').filter(l => l.trim().length > 5) : [];
+  const count = lines.length;
+  document.getElementById('ref-count').textContent = count;
+  const status = document.getElementById('ref-status');
+  if(count >= 8) { status.textContent = '✓ Meets minimum'; status.style.color = '#16a34a'; }
+  else if(count > 0) { status.textContent = `Need at least 8 (${8 - count} more)`; status.style.color = '#d97706'; }
+  else { status.textContent = ''; }
+}
+
+function getTotalWords() {
+  return sections.reduce((sum, s) => sum + countWords(document.getElementById('w-'+s.id).value), 0);
+}
+
+function getSectionsDone() {
+  return sections.filter(s => countWords(document.getElementById('w-'+s.id).value) >= s.min).length;
+}
+
+function getRefCount() {
+  const text = document.getElementById('r-refs').value.trim();
+  return text ? text.split('\n').filter(l => l.trim().length > 5).length : 0;
+}
+
+function updateProgress() {
+  const words = getTotalWords();
+  const secsDone = getSectionsDone();
+  const refs = getRefCount();
+
+  document.getElementById('p-words').textContent = words;
+  document.getElementById('p-sections').textContent = secsDone + '/4';
+  document.getElementById('p-refs').textContent = refs;
+
+  // Progress bar: weight words 50%, sections 30%, refs 20%
+  const wordPct = Math.min(100, (words / 1000) * 100);
+  const secPct = (secsDone / 4) * 100;
+  const refPct = Math.min(100, (refs / 8) * 100);
+  const total = wordPct * 0.5 + secPct * 0.3 + refPct * 0.2;
+  document.getElementById('p-bar').style.width = total + '%';
+}
+
+// Quality check
+function runQualityCheck() {
+  const words = getTotalWords();
+  const secsDone = getSectionsDone();
+  const refs = getRefCount();
+  const s2Text = document.getElementById('w-s2').value.toLowerCase();
+  const s3Text = document.getElementById('w-s3').value.toLowerCase();
+  const hasRQ = (document.getElementById('s-rq').value||'').trim().length > 0;
+  const hasPar = setup.paradigm.length > 0;
+  const hasAI = (document.getElementById('ai-disc').value||'').trim().length > 0;
+
+  const mk = (pass, label) => `<div class="qcheck ${pass?'done-q':''}"><div class="qcheck-dot ${pass?'pass':''}">${pass?'✓':''}</div><span>${label}</span></div>`;
+  const mkW = (pass, label) => `<div class="qcheck ${pass?'done-q':''}"><div class="qcheck-dot ${pass?'pass':'warn'}">${pass?'✓':'!'}</div><span>${label}</span></div>`;
+
+  // Completeness
+  document.getElementById('qc-complete').innerHTML =
+    mk(hasRQ, 'Research question provided') +
+    mk(hasPar, 'Paradigm track selected') +
+    mk(words >= 1000, `Total word count: ${words} (target: 1,000–1,500)`) +
+    mk(secsDone === 4, `All 4 sections written (${secsDone}/4)`) +
+    mk(refs >= 8, `References: ${refs} (minimum 8)`) +
+    mk(hasAI, 'AI disclosure statement');
+
+  // Quality signals — text analysis
+  const hasSchoolWords = ['school','tradition','camp','perspective','framework','approach','account','explanation'].some(w => s2Text.includes(w));
+  const hasContrast = ['however','contrast','challenge','disagree','unlike','whereas','on the other hand','critics','alternatively'].some(w => s2Text.includes(w));
+  const hasGapWord = ['gap','missing','overlooked','unanswered','neglected','understudied','absent','yet to','no one has','few have','limited attention'].some(w => s3Text.includes(w));
+
+  // Check for source-by-source pattern
+  const authorSaysPattern = (s2Text.match(/\b(argues|claims|states|contends|suggests|finds|shows|demonstrates|notes)\b/g) || []).length;
+  const groupingLanguage = (s2Text.match(/\b(school|camp|tradition|strand|body of|literature|perspective|approach|these scholars|this group)\b/g) || []).length;
+  const sourceBySource = authorSaysPattern > 6 && groupingLanguage < 2;
+
+  document.getElementById('qc-quality').innerHTML =
+    mkW(hasSchoolWords, hasSchoolWords ? 'Uses school-of-thought language (good)' : 'Consider using terms like "school," "camp," "perspective," "tradition" to group sources') +
+    mkW(hasContrast, hasContrast ? 'Contains contrast/disagreement language (good)' : 'Add language showing disagreement between schools — "however," "in contrast," "challenges"') +
+    mkW(hasGapWord, hasGapWord ? 'Gap section uses gap language (good)' : 'Name the gap explicitly — "overlooked," "gap," "missing," "understudied"') +
+    mkW(!sourceBySource, sourceBySource ? 'Warning: Your Schools section may be source-by-source rather than grouped by argument. Reorganize around shared claims, not individual authors.' : 'No source-by-source pattern detected (good)');
+
+  // Grading alignment
+  const s1wc = countWords(document.getElementById('w-s1').value);
+  const s2wc = countWords(document.getElementById('w-s2').value);
+  const s3wc = countWords(document.getElementById('w-s3').value);
+  const s4wc = countWords(document.getElementById('w-s4').value);
+
+  document.getElementById('qc-grading').innerHTML =
+    mk(s1wc >= 100, `The Landscape (1.5 pts) — ${s1wc} words`) +
+    mk(s2wc >= 600 && hasContrast, `Schools of Thought (4 pts) — ${s2wc} words, ${hasContrast?'has contrasts':'needs contrasts'}`) +
+    mk(s3wc >= 150 && hasGapWord, `The Gap (2 pts) — ${s3wc} words, ${hasGapWord?'gap identified':'needs explicit gap'}`) +
+    mk(s4wc >= 100, `Your Contribution (1.5 pts) — ${s4wc} words`) +
+    mk(refs >= 8, `Writing & Citations (1 pt) — ${refs} references`);
+}
+
+// Export status
+function renderExportStatus() {
+  const el = document.getElementById('export-status');
+  const words = getTotalWords();
+  const secsDone = getSectionsDone();
+  const refs = getRefCount();
+
+  let issues = [];
+  if(words < 1000) issues.push(`${words} words (need 1,000 minimum)`);
+  if(secsDone < 4) issues.push(`${4-secsDone} section(s) incomplete`);
+  if(refs < 8) issues.push(`${refs} references (need 8 minimum)`);
+  if(!(document.getElementById('s-rq').value||'').trim()) issues.push('No research question');
+
+  if(issues.length) {
+    el.innerHTML = `<div class="alert alert-red"><strong>Not ready:</strong> ${issues.join(' · ')}</div>`;
+  } else {
+    el.innerHTML = `<div class="alert alert-green"><strong>Ready to export.</strong> ${words} words, ${secsDone}/4 sections, ${refs} references.</div>`;
+  }
+}
+
+// Import
+function tryImport() {
+  const raw = localStorage.getItem('litMapDraft');
+  if(!raw) { toast('No Literature Map draft found. Try importing from Annotated Bibliography instead.'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) {
+    setup = { name:d.setup.name||'', rq:d.setup.rq||'', paradigm:d.setup.paradigm||'', cite:setup.cite };
+    fillSetup();
+  }
+  if(d.nPos) document.getElementById('w-s2').value = (document.getElementById('w-s2').value||'') + (document.getElementById('w-s2').value?'\n\n':'') + d.nPos;
+  if(d.nInt) document.getElementById('w-s2').value += '\n\n' + d.nInt;
+  if(d.nCri) document.getElementById('w-s2').value += '\n\n' + d.nCri;
+  if(d.nGap) document.getElementById('w-s3').value = d.nGap;
+  if(d.fit) document.getElementById('w-s4').value = d.fit;
+  onWrite();
+  toast('Imported from Literature Map — review and refine the text');
+}
+
+function tryImportAB() {
+  const raw = localStorage.getItem('abDraft');
+  if(!raw) { toast('No Annotated Bibliography draft found in this browser.'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) {
+    setup = { name:d.setup.name||'', rq:d.setup.rq||'', paradigm:d.setup.paradigm||'', cite:d.setup.citStyle||'' };
+    fillSetup();
+  }
+  // Build refs from AB sources
+  if(d.sources) {
+    const refLines = d.sources.filter(s=>s.citation).map(s=>s.citation);
+    if(refLines.length) {
+      document.getElementById('r-refs').value = refLines.join('\n\n');
+      countRefs();
+    }
+  }
+  onWrite();
+  toast('Imported setup and references from Annotated Bibliography');
+}
+
+function fillSetup() {
+  document.getElementById('s-name').value = setup.name;
+  document.getElementById('s-rq').value = setup.rq;
+  if(setup.paradigm) {
+    document.querySelectorAll('#s-par .pill').forEach(p => {
+      p.className='pill';
+      if(p.textContent.toLowerCase().includes(setup.paradigm.substring(0,4))) p.classList.add('sel-'+setup.paradigm);
+    });
+  }
+  if(setup.cite) {
+    const el = document.getElementById('cite-'+setup.cite);
+    if(el) setCite(setup.cite, el);
+  }
+}
+
+// Export text
+function exportText() {
+  const name = document.getElementById('s-name').value.trim();
+  const rq = document.getElementById('s-rq').value.trim();
+  const ai = document.getElementById('ai-disc').value.trim();
+  const refs = document.getElementById('r-refs').value.trim();
+
+  let t = `LITERATURE REVIEW\nCore Quest 2 — PSIR220\n${'═'.repeat(50)}\n\n`;
+  t += `Name: ${name}\nResearch Question: ${rq}\nParadigm: ${setup.paradigm||''}\n\n`;
+  t += `${'─'.repeat(50)}\n\n`;
+
+  t += `THE LANDSCAPE\n${'─'.repeat(30)}\n${document.getElementById('w-s1').value.trim()||'(not completed)'}\n\n`;
+  t += `THE SCHOOLS OF THOUGHT\n${'─'.repeat(30)}\n${document.getElementById('w-s2').value.trim()||'(not completed)'}\n\n`;
+  t += `THE GAP\n${'─'.repeat(30)}\n${document.getElementById('w-s3').value.trim()||'(not completed)'}\n\n`;
+  t += `YOUR CONTRIBUTION\n${'─'.repeat(30)}\n${document.getElementById('w-s4').value.trim()||'(not completed)'}\n\n`;
+
+  t += `${'═'.repeat(50)}\nREFERENCES\n${'═'.repeat(50)}\n\n${refs||'(none)'}\n\n`;
+
+  if(ai) t += `${'─'.repeat(50)}\nAI TOOL DISCLOSURE: ${ai}\n`;
+
+  t += `\nWord count: ${getTotalWords()}\n`;
+
+  const blob = new Blob([t],{type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`LitReview_${name.replace(/\s+/g,'_')||'draft'}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Exported as text');
+}
+
+// Export HTML
+function exportHTML() {
+  const name = document.getElementById('s-name').value.trim();
+  const rq = document.getElementById('s-rq').value.trim();
+  const ai = document.getElementById('ai-disc').value.trim();
+  const refs = document.getElementById('r-refs').value.trim();
+  const words = getTotalWords();
+
+  const nl2p = t => t.split('\n\n').filter(p=>p.trim()).map(p=>'<p>'+p.trim()+'</p>').join('');
+
+  let h = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Literature Review — ${name}</title>
+  <style>
+    body{font-family:'Segoe UI',system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1.5rem;color:#1e293b;line-height:1.8;background:#fff;font-size:0.95rem;}
+    h1{font-size:1.4rem;border-bottom:3px solid #2563eb;padding-bottom:0.4rem;margin-bottom:0.3rem;}
+    h2{font-size:1.05rem;margin-top:1.8rem;margin-bottom:0.5rem;color:#1d4ed8;border-left:4px solid #2563eb;padding-left:0.6rem;}
+    .meta{color:#64748b;font-size:0.88rem;margin-bottom:2rem;}
+    p{margin-bottom:0.8rem;}
+    .refs{margin-top:2rem;padding-top:1rem;border-top:2px solid #e2e8f0;}
+    .refs h2{color:#475569;border-color:#94a3b8;}
+    .ref-entry{margin-bottom:0.5rem;padding-left:2rem;text-indent:-2rem;font-size:0.9rem;color:#334155;}
+    .ai{margin-top:1.5rem;padding:0.8rem 1rem;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;font-size:0.82rem;color:#64748b;}
+    .wc{text-align:right;font-size:0.8rem;color:#94a3b8;margin-top:1rem;}
+  </style></head><body>`;
+
+  h += `<h1>Literature Review</h1>`;
+  h += `<div class="meta"><strong>${name}</strong><br><strong>Research Question:</strong> ${rq}<br><strong>Paradigm:</strong> ${setup.paradigm||''}</div>`;
+
+  h += `<h2>The Landscape</h2>${nl2p(document.getElementById('w-s1').value||'')}`;
+  h += `<h2>The Schools of Thought</h2>${nl2p(document.getElementById('w-s2').value||'')}`;
+  h += `<h2>The Gap</h2>${nl2p(document.getElementById('w-s3').value||'')}`;
+  h += `<h2>Your Contribution</h2>${nl2p(document.getElementById('w-s4').value||'')}`;
+
+  if(refs) {
+    h += `<div class="refs"><h2>References</h2>`;
+    refs.split('\n').filter(l=>l.trim().length>5).forEach(r => {
+      h += `<div class="ref-entry">${r.trim()}</div>`;
+    });
+    h += `</div>`;
+  }
+
+  if(ai) h += `<div class="ai"><strong>AI Tool Disclosure:</strong> ${ai}</div>`;
+  h += `<div class="wc">Word count: ${words}</div>`;
+  h += `</body></html>`;
+
+  const blob = new Blob([h],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`LitReview_${name.replace(/\s+/g,'_')||'draft'}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Exported as HTML');
+}
+
+// Save / Load
+function save() {
+  setup.name = document.getElementById('s-name').value.trim();
+  setup.rq = document.getElementById('s-rq').value.trim();
+  localStorage.setItem('litRevDraft', JSON.stringify({
+    setup,
+    s1: document.getElementById('w-s1').value,
+    s2: document.getElementById('w-s2').value,
+    s3: document.getElementById('w-s3').value,
+    s4: document.getElementById('w-s4').value,
+    refs: document.getElementById('r-refs').value,
+    ai: document.getElementById('ai-disc').value,
+  }));
+}
+
+function saveDraft() { save(); toast('Draft saved to browser'); }
+
+function loadDraft() {
+  const raw = localStorage.getItem('litRevDraft');
+  if(!raw) { toast('No saved draft found'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) { setup = d.setup; fillSetup(); }
+  if(d.s1) document.getElementById('w-s1').value = d.s1;
+  if(d.s2) document.getElementById('w-s2').value = d.s2;
+  if(d.s3) document.getElementById('w-s3').value = d.s3;
+  if(d.s4) document.getElementById('w-s4').value = d.s4;
+  if(d.refs) document.getElementById('r-refs').value = d.refs;
+  if(d.ai) document.getElementById('ai-disc').value = d.ai;
+  onWrite();
+  countRefs();
+  toast('Draft loaded');
+}
+
+// Example toggle
+function toggleEx(id) {
+  document.getElementById(id).classList.toggle('visible');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className='toast show';
+  setTimeout(()=>t.className='toast', 3000);
+}
+
+// Init
+onWrite();
+countRefs();
+</script>
+
+</body>
+</html>

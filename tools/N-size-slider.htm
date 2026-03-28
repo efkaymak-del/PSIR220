@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – N-Size Slider & Methodology Matrix</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
+
+noscript .js-warn{display:block}
+.js-warn{background:#fef3c7;color:#92400e;text-align:center;padding:14px;font-weight:600;display:none}
+
+header{background:#fff;border-bottom:1px solid #e5e7eb;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:1.45rem;color:#0f3460}
+.badge{display:inline-block;padding:3px 12px;border-radius:14px;font-size:.8rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
+
+/* Tabs */
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;overflow-x:auto}
+.tab{padding:12px 20px;font-size:.95rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:#0f3460}
+.tab.active{color:#0f3460;border-bottom-color:#0f3460}
+
+main{max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Cards */
+.card{background:#fff;border-radius:12px;padding:24px 28px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:5px solid #0f3460}
+.card.pos{border-left-color:#2563eb}
+.card.int{border-left-color:#d97706}
+.card.crit{border-left-color:#db2777}
+.card.neutral{border-left-color:#6366f1}
+.card.green{border-left-color:#16a34a}
+.card.red{border-left-color:#dc2626}
+.card h3{font-size:1.15rem;margin-bottom:8px;color:#0f3460}
+.card p{font-size:1rem;line-height:1.7;margin-bottom:6px}
+
+/* Slider area */
+.slider-container{background:#fff;border-radius:14px;padding:32px;margin:20px 0;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.slider-label{display:flex;justify-content:space-between;font-size:.85rem;color:#888;margin-bottom:4px;font-weight:600}
+.slider-value{text-align:center;font-size:3rem;font-weight:800;color:#0f3460;margin:8px 0}
+.slider-desc{text-align:center;font-size:1.1rem;color:#555;margin-bottom:16px}
+input[type=range]{-webkit-appearance:none;width:100%;height:12px;border-radius:6px;background:linear-gradient(to right,#db2777 0%,#d97706 25%,#6366f1 50%,#2563eb 75%,#0f3460 100%);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid #0f3460;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;transition:.2s}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid #0f3460;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
+
+/* N-zone markers */
+.n-zones{display:flex;margin:12px 0 0;gap:0}
+.n-zone{flex:1;text-align:center;padding:8px 4px;font-size:.8rem;font-weight:600;border-radius:6px;transition:.3s}
+.n-zone.active-zone{transform:scale(1.05)}
+
+/* Method cards */
+.method-result{margin-top:20px;padding:24px;border-radius:12px;border:2px solid #e5e7eb;transition:.3s;background:#fff}
+.method-result.highlight{border-color:#0f3460;box-shadow:0 4px 20px rgba(15,52,96,.12)}
+.method-result h3{margin-bottom:10px}
+
+/* Matrix grid */
+.matrix-grid{display:grid;grid-template-columns:180px repeat(5,1fr);gap:1px;background:#e5e7eb;border-radius:12px;overflow:hidden;margin:16px 0}
+.matrix-cell{background:#fff;padding:12px 10px;font-size:.85rem;line-height:1.5;display:flex;align-items:center;justify-content:center;text-align:center;min-height:60px}
+.matrix-header{background:#0f3460;color:#fff;font-weight:700;font-size:.85rem}
+.matrix-row-header{background:#f0f4ff;font-weight:600;color:#0f3460;justify-content:flex-start;padding-left:14px}
+.matrix-cell.best{background:#d1fae5;font-weight:600;color:#065f46}
+.matrix-cell.ok{background:#fef3c7;color:#92400e}
+.matrix-cell.poor{background:#fee2e2;color:#991b1b;font-size:.8rem}
+.matrix-cell.na{background:#f9fafb;color:#ccc}
+
+/* Paradigm connector */
+.paradigm-row{display:flex;gap:16px;margin:16px 0;flex-wrap:wrap}
+.paradigm-card{flex:1;min-width:240px;background:#fff;border-radius:10px;padding:18px;border:2px solid #e5e7eb;transition:.3s;cursor:pointer}
+.paradigm-card:hover{border-color:#6366f1}
+.paradigm-card.selected{border-color:#0f3460;background:#f0f4ff;box-shadow:0 2px 12px rgba(15,52,96,.1)}
+.paradigm-card h4{font-size:1rem;margin-bottom:6px}
+.paradigm-card p{font-size:.9rem;color:#555;line-height:1.5}
+
+/* My Design panel */
+label{display:block;font-weight:600;margin:14px 0 6px;font-size:.95rem;color:#16213e}
+input[type=text],textarea,select{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:1rem;font-family:inherit;transition:.2s}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.check-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0}
+.check-pass{background:#d1fae5;color:#065f46}
+.check-warn{background:#fef3c7;color:#92400e}
+.check-fail{background:#fee2e2;color:#991b1b}
+
+button{padding:10px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-1px)}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.btn-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:12px 28px;border-radius:10px;font-weight:600;opacity:0;transition:.4s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Examples */
+.example-box{background:#fafaf5;border:1px solid #e5e5d0;border-radius:10px;padding:16px 20px;margin:10px 0;font-size:.95rem;line-height:1.7}
+.example-box .elabel{font-weight:700;color:#0f3460;display:block;margin-bottom:4px}
+
+/* Responsive */
+@media(max-width:768px){
+  header{padding:16px}
+  main{padding:16px 12px 80px}
+  .matrix-grid{grid-template-columns:120px repeat(5,1fr);font-size:.75rem}
+  .matrix-cell{padding:8px 4px;min-height:45px}
+  .slider-value{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<noscript><div class="js-warn">This app requires JavaScript. Download the file and open in Chrome, Firefox, or Edge.</div></noscript>
+
+<header>
+  <div>
+    <h1>N-Size Slider & Methodology Matrix</h1>
+    <p style="font-size:.85rem;color:#666;margin-top:4px;">PSIR220 · Week 7 · How Many Cases Do You Need?</p>
+  </div>
+  <div>
+    <span class="badge badge-pos">Strategist</span>
+    <span class="badge badge-int">Storyteller</span>
+    <span class="badge badge-crit">Disruptor</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('slider')">N-Size Slider</div>
+  <div class="tab" onclick="showTab('matrix')">Methodology Matrix</div>
+  <div class="tab" onclick="showTab('paradigm')">Paradigm → Method</div>
+  <div class="tab" onclick="showTab('design')">My Design</div>
+  <div class="tab" onclick="showTab('examples')">Examples</div>
+</div>
+
+<main>
+
+<!-- ============ TAB 1: N-SIZE SLIDER ============ -->
+<div class="panel active" id="panel-slider">
+
+  <div class="card neutral">
+    <h3>The Core Idea</h3>
+    <p>The number of cases you study (your <strong>N-size</strong>) is not an arbitrary choice — it determines which methods are available to you and what kinds of claims you can make. Move the slider and watch the methodology landscape change.</p>
+  </div>
+
+  <div class="slider-container">
+    <div class="slider-value" id="nDisplay">1</div>
+    <div class="slider-desc" id="nDesc">Single Case Study</div>
+    <input type="range" id="nSlider" min="1" max="100" value="1" oninput="updateSlider()">
+    <div class="slider-label">
+      <span>N = 1</span>
+      <span>N = 5–15</span>
+      <span>N = 20–50</span>
+      <span>N = 50+</span>
+      <span>N = 100+</span>
+    </div>
+
+    <div class="n-zones" id="nZones">
+      <div class="n-zone" id="zone1" style="background:#fce7f3;color:#9d174d;">Single Case</div>
+      <div class="n-zone" id="zone2" style="background:#fef3c7;color:#92400e;">Small-N Comparative</div>
+      <div class="n-zone" id="zone3" style="background:#e0e7ff;color:#3730a3;">Medium-N</div>
+      <div class="n-zone" id="zone4" style="background:#dbeafe;color:#1e40af;">Large-N</div>
+      <div class="n-zone" id="zone5" style="background:#d1fae5;color:#065f46;">Very Large-N</div>
+    </div>
+  </div>
+
+  <!-- Dynamic method card -->
+  <div class="method-result highlight" id="methodResult">
+    <h3 id="methodTitle">Single Case Study</h3>
+    <div id="methodContent"></div>
+  </div>
+
+  <div class="card neutral" style="margin-top:20px;">
+    <h3>Key Insight</h3>
+    <p>There is no "best" N-size. A single case study done with rigorous process tracing can answer questions that a 1,000-case regression cannot — and vice versa. The question is always: <strong>what does your research question require?</strong></p>
+  </div>
+
+</div>
+
+<!-- ============ TAB 2: METHODOLOGY MATRIX ============ -->
+<div class="panel" id="panel-matrix">
+
+  <div class="card neutral">
+    <h3>The Full Picture</h3>
+    <p>This matrix maps <strong>N-size</strong> against key methodological dimensions. Green = natural fit, amber = possible with justification, red = problematic, grey = not applicable.</p>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <div class="matrix-grid">
+      <!-- Header row -->
+      <div class="matrix-cell matrix-header">Dimension</div>
+      <div class="matrix-cell matrix-header">N = 1<br>Single Case</div>
+      <div class="matrix-cell matrix-header">N = 2–15<br>Small-N</div>
+      <div class="matrix-cell matrix-header">N = 20–50<br>Medium-N</div>
+      <div class="matrix-cell matrix-header">N = 50–200<br>Large-N</div>
+      <div class="matrix-cell matrix-header">N = 200+<br>Very Large-N</div>
+
+      <!-- Causal Depth -->
+      <div class="matrix-cell matrix-row-header">Causal Depth<br><span style="font-weight:400;font-size:.75rem;">How detailed is causal tracing?</span></div>
+      <div class="matrix-cell best">Very deep — process tracing, thick description</div>
+      <div class="matrix-cell best">Deep — comparative process tracing</div>
+      <div class="matrix-cell ok">Moderate — structured comparison</div>
+      <div class="matrix-cell poor">Shallow — correlational</div>
+      <div class="matrix-cell poor">Very shallow — statistical association</div>
+
+      <!-- Generalisability -->
+      <div class="matrix-cell matrix-row-header">Generalisability<br><span style="font-weight:400;font-size:.75rem;">How broadly can you claim?</span></div>
+      <div class="matrix-cell poor">Very limited — one context</div>
+      <div class="matrix-cell ok">Moderate — if cases well chosen</div>
+      <div class="matrix-cell ok">Growing — with careful sampling</div>
+      <div class="matrix-cell best">Strong — population-level claims</div>
+      <div class="matrix-cell best">Very strong — statistical power</div>
+
+      <!-- Variable Control -->
+      <div class="matrix-cell matrix-row-header">Variable Control<br><span style="font-weight:400;font-size:.75rem;">Can you isolate effects?</span></div>
+      <div class="matrix-cell ok">Within-case only — congruence, tracing</div>
+      <div class="matrix-cell best">Mill's methods — MSS / MDS</div>
+      <div class="matrix-cell best">QCA / fuzzy-set possible</div>
+      <div class="matrix-cell best">Multivariate regression, controls</div>
+      <div class="matrix-cell best">Advanced stats, IV, RDD, DiD</div>
+
+      <!-- Data Type -->
+      <div class="matrix-cell matrix-row-header">Typical Data<br><span style="font-weight:400;font-size:.75rem;">What are you working with?</span></div>
+      <div class="matrix-cell">Archives, interviews, texts, ethnography</div>
+      <div class="matrix-cell">Documents, interviews, structured comparison</div>
+      <div class="matrix-cell">Mixed — qualitative + some numbers</div>
+      <div class="matrix-cell">Datasets, surveys, indices</div>
+      <div class="matrix-cell">Large datasets, panel data, experiments</div>
+
+      <!-- Time Investment -->
+      <div class="matrix-cell matrix-row-header">Time per Case<br><span style="font-weight:400;font-size:.75rem;">How much work per unit?</span></div>
+      <div class="matrix-cell poor">Very high — months of immersion</div>
+      <div class="matrix-cell ok">High — weeks per case</div>
+      <div class="matrix-cell ok">Moderate</div>
+      <div class="matrix-cell best">Low per case — coding effort upfront</div>
+      <div class="matrix-cell best">Very low per case — computation</div>
+
+      <!-- Paradigm Affinity -->
+      <div class="matrix-cell matrix-row-header">Paradigm Affinity<br><span style="font-weight:400;font-size:.75rem;">Which tracks favour this?</span></div>
+      <div class="matrix-cell"><span class="badge badge-int">Storyteller</span> <span class="badge badge-crit">Disruptor</span></div>
+      <div class="matrix-cell"><span class="badge badge-pos">Strategist</span> <span class="badge badge-int">Storyteller</span></div>
+      <div class="matrix-cell"><span class="badge badge-pos">Strategist</span></div>
+      <div class="matrix-cell"><span class="badge badge-pos">Strategist</span></div>
+      <div class="matrix-cell"><span class="badge badge-pos">Strategist</span></div>
+    </div>
+  </div>
+
+  <div class="card neutral" style="margin-top:16px;">
+    <h3>Reading the Matrix</h3>
+    <p><strong>There is no single "best" column.</strong> Moving right gives you generalisability but costs you causal depth. Moving left gives you rich understanding but limits how broadly you can claim. Your paradigm track and research question together determine where on this spectrum you should land.</p>
+  </div>
+
+  <div class="card green">
+    <h3>The Trade-Off (KKV's Insight)</h3>
+    <p>King, Keohane, and Verba (1994) argued that all good research — qualitative or quantitative — follows the same logic of inference. But the <em>tools</em> differ. A positivist studying 80 countries and an interpretivist studying one speech are both trying to make valid inferences; they just operate at different points on this matrix. Neither is inherently superior.</p>
+  </div>
+
+</div>
+
+<!-- ============ TAB 3: PARADIGM → METHOD ============ -->
+<div class="panel" id="panel-paradigm">
+
+  <div class="card neutral">
+    <h3>From Paradigm to Method</h3>
+    <p>Your paradigm track doesn't dictate one method, but it does create <strong>affinities</strong>. Click your track to see which methods and N-sizes align naturally — and which require extra justification.</p>
+  </div>
+
+  <div class="paradigm-row">
+    <div class="paradigm-card" id="pc-pos" onclick="showParadigmMethods('pos')">
+      <h4><span class="badge badge-pos">Strategist</span> Positivist</h4>
+      <p>Explain, predict, generalise. Test hypotheses with observable evidence.</p>
+    </div>
+    <div class="paradigm-card" id="pc-int" onclick="showParadigmMethods('int')">
+      <h4><span class="badge badge-int">Storyteller</span> Interpretivist</h4>
+      <p>Understand meaning, context, and how actors make sense of their world.</p>
+    </div>
+    <div class="paradigm-card" id="pc-crit" onclick="showParadigmMethods('crit')">
+      <h4><span class="badge badge-crit">Disruptor</span> Critical</h4>
+      <p>Expose power, challenge dominant narratives, give voice to the silenced.</p>
+    </div>
+  </div>
+
+  <div id="paradigmMethodResult" style="margin-top:8px;"></div>
+
+</div>
+
+<!-- ============ TAB 4: MY DESIGN ============ -->
+<div class="panel" id="panel-design">
+
+  <div class="card neutral">
+    <h3>Build Your Methodological Profile</h3>
+    <p>Use this tab to sketch your own research design. The alignment checker will flag potential mismatches between your paradigm, question, N-size, and method.</p>
+  </div>
+
+  <label for="myName">Your Name</label>
+  <input type="text" id="myName" placeholder="e.g. Aysel Rahmanova">
+
+  <label for="myRQ">Your Research Question</label>
+  <textarea id="myRQ" rows="2" placeholder="Paste your research question…"></textarea>
+
+  <label for="myParadigm">Your Paradigm Track</label>
+  <select id="myParadigm">
+    <option value="">— Select —</option>
+    <option value="pos">Positivist / Strategist</option>
+    <option value="int">Interpretivist / Storyteller</option>
+    <option value="crit">Critical / Disruptor</option>
+  </select>
+
+  <label for="myN">How many cases are you planning to study?</label>
+  <input type="text" id="myN" placeholder="e.g. 1, 3, 45, 120…">
+
+  <label for="myMethod">Primary Method</label>
+  <select id="myMethod">
+    <option value="">— Select —</option>
+    <option value="process">Process Tracing (single case)</option>
+    <option value="comparative">Comparative Case Study (MSS/MDS)</option>
+    <option value="discourse">Discourse Analysis</option>
+    <option value="ethnographic">Ethnographic / Participant Observation</option>
+    <option value="historical">Historical Analysis / Archival</option>
+    <option value="qca">QCA / Fuzzy-Set Analysis</option>
+    <option value="stats">Statistical Analysis (regression, etc.)</option>
+    <option value="survey">Survey Research</option>
+    <option value="content">Content Analysis (quantitative coding)</option>
+    <option value="mixed">Mixed Methods</option>
+    <option value="formal">Formal / Game-Theoretic Model</option>
+  </select>
+
+  <label for="myCases">Describe your case(s) briefly</label>
+  <textarea id="myCases" rows="2" placeholder="e.g. Turkey 2016 coup attempt; or 45 African Union member states 2000–2020"></textarea>
+
+  <label for="myData">What data/sources will you use?</label>
+  <textarea id="myData" rows="2" placeholder="e.g. UN voting records, presidential speeches, World Bank WDI, interviews…"></textarea>
+
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkAlignment()">Check Alignment</button>
+  </div>
+
+  <div id="alignmentResults" style="margin-top:16px;"></div>
+
+</div>
+
+<!-- ============ TAB 5: EXAMPLES ============ -->
+<div class="panel" id="panel-examples">
+
+  <div class="card neutral">
+    <h3>Three Research Designs at Different N-Sizes</h3>
+    <p>Each example uses the same broad topic — <strong>why states comply with human-rights treaties</strong> — but at a different N-size and from a different paradigm.</p>
+  </div>
+
+  <div class="card pos">
+    <h3><span class="badge badge-pos">Strategist</span> Large-N Statistical Study</h3>
+    <div class="example-box">
+      <span class="elabel">Research Question</span>
+      Does ratification of the ICCPR reduce political repression in signatory states?
+      <span class="elabel" style="margin-top:10px;">N-Size</span>
+      N = 154 states, 1976–2020 (panel data)
+      <span class="elabel" style="margin-top:10px;">Method</span>
+      Fixed-effects regression with CIRI Human Rights Index as DV; controls for GDP, regime type, conflict. IV strategy using regional ratification waves.
+      <span class="elabel" style="margin-top:10px;">Why this N?</span>
+      The question asks about a general pattern across the treaty system — this requires enough variation in ratification status, regime type, and repression levels to isolate the treaty effect statistically.
+      <span class="elabel" style="margin-top:10px;">Trade-Off</span>
+      Strong generalisability but cannot trace the <em>mechanism</em> by which treaties change state behaviour.
+    </div>
+  </div>
+
+  <div class="card int">
+    <h3><span class="badge badge-int">Storyteller</span> Small-N Comparative Study</h3>
+    <div class="example-box">
+      <span class="elabel">Research Question</span>
+      How did domestic human-rights NGOs shape compliance narratives in post-authoritarian Chile and Argentina?
+      <span class="elabel" style="margin-top:10px;">N-Size</span>
+      N = 2 (Most Similar Systems — both Southern Cone, similar transition period, different compliance outcomes)
+      <span class="elabel" style="margin-top:10px;">Method</span>
+      Comparative historical analysis with process tracing; primary sources include NGO reports, parliamentary debates, newspaper archives 1990–2005.
+      <span class="elabel" style="margin-top:10px;">Why this N?</span>
+      The question asks <em>how</em> a process unfolded — this requires deep engagement with two carefully selected cases that share background conditions but diverge on the outcome.
+      <span class="elabel" style="margin-top:10px;">Trade-Off</span>
+      Rich causal insight into the mechanism but limited ability to generalise beyond the two cases.
+    </div>
+  </div>
+
+  <div class="card crit">
+    <h3><span class="badge badge-crit">Disruptor</span> Single-Case Discourse Analysis</h3>
+    <div class="example-box">
+      <span class="elabel">Research Question</span>
+      How does the UN Human Rights Council's Universal Periodic Review construct 'compliant' versus 'non-compliant' states through discursive practices?
+      <span class="elabel" style="margin-top:10px;">N-Size</span>
+      N = 1 (the UPR process as a discursive site); corpus of 120+ state review documents 2008–2022
+      <span class="elabel" style="margin-top:10px;">Method</span>
+      Foucauldian discourse analysis — identifying subject positions, knowledge/power relations, and the construction of "normal" compliance behaviour.
+      <span class="elabel" style="margin-top:10px;">Why this N?</span>
+      The question is not about counting outcomes but about exposing how language <em>constitutes</em> the very categories of compliance. Deep immersion in one discursive site is essential.
+      <span class="elabel" style="margin-top:10px;">Trade-Off</span>
+      Reveals power dynamics invisible to positivist methods but makes no claim to predict or generalise.
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3>The Lesson</h3>
+    <p>Same topic, three entirely different studies. None is "better" — each answers a <em>different kind of question</em>. Your N-size follows from your question and paradigm, not the other way around.</p>
+  </div>
+
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Tab navigation ──
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── N-Size Slider ──
+const methods = [
+  {min:1,max:1,label:'Single Case Study',desc:'N = 1',zone:1,
+   content:`<p><strong>Methods available:</strong> Process tracing, congruence analysis, thick description, discourse analysis, ethnography, single-case within-case analysis.</p>
+   <p><strong>Strengths:</strong> Maximum causal depth. You can trace the mechanism step-by-step. Ideal for "how" and "why" questions in specific contexts.</p>
+   <p><strong>Limitations:</strong> Cannot generalise beyond the case. Selection bias risk — why <em>this</em> case?</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-int">Storyteller</span> <span class="badge badge-crit">Disruptor</span> — natural home. <span class="badge badge-pos">Strategist</span> — possible for theory-testing (crucial case) or theory-building (deviant case).</p>
+   <p><strong>Case selection logic:</strong> Crucial case, deviant case, most-likely / least-likely, typical case, pathway case.</p>
+   <p><strong>Key reading:</strong> George & Bennett (2005); Beach & Pedersen (2013).</p>`},
+  {min:2,max:5,label:'Small-N Comparative',desc:'N = 2–5',zone:2,
+   content:`<p><strong>Methods available:</strong> Most Similar Systems (MSS), Most Different Systems (MDS), comparative process tracing, structured focused comparison.</p>
+   <p><strong>Strengths:</strong> Can isolate causal factors by holding background conditions constant (MSS) or by finding the common factor across diverse cases (MDS). Retains considerable depth.</p>
+   <p><strong>Limitations:</strong> Many degrees of freedom problem — more potential explanations than cases. Must justify case selection rigorously.</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-pos">Strategist</span> <span class="badge badge-int">Storyteller</span> — both work well here. Comparative method is the classic "middle path."</p>
+   <p><strong>Case selection logic:</strong> MSS, MDS, paired comparison, shadow cases.</p>
+   <p><strong>Key reading:</strong> Lijphart (1971); Gerring (2007); Slater & Ziblatt (2013).</p>`},
+  {min:6,max:15,label:'Small-to-Medium-N Comparative',desc:'N = 6–15',zone:2,
+   content:`<p><strong>Methods available:</strong> Structured focused comparison, QCA (Qualitative Comparative Analysis), fuzzy-set analysis, typological theory.</p>
+   <p><strong>Strengths:</strong> Enough cases for systematic comparison without losing qualitative depth. QCA can handle causal complexity (multiple pathways to the same outcome).</p>
+   <p><strong>Limitations:</strong> Requires careful case selection and transparent coding decisions. Not enough for statistical inference.</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-pos">Strategist</span> — strong fit. <span class="badge badge-int">Storyteller</span> — possible if cases are deeply contextualised.</p>
+   <p><strong>Key reading:</strong> Ragin (2000, 2008); Schneider & Wagemann (2012).</p>`},
+  {min:16,max:50,label:'Medium-N',desc:'N = 16–50',zone:3,
+   content:`<p><strong>Methods available:</strong> QCA, small-sample statistical techniques, mixed methods (quant + select case deep-dives).</p>
+   <p><strong>Strengths:</strong> Enough variation for pattern detection; small enough to retain some case knowledge. Mixed methods become very powerful here.</p>
+   <p><strong>Limitations:</strong> Too few for robust regression; too many for deep process tracing of every case. Must choose: breadth or depth for each case.</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-pos">Strategist</span> — home territory for mixed methods.</p>
+   <p><strong>Key reading:</strong> Lieberman (2005) on "nested analysis"; Seawright & Gerring (2008).</p>`},
+  {min:51,max:200,label:'Large-N Quantitative',desc:'N = 50–200',zone:4,
+   content:`<p><strong>Methods available:</strong> OLS regression, logistic regression, panel data analysis, survival analysis, instrumental variables.</p>
+   <p><strong>Strengths:</strong> Statistical control for confounders. Can make population-level claims. Replicable.</p>
+   <p><strong>Limitations:</strong> Causal mechanisms become a "black box." Measurement validity challenges — are your indicators capturing the concept? Garbage in, garbage out.</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-pos">Strategist</span> — core method. Other tracks rarely work at this N unless doing quantitative content analysis.</p>
+   <p><strong>Data sources:</strong> World Bank WDI, SIPRI, Correlates of War, V-Dem, Polity, CIRI, UCDP.</p>
+   <p><strong>Key reading:</strong> King, Keohane & Verba (1994); Angrist & Pischke (2009).</p>`},
+  {min:201,max:1000,label:'Very Large-N',desc:'N = 200+',zone:5,
+   content:`<p><strong>Methods available:</strong> Advanced econometrics, difference-in-differences, regression discontinuity, machine learning, survey experiments, text-as-data.</p>
+   <p><strong>Strengths:</strong> Maximum statistical power. Can detect small effects. Sophisticated causal identification strategies possible.</p>
+   <p><strong>Limitations:</strong> Requires clean data, coding expertise, and strong research design to avoid spurious results. Very far from individual case understanding.</p>
+   <p><strong>Paradigm fit:</strong> <span class="badge badge-pos">Strategist</span> — exclusively. Though <span class="badge badge-crit">Disruptor</span> scholars sometimes use large-N text-as-data for computational discourse analysis.</p>
+   <p><strong>Key reading:</strong> Angrist & Pischke (2009); Grimmer, Roberts & Stewart (2022).</p>`}
+];
+
+function updateSlider(){
+  const val = parseInt(document.getElementById('nSlider').value);
+  document.getElementById('nDisplay').textContent = val === 100 ? '100+' : val;
+
+  // Find matching method
+  let m = methods[methods.length-1];
+  for(let i=0;i<methods.length;i++){
+    if(val >= methods[i].min && val <= methods[i].max){ m = methods[i]; break; }
+    if(i < methods.length-1 && val > methods[i].max && val < methods[i+1].min){ m = methods[i+1]; break; }
+  }
+
+  document.getElementById('nDesc').textContent = m.label + ' (' + m.desc + ')';
+  document.getElementById('methodTitle').textContent = m.label;
+  document.getElementById('methodContent').innerHTML = m.content;
+
+  // Highlight zone
+  for(let z=1;z<=5;z++){
+    document.getElementById('zone'+z).classList.remove('active-zone');
+    document.getElementById('zone'+z).style.fontWeight = '600';
+    document.getElementById('zone'+z).style.transform = 'scale(1)';
+  }
+  document.getElementById('zone'+m.zone).classList.add('active-zone');
+  document.getElementById('zone'+m.zone).style.fontWeight = '800';
+  document.getElementById('zone'+m.zone).style.transform = 'scale(1.08)';
+}
+updateSlider();
+
+// ── Paradigm → Method ──
+const paradigmMethods = {
+  pos: {
+    title: 'Positivist / Strategist — Method Affinities',
+    content: `
+      <div class="card pos">
+        <h3>Natural Methods</h3>
+        <p><strong>Large-N Statistical Analysis</strong> (N = 50+) — regression, panel data, survival analysis. Tests hypotheses across many cases with variable control.</p>
+        <p><strong>Comparative Case Study</strong> (N = 2–15) — MSS/MDS designs. Tests rival explanations by selecting cases that vary on key variables.</p>
+        <p><strong>Mixed Methods / Nested Analysis</strong> (N = 30–100 + 2–3 deep cases) — Lieberman's approach: run the regression, then select on- and off-the-line cases for process tracing.</p>
+        <p><strong>QCA</strong> (N = 10–50) — systematic cross-case comparison for causal complexity (equifinality, conjunctural causation).</p>
+      </div>
+      <div class="card" style="border-left-color:#d97706;">
+        <h3>Possible but Needs Justification</h3>
+        <p><strong>Single Crucial Case</strong> (N = 1) — "If the theory can't explain <em>this</em> case, it fails." Eckstein's (1975) crucial case design is positivist-friendly but must be explicitly argued.</p>
+        <p><strong>Survey Research</strong> — if your question is about attitudes or preferences at the individual level.</p>
+      </div>
+      <div class="card red">
+        <h3>Rarely Compatible</h3>
+        <p><strong>Discourse analysis, ethnography, autoethnography</strong> — these belong to interpretivist/critical epistemologies. Using them from a positivist framing creates a fatal flaw (epistemological mismatch).</p>
+      </div>
+      <p style="margin-top:12px;"><strong>Typical N-range:</strong> 2–5 (comparative) or 50+ (statistical). Medium-N is the awkward middle — too few for stats, too many for depth.</p>`
+  },
+  int: {
+    title: 'Interpretivist / Storyteller — Method Affinities',
+    content: `
+      <div class="card int">
+        <h3>Natural Methods</h3>
+        <p><strong>Single Case Study with Process Tracing</strong> (N = 1) — trace how meanings, identities, and norms shaped outcomes within one deeply studied context.</p>
+        <p><strong>Historical / Archival Analysis</strong> (N = 1–3) — reconstruct how actors understood events through primary documents, speeches, memoirs, treaty records.</p>
+        <p><strong>Ethnography / Participant Observation</strong> (N = 1 site) — immersion in a community or institution to understand meaning from the inside.</p>
+        <p><strong>Comparative Interpretive Analysis</strong> (N = 2–4) — compare how meaning is constructed differently across carefully selected contexts.</p>
+      </div>
+      <div class="card" style="border-left-color:#2563eb;">
+        <h3>Possible but Needs Justification</h3>
+        <p><strong>Small-N Structured Comparison</strong> (N = 3–6) — if you maintain thick description for each case and don't reduce them to variable scores.</p>
+        <p><strong>Narrative Analysis</strong> — systematic analysis of how stories structure political understanding.</p>
+      </div>
+      <div class="card red">
+        <h3>Rarely Compatible</h3>
+        <p><strong>Large-N statistics, formal models</strong> — these assume a positivist ontology (measurable, objective variables). Using them from an interpretivist framing is a fatal flaw.</p>
+      </div>
+      <p style="margin-top:12px;"><strong>Typical N-range:</strong> 1–4. Depth over breadth. Every case is a world to be understood, not a data point to be coded.</p>`
+  },
+  crit: {
+    title: 'Critical / Disruptor — Method Affinities',
+    content: `
+      <div class="card crit">
+        <h3>Natural Methods</h3>
+        <p><strong>Discourse Analysis</strong> (N = 1 discursive site / corpus) — Foucauldian, poststructuralist, or CDA approaches. Exposes how language constitutes power relations.</p>
+        <p><strong>Genealogy</strong> (N = 1 concept or practice) — traces how a taken-for-granted category (e.g. "security," "development") was historically constructed.</p>
+        <p><strong>Postcolonial / Decolonial Critique</strong> (N = 1–2 texts, institutions, or episodes) — reads texts against the grain to reveal imperial epistemologies.</p>
+        <p><strong>Feminist Standpoint Analysis</strong> — centres marginalised experience as an epistemological resource.</p>
+      </div>
+      <div class="card" style="border-left-color:#d97706;">
+        <h3>Possible but Needs Justification</h3>
+        <p><strong>Critical Ethnography</strong> — ethnography with an explicit emancipatory agenda. Must be reflexive about the researcher's own power.</p>
+        <p><strong>Computational Text Analysis</strong> (large-N corpus) — some critical scholars use text-as-data to map discursive patterns at scale, but must justify the quantification epistemologically.</p>
+      </div>
+      <div class="card red">
+        <h3>Rarely Compatible</h3>
+        <p><strong>Hypothesis-testing, regression, formal models, MSS/MDS</strong> — these embed positivist assumptions about causation and objectivity that critical theory explicitly rejects.</p>
+      </div>
+      <p style="margin-top:12px;"><strong>Typical N-range:</strong> 1 (one discursive site, one genealogical inquiry, one corpus). The "case" is often not a country but a <em>discourse</em>, <em>text</em>, or <em>practice</em>.</p>`
+  }
+};
+
+function showParadigmMethods(track){
+  document.querySelectorAll('.paradigm-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pc-'+track).classList.add('selected');
+  const pm = paradigmMethods[track];
+  document.getElementById('paradigmMethodResult').innerHTML = `<h3 style="color:#0f3460;margin-bottom:12px;">${pm.title}</h3>${pm.content}`;
+}
+
+// ── Alignment Checker ──
+function checkAlignment(){
+  const paradigm = document.getElementById('myParadigm').value;
+  const method = document.getElementById('myMethod').value;
+  const nRaw = document.getElementById('myN').value.trim();
+  const n = parseInt(nRaw);
+  const rq = document.getElementById('myRQ').value.trim();
+  const cases = document.getElementById('myCases').value.trim();
+
+  if(!paradigm || !method || !nRaw){
+    toast('Please fill in paradigm, method, and N-size.');
+    return;
+  }
+
+  let checks = [];
+
+  // 1. Paradigm–Method match
+  const goodMatches = {
+    pos: ['comparative','qca','stats','survey','content','mixed','formal'],
+    int: ['process','historical','ethnographic','discourse','comparative'],
+    crit: ['discourse','ethnographic','historical','process']
+  };
+  const okMatches = {
+    pos: ['process'],
+    int: ['content','mixed'],
+    crit: ['content','mixed']
+  };
+
+  if(goodMatches[paradigm] && goodMatches[paradigm].includes(method)){
+    checks.push({status:'pass',text:`<strong>Paradigm ↔ Method:</strong> ${method} is a natural fit for your paradigm track.`});
+  } else if(okMatches[paradigm] && okMatches[paradigm].includes(method)){
+    checks.push({status:'warn',text:`<strong>Paradigm ↔ Method:</strong> ${method} is possible for your track but requires explicit justification in your research design.`});
+  } else {
+    checks.push({status:'fail',text:`<strong>Paradigm ↔ Method:</strong> Potential mismatch. This method embeds epistemological assumptions that may conflict with your paradigm. Consult your lecturer before proceeding.`});
+  }
+
+  // 2. N-size–Method match
+  const nMethodFit = {
+    process:{min:1,max:3}, comparative:{min:2,max:15}, discourse:{min:1,max:1},
+    ethnographic:{min:1,max:2}, historical:{min:1,max:5}, qca:{min:5,max:60},
+    stats:{min:30,max:10000}, survey:{min:50,max:10000}, content:{min:1,max:10000},
+    mixed:{min:10,max:10000}, formal:{min:0,max:0}
+  };
+  const fit = nMethodFit[method];
+  if(fit && n >= fit.min && n <= fit.max){
+    checks.push({status:'pass',text:`<strong>N-Size ↔ Method:</strong> N = ${n} works well with ${method}.`});
+  } else if(method === 'formal'){
+    checks.push({status:'pass',text:`<strong>N-Size ↔ Method:</strong> Formal models are analytical rather than empirical; N-size is less relevant.`});
+  } else {
+    checks.push({status:'warn',text:`<strong>N-Size ↔ Method:</strong> N = ${n} may be unusual for ${method}. Check the Methodology Matrix for typical ranges and justify your choice.`});
+  }
+
+  // 3. N-size–Paradigm match
+  if(paradigm === 'pos' && n < 2){
+    checks.push({status:'warn',text:`<strong>N-Size ↔ Paradigm:</strong> Positivists can use N=1 (crucial case) but it's unusual. Make sure you have a strong case-selection rationale.`});
+  } else if((paradigm === 'int' || paradigm === 'crit') && n > 15){
+    checks.push({status:'warn',text:`<strong>N-Size ↔ Paradigm:</strong> N = ${n} is large for an interpretivist/critical study. Can you maintain depth and contextual richness at this scale?`});
+  } else {
+    checks.push({status:'pass',text:`<strong>N-Size ↔ Paradigm:</strong> Your N-size is consistent with your paradigm track's typical range.`});
+  }
+
+  // 4. RQ keyword check
+  const rqLower = rq.toLowerCase();
+  if(paradigm === 'pos' && (rqLower.includes('why') || rqLower.includes('what causes') || rqLower.includes('does') || rqLower.includes('effect'))){
+    checks.push({status:'pass',text:`<strong>Research Question:</strong> Your question uses causal/explanatory language consistent with a positivist framing.`});
+  } else if(paradigm === 'int' && (rqLower.includes('how') || rqLower.includes('meaning') || rqLower.includes('understand') || rqLower.includes('experience') || rqLower.includes('interpret') || rqLower.includes('narrative'))){
+    checks.push({status:'pass',text:`<strong>Research Question:</strong> Your question uses interpretive/process language consistent with your track.`});
+  } else if(paradigm === 'crit' && (rqLower.includes('how') || rqLower.includes('construct') || rqLower.includes('discourse') || rqLower.includes('power') || rqLower.includes('reproduce') || rqLower.includes('silence') || rqLower.includes('legitimise') || rqLower.includes('challenge'))){
+    checks.push({status:'pass',text:`<strong>Research Question:</strong> Your question uses critical/deconstructive language consistent with your track.`});
+  } else if(rq.length > 10) {
+    checks.push({status:'warn',text:`<strong>Research Question:</strong> The wording of your question may not fully align with your paradigm's typical framing. Consider whether the language reflects your epistemological commitments.`});
+  }
+
+  // 5. Case description check
+  if(cases.length > 10){
+    checks.push({status:'pass',text:`<strong>Cases:</strong> You've described your case(s). Make sure you can justify <em>why these</em> and not others (case-selection logic).`});
+  } else {
+    checks.push({status:'warn',text:`<strong>Cases:</strong> Please describe your case(s) so you can check whether your selection logic is sound.`});
+  }
+
+  // Render
+  let html = '<div class="card green"><h3>Alignment Check Results</h3>';
+  checks.forEach(c=>{
+    const icon = c.status==='pass'?'✓':c.status==='warn'?'⚠':'✗';
+    const cls = c.status==='pass'?'check-pass':c.status==='warn'?'check-warn':'check-fail';
+    html += `<div class="check-item"><div class="check-icon ${cls}">${icon}</div><div>${c.text}</div></div>`;
+  });
+
+  // Overall
+  const fails = checks.filter(c=>c.status==='fail').length;
+  const warns = checks.filter(c=>c.status==='warn').length;
+  if(fails > 0){
+    html += `<div style="margin-top:14px;padding:12px;background:#fee2e2;border-radius:8px;"><strong>⚠ Potential fatal flaw detected.</strong> You have at least one serious mismatch. Discuss with your lecturer before finalising your research design.</div>`;
+  } else if(warns > 1){
+    html += `<div style="margin-top:14px;padding:12px;background:#fef3c7;border-radius:8px;"><strong>Proceed with caution.</strong> Multiple items need justification. Strengthen your rationale in the research design document.</div>`;
+  } else {
+    html += `<div style="margin-top:14px;padding:12px;background:#d1fae5;border-radius:8px;"><strong>Looking good!</strong> Your design elements are broadly aligned. Refine the details in your research design assignment.</div>`;
+  }
+  html += '</div>';
+
+  document.getElementById('alignmentResults').innerHTML = html;
+  saveDraft();
+}
+
+// ── Toast ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── Local storage ──
+function saveDraft(){
+  try{
+    const d = {
+      name:document.getElementById('myName').value,
+      rq:document.getElementById('myRQ').value,
+      paradigm:document.getElementById('myParadigm').value,
+      n:document.getElementById('myN').value,
+      method:document.getElementById('myMethod').value,
+      cases:document.getElementById('myCases').value,
+      data:document.getElementById('myData').value
+    };
+    localStorage.setItem('nSizeDesign',JSON.stringify(d));
+  }catch(e){}
+}
+function loadDraft(){
+  try{
+    const d=JSON.parse(localStorage.getItem('nSizeDesign'));
+    if(!d) return;
+    if(d.name) document.getElementById('myName').value=d.name;
+    if(d.rq) document.getElementById('myRQ').value=d.rq;
+    if(d.paradigm) document.getElementById('myParadigm').value=d.paradigm;
+    if(d.n) document.getElementById('myN').value=d.n;
+    if(d.method) document.getElementById('myMethod').value=d.method;
+    if(d.cases) document.getElementById('myCases').value=d.cases;
+    if(d.data) document.getElementById('myData').value=d.data;
+    toast('Previous draft loaded.');
+  }catch(e){}
+}
+loadDraft();
+setInterval(saveDraft,30000);
+</script>
+
+</body>
+</html>

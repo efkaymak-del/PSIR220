@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Paradigm Crisis: Confirm or Re-Spec</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
+
+/* Banner for JS-blocked environments */
+.js-warn{background:#fef3c7;color:#92400e;text-align:center;padding:14px;font-weight:600;display:none}
+noscript .js-warn{display:block}
+
+header{background:#fff;border-bottom:1px solid #e5e7eb;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:1.5rem;color:#0f3460}
+header .meta{font-size:.9rem;color:#888}
+.badge{display:inline-block;padding:3px 12px;border-radius:14px;font-size:.8rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
+
+main{max-width:860px;margin:0 auto;padding:24px 20px 100px}
+
+/* Progress stepper */
+.stepper{display:flex;gap:0;margin-bottom:28px;overflow-x:auto}
+.step{flex:1;text-align:center;padding:10px 8px;font-size:.85rem;font-weight:600;background:#e5e7eb;color:#888;position:relative;min-width:100px;transition:.3s}
+.step:first-child{border-radius:8px 0 0 8px}
+.step:last-child{border-radius:0 8px 8px 0}
+.step.active{background:#0f3460;color:#fff}
+.step.done{background:#d1fae5;color:#065f46}
+
+/* Sections */
+.section{display:none;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:#fff;border-radius:12px;padding:24px 28px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:5px solid #0f3460}
+.card.pos{border-left-color:#2563eb}
+.card.int{border-left-color:#d97706}
+.card.crit{border-left-color:#db2777}
+.card.neutral{border-left-color:#6366f1}
+.card h3{font-size:1.15rem;margin-bottom:8px;color:#0f3460}
+.card p{font-size:1rem;line-height:1.7;margin-bottom:8px}
+
+label{display:block;font-weight:600;margin:12px 0 6px;font-size:.95rem;color:#16213e}
+input[type=text],textarea,select{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:1rem;font-family:inherit;transition:.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+textarea{resize:vertical;min-height:100px;line-height:1.6}
+
+/* Radio cards */
+.radio-group{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.radio-card{flex:1;min-width:200px;background:#fff;border:2px solid #e5e7eb;border-radius:10px;padding:16px;cursor:pointer;transition:.2s;position:relative}
+.radio-card:hover{border-color:#6366f1}
+.radio-card.selected{border-color:#0f3460;background:#f0f4ff}
+.radio-card input{position:absolute;opacity:0}
+.radio-card h4{font-size:1rem;margin-bottom:4px}
+.radio-card p{font-size:.9rem;color:#555;line-height:1.5}
+
+/* Likert */
+.likert{display:flex;gap:8px;margin:8px 0 16px;flex-wrap:wrap}
+.likert label{display:flex;align-items:center;gap:6px;font-weight:400;font-size:.95rem;cursor:pointer;padding:6px 14px;border:1px solid #d1d5db;border-radius:20px;transition:.2s}
+.likert label:hover{border-color:#6366f1}
+.likert input[type=radio]{width:auto;margin:0}
+.likert input[type=radio]:checked+span{font-weight:600}
+.likert label:has(input:checked){background:#e0e7ff;border-color:#6366f1}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+button{padding:10px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-1px)}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#d1fae5;color:#065f46}
+
+/* Results */
+.result-box{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #c7d2fe;border-radius:12px;padding:24px;margin:16px 0}
+.result-box h3{color:#3730a3;margin-bottom:8px}
+.score-bar{height:12px;border-radius:6px;background:#e5e7eb;margin:6px 0;overflow:hidden}
+.score-fill{height:100%;border-radius:6px;transition:.5s}
+.score-fill.pos{background:#2563eb}
+.score-fill.int{background:#d97706}
+.score-fill.crit{background:#db2777}
+
+/* Declaration */
+.declaration{background:#fff;border:3px solid #0f3460;border-radius:14px;padding:28px;margin:20px 0;text-align:center}
+.declaration h2{color:#0f3460;font-size:1.6rem;margin-bottom:12px}
+.declaration .choice{font-size:1.3rem;font-weight:700;margin:12px 0}
+.declaration .choice.confirm{color:#065f46}
+.declaration .choice.respec{color:#9d174d}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:12px 28px;border-radius:10px;font-weight:600;opacity:0;transition:.4s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Print */
+@media print{
+  header,.stepper,.btn-row,.toast,.js-warn{display:none!important}
+  .section{display:block!important;page-break-inside:avoid}
+  body{background:#fff}
+  .card{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+
+<noscript><div class="js-warn">This app requires JavaScript. If you're viewing inside Teams or SharePoint, download the file and open it in Chrome, Firefox, or Edge.</div></noscript>
+
+<header>
+  <div>
+    <h1>Paradigm Crisis: Confirm or Re-Spec</h1>
+    <p style="font-size:.9rem;color:#666;margin-top:4px;">PSIR220 · Week 6 Session 2 · Re-Spec window closes end of Week 7</p>
+  </div>
+  <div class="meta">
+    <span class="badge badge-pos">Strategist</span>
+    <span class="badge badge-int">Storyteller</span>
+    <span class="badge badge-crit">Disruptor</span>
+  </div>
+</header>
+
+<main>
+
+<!-- Stepper -->
+<div class="stepper">
+  <div class="step active" id="st1">1. Identity</div>
+  <div class="step" id="st2">2. Reflect</div>
+  <div class="step" id="st3">3. Diagnose</div>
+  <div class="step" id="st4">4. Stress-Test</div>
+  <div class="step" id="st5">5. Declare</div>
+  <div class="step" id="st6">6. Export</div>
+</div>
+
+<!-- ===== SECTION 1: IDENTITY ===== -->
+<div class="section active" id="sec1">
+  <div class="card neutral">
+    <h3>Who Are You in This Quest?</h3>
+    <p>Before we test your paradigm, let's record where you started.</p>
+  </div>
+
+  <label for="studentName">Your Name</label>
+  <input type="text" id="studentName" placeholder="e.g. Aysel Rahmanova">
+
+  <label for="studentID">Student ID</label>
+  <input type="text" id="studentID" placeholder="e.g. 23700762">
+
+  <label for="rq">Your Current Research Question</label>
+  <textarea id="rq" placeholder="Paste your research question from Assignment 1…"></textarea>
+
+  <label>Your Current Paradigm Track</label>
+  <div class="radio-group" id="currentTrack">
+    <label class="radio-card" onclick="selectRadio(this,'currentTrack')">
+      <input type="radio" name="currentTrack" value="Positivist">
+      <h4><span class="badge badge-pos">Strategist</span> Positivist</h4>
+      <p>Observable causes, testable hypotheses, generalisable patterns.</p>
+    </label>
+    <label class="radio-card" onclick="selectRadio(this,'currentTrack')">
+      <input type="radio" name="currentTrack" value="Interpretivist">
+      <h4><span class="badge badge-int">Storyteller</span> Interpretivist</h4>
+      <p>Meaning, context, identity, how actors understand their world.</p>
+    </label>
+    <label class="radio-card" onclick="selectRadio(this,'currentTrack')">
+      <input type="radio" name="currentTrack" value="Critical">
+      <h4><span class="badge badge-crit">Disruptor</span> Critical / Postmodern</h4>
+      <p>Power structures, silenced voices, discourse, emancipation.</p>
+    </label>
+  </div>
+
+  <label for="whyChose">Why did you originally choose this track? (2–3 sentences)</label>
+  <textarea id="whyChose" rows="3" placeholder="What drew you to this paradigm when you started the course?"></textarea>
+
+  <div class="btn-row">
+    <button class="btn-primary" onclick="goTo(2)">Continue →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: REFLECT ===== -->
+<div class="section" id="sec2">
+  <div class="card neutral">
+    <h3>Honest Reflection</h3>
+    <p>Think about your experience so far — the annotated bibliography, the literature map, and the causal engine exercise. Answer honestly; there are no wrong answers.</p>
+  </div>
+
+  <label>When reading your sources, which type of argument felt most <em>natural</em> to understand?</label>
+  <div class="likert" id="q1">
+    <label><input type="radio" name="q1" value="pos"><span>Causal / statistical</span></label>
+    <label><input type="radio" name="q1" value="int"><span>Narrative / contextual</span></label>
+    <label><input type="radio" name="q1" value="crit"><span>Power-critical / deconstructive</span></label>
+    <label><input type="radio" name="q1" value="unsure"><span>Honestly not sure</span></label>
+  </div>
+
+  <label>When you mapped your causal engine (X → Mechanism → Y), which description best fits what you wrote?</label>
+  <div class="likert" id="q2">
+    <label><input type="radio" name="q2" value="pos"><span>A testable cause-effect chain with measurable variables</span></label>
+    <label><input type="radio" name="q2" value="int"><span>A process of meaning-making, identity formation, or socialisation</span></label>
+    <label><input type="radio" name="q2" value="crit"><span>A description of how power/discourse produces the outcome</span></label>
+    <label><input type="radio" name="q2" value="unsure"><span>I struggled to articulate one clearly</span></label>
+  </div>
+
+  <label>Which rival school did you find hardest to dismiss?</label>
+  <div class="likert" id="q3">
+    <label><input type="radio" name="q3" value="pos"><span>Positivist / Strategist</span></label>
+    <label><input type="radio" name="q3" value="int"><span>Interpretivist / Storyteller</span></label>
+    <label><input type="radio" name="q3" value="crit"><span>Critical / Disruptor</span></label>
+    <label><input type="radio" name="q3" value="none"><span>None — I'm confident in mine</span></label>
+  </div>
+
+  <label for="discomfort">Was there a moment during the bibliography or literature mapping when your paradigm felt like a poor fit? Describe it briefly.</label>
+  <textarea id="discomfort" rows="3" placeholder="e.g. 'I kept wanting to interpret the speeches instead of counting variables…'"></textarea>
+
+  <label>How confident are you in your current paradigm track right now?</label>
+  <div class="likert" id="q4">
+    <label><input type="radio" name="q4" value="5"><span>Very confident</span></label>
+    <label><input type="radio" name="q4" value="4"><span>Fairly confident</span></label>
+    <label><input type="radio" name="q4" value="3"><span>Uncertain</span></label>
+    <label><input type="radio" name="q4" value="2"><span>Having doubts</span></label>
+    <label><input type="radio" name="q4" value="1"><span>Wrong track</span></label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-secondary" onclick="goTo(1)">← Back</button>
+    <button class="btn-primary" onclick="goTo(3)">Continue →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: DIAGNOSE ===== -->
+<div class="section" id="sec3">
+  <div class="card neutral">
+    <h3>Paradigm Alignment Diagnostic</h3>
+    <p>For each statement, rate how strongly it matches <em>your actual research practice so far</em> — not what you think you <em>should</em> answer.</p>
+  </div>
+
+  <div id="diagnosticQuestions"></div>
+
+  <div class="btn-row">
+    <button class="btn-secondary" onclick="goTo(2)">← Back</button>
+    <button class="btn-primary" onclick="scoreDiagnostic()">See Results →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 4: STRESS TEST ===== -->
+<div class="section" id="sec4">
+  <div class="card neutral">
+    <h3>Your Diagnostic Results</h3>
+    <p>Here's where your actual research practice lands across the three paradigms.</p>
+  </div>
+
+  <div class="result-box" id="resultsBox"></div>
+
+  <div class="card neutral" style="margin-top:16px;">
+    <h3>Stress-Test: Three Hard Questions</h3>
+    <p>Before you decide, wrestle with these.</p>
+  </div>
+
+  <label for="st_q1">1. If your highest-scoring paradigm is different from your current track, what would change in your research question and sources if you switched?</label>
+  <textarea id="st_q1" rows="3" placeholder="Think practically — would your sources still work? Would your question need rewording?"></textarea>
+
+  <label for="st_q2">2. What would you <em>lose</em> by staying in your current track? What would you lose by switching?</label>
+  <textarea id="st_q2" rows="3" placeholder="Consider: time already invested, sources gathered, comfort with methods…"></textarea>
+
+  <label for="st_q3">3. When you imagine writing the literature review and research design, which paradigm makes the argument feel most <em>honest</em>?</label>
+  <textarea id="st_q3" rows="3" placeholder="Not easiest — most honest to what you actually want to argue."></textarea>
+
+  <div class="btn-row">
+    <button class="btn-secondary" onclick="goTo(3)">← Back</button>
+    <button class="btn-primary" onclick="goTo(5)">Make Your Declaration →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 5: DECLARE ===== -->
+<div class="section" id="sec5">
+  <div class="card neutral">
+    <h3>The Moment of Truth</h3>
+    <p>Based on your reflection, diagnostic, and stress-test — make your call. This is binding until the end of the course (unless you consult your lecturer).</p>
+  </div>
+
+  <label>I choose to:</label>
+  <div class="radio-group" id="decisionGroup">
+    <label class="radio-card" onclick="selectRadio(this,'decisionGroup')">
+      <input type="radio" name="decision" value="confirm">
+      <h4 style="color:#065f46;">✓ CONFIRM</h4>
+      <p>I'm staying with my current paradigm track. My reflection has strengthened my commitment.</p>
+    </label>
+    <label class="radio-card" onclick="selectRadio(this,'decisionGroup')">
+      <input type="radio" name="decision" value="respec">
+      <h4 style="color:#9d174d;">↻ RE-SPEC</h4>
+      <p>I'm switching to a different paradigm track. I'll adjust my research question and sources accordingly.</p>
+    </label>
+  </div>
+
+  <div id="respecFields" style="display:none;">
+    <label>New Paradigm Track</label>
+    <div class="radio-group" id="newTrack">
+      <label class="radio-card" onclick="selectRadio(this,'newTrack')">
+        <input type="radio" name="newTrack" value="Positivist">
+        <h4><span class="badge badge-pos">Strategist</span></h4>
+      </label>
+      <label class="radio-card" onclick="selectRadio(this,'newTrack')">
+        <input type="radio" name="newTrack" value="Interpretivist">
+        <h4><span class="badge badge-int">Storyteller</span></h4>
+      </label>
+      <label class="radio-card" onclick="selectRadio(this,'newTrack')">
+        <input type="radio" name="newTrack" value="Critical">
+        <h4><span class="badge badge-crit">Disruptor</span></h4>
+      </label>
+    </div>
+
+    <label for="newRQ">Revised Research Question (first attempt — you'll refine it)</label>
+    <textarea id="newRQ" rows="3" placeholder="How does your question change under the new paradigm?"></textarea>
+
+    <label for="respecReason">Why are you switching? (3–4 sentences)</label>
+    <textarea id="respecReason" rows="3" placeholder="What did the diagnostic and reflection reveal?"></textarea>
+  </div>
+
+  <div id="confirmFields" style="display:none;">
+    <label for="confirmReason">What did this reflection confirm for you? (3–4 sentences)</label>
+    <textarea id="confirmReason" rows="3" placeholder="Articulate why your paradigm is the right fit for your question."></textarea>
+  </div>
+
+  <label for="signoff">Type your full name below as a digital signature</label>
+  <input type="text" id="signoff" placeholder="e.g. Aysel Rahmanova">
+
+  <div class="btn-row">
+    <button class="btn-secondary" onclick="goTo(4)">← Back</button>
+    <button class="btn-success" onclick="finalise()">Finalise Declaration →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 6: EXPORT ===== -->
+<div class="section" id="sec6">
+  <div id="declarationDisplay"></div>
+
+  <div class="btn-row" style="justify-content:center;margin-top:20px;">
+    <button class="btn-primary" onclick="exportTxt()">Download .txt</button>
+    <button class="btn-secondary" onclick="exportHTML()">Download .htm</button>
+    <button class="btn-secondary" onclick="window.print()">Print / PDF</button>
+  </div>
+
+  <div class="card neutral" style="margin-top:20px;text-align:center;">
+    <p><strong>Submit this declaration via Teams</strong> so your lecturer has a record.<br>Re-Spec window closes at the end of <strong>Week 7</strong>.</p>
+  </div>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Diagnostic questions ──
+const dqs = [
+  {t:"I look for patterns that can be measured and compared across cases.",p:"pos"},
+  {t:"I believe the best evidence is numerical data or systematic case comparison.",p:"pos"},
+  {t:"My research question asks 'why' or 'what causes' in a way that implies testable variables.",p:"pos"},
+  {t:"I think a good theory should predict outcomes in cases we haven't studied yet.",p:"pos"},
+  {t:"I'm drawn to understanding how people interpret events and construct meaning.",p:"int"},
+  {t:"I think context matters so much that generalisations across cases are risky.",p:"int"},
+  {t:"My research relies on close reading of texts, speeches, or historical narratives.",p:"int"},
+  {t:"I believe the researcher's own positionality shapes what they can 'see' in the data.",p:"int"},
+  {t:"I'm interested in exposing hidden power structures or dominant discourses.",p:"crit"},
+  {t:"I think mainstream IR theories often serve the interests of powerful states.",p:"crit"},
+  {t:"My research question challenges taken-for-granted categories (e.g. 'security', 'development').",p:"crit"},
+  {t:"I believe research should aim to emancipate or give voice to marginalised groups.",p:"crit"}
+];
+
+// Render diagnostic
+const dqDiv = document.getElementById('diagnosticQuestions');
+dqs.forEach((q,i) => {
+  dqDiv.innerHTML += `
+    <div class="card" style="border-left-color:${q.p==='pos'?'#2563eb':q.p==='int'?'#d97706':'#db2777'}; padding:16px 20px;">
+      <p style="margin-bottom:8px;">${q.t}</p>
+      <div class="likert" id="dq${i}">
+        <label><input type="radio" name="dq${i}" value="1"><span>Not me at all</span></label>
+        <label><input type="radio" name="dq${i}" value="2"><span>A little</span></label>
+        <label><input type="radio" name="dq${i}" value="3"><span>Somewhat</span></label>
+        <label><input type="radio" name="dq${i}" value="4"><span>Quite a bit</span></label>
+        <label><input type="radio" name="dq${i}" value="5"><span>Strongly me</span></label>
+      </div>
+    </div>`;
+});
+
+// ── Navigation ──
+let currentSec = 1;
+function goTo(n) {
+  document.getElementById('sec'+currentSec).classList.remove('active');
+  document.getElementById('st'+currentSec).classList.remove('active');
+  document.getElementById('st'+currentSec).classList.add('done');
+  currentSec = n;
+  document.getElementById('sec'+n).classList.add('active');
+  document.getElementById('st'+n).classList.add('active');
+  document.getElementById('st'+n).classList.remove('done');
+  window.scrollTo({top:0,behavior:'smooth'});
+  saveDraft();
+}
+
+// ── Radio card selection ──
+function selectRadio(el, groupId) {
+  document.querySelectorAll('#'+groupId+' .radio-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+
+  // Show/hide confirm vs respec fields
+  if(groupId === 'decisionGroup'){
+    const val = el.querySelector('input').value;
+    document.getElementById('respecFields').style.display = val==='respec'?'block':'none';
+    document.getElementById('confirmFields').style.display = val==='confirm'?'block':'none';
+  }
+}
+
+// ── Scoring ──
+let scores = {pos:0,int:0,crit:0};
+function scoreDiagnostic(){
+  scores = {pos:0,int:0,crit:0};
+  let answered = 0;
+  dqs.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name="dq${i}"]:checked`);
+    if(sel){ scores[q.p] += parseInt(sel.value); answered++; }
+  });
+  if(answered < 8){
+    toast('Please answer at least 8 of the 12 statements.');
+    return;
+  }
+  const max = 20;
+  const pP = Math.round(scores.pos/max*100);
+  const pI = Math.round(scores.int/max*100);
+  const pC = Math.round(scores.crit/max*100);
+
+  const highest = pP>=pI && pP>=pC ? 'Positivist (Strategist)' : pI>=pC ? 'Interpretivist (Storyteller)' : 'Critical (Disruptor)';
+  const currentTrackVal = getRadio('currentTrack');
+  const match = highest.toLowerCase().includes(currentTrackVal.toLowerCase());
+
+  let html = `
+    <h3>Paradigm Alignment Scores</h3>
+    <p style="margin:8px 0;"><strong>Positivist / Strategist: ${scores.pos}/20 (${pP}%)</strong></p>
+    <div class="score-bar"><div class="score-fill pos" style="width:${pP}%"></div></div>
+    <p style="margin:8px 0;"><strong>Interpretivist / Storyteller: ${scores.int}/20 (${pI}%)</strong></p>
+    <div class="score-bar"><div class="score-fill int" style="width:${pI}%"></div></div>
+    <p style="margin:8px 0;"><strong>Critical / Disruptor: ${scores.crit}/20 (${pC}%)</strong></p>
+    <div class="score-bar"><div class="score-fill crit" style="width:${pC}%"></div></div>
+    <div style="margin-top:16px;padding:14px;border-radius:8px;background:${match?'#d1fae5':'#fef3c7'};">
+      <p><strong>Your strongest alignment:</strong> ${highest}</p>
+      <p><strong>Your current track:</strong> ${currentTrackVal || '(not selected)'}</p>
+      <p style="margin-top:6px;">${match
+        ? '✓ <strong>Match.</strong> Your practice aligns with your declared track. The stress-test below will help you confirm this with confidence.'
+        : '⚠ <strong>Mismatch detected.</strong> Your actual research practice leans toward a different paradigm than you declared. This doesn\'t mean you must switch — but it\'s worth taking the stress-test seriously.'
+      }</p>
+    </div>
+    <p style="margin-top:12px;font-size:.9rem;color:#666;">Note: These scores reflect your <em>reported practice</em>, not your intelligence or ability. All paradigms are equally valid.</p>`;
+
+  document.getElementById('resultsBox').innerHTML = html;
+  goTo(4);
+}
+
+// ── Helpers ──
+function getRadio(name){
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
+function getVal(id){ return document.getElementById(id).value.trim(); }
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── Finalise ──
+function finalise(){
+  const decision = getRadio('decision');
+  if(!decision){ toast('Please choose Confirm or Re-Spec.'); return; }
+  if(!getVal('signoff')){ toast('Please type your name as a digital signature.'); return; }
+
+  const data = gatherAll();
+  const isRespec = decision === 'respec';
+
+  let html = `<div class="declaration">
+    <h2>PARADIGM DECLARATION</h2>
+    <p>PSIR220 – The Research Quest · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+    <p style="margin-top:12px;"><strong>${data.name}</strong> · ${data.id}</p>
+    <p class="choice ${isRespec?'respec':'confirm'}">${isRespec ? '↻ RE-SPEC' : '✓ CONFIRMED'}</p>
+    <p><strong>Original Track:</strong> ${data.currentTrack}</p>
+    ${isRespec ? `<p><strong>New Track:</strong> ${data.newTrack}</p>` : ''}
+    <p style="margin-top:8px;"><strong>Research Question:</strong> ${isRespec ? data.newRQ || data.rq : data.rq}</p>
+    <p style="margin-top:12px;font-style:italic;">"${isRespec ? data.respecReason : data.confirmReason}"</p>
+    <p style="margin-top:16px;font-weight:600;">Signed: ${data.signoff}</p>
+  </div>`;
+
+  // Diagnostic summary
+  html += `<div class="card neutral">
+    <h3>Diagnostic Summary</h3>
+    <p>Positivist: ${scores.pos}/20 · Interpretivist: ${scores.int}/20 · Critical: ${scores.crit}/20</p>
+  </div>`;
+
+  // Reflection summary
+  html += `<div class="card neutral">
+    <h3>Reflection Notes</h3>
+    <p><strong>Why originally chose track:</strong> ${data.whyChose}</p>
+    <p><strong>Moment of discomfort:</strong> ${data.discomfort}</p>
+    <p><strong>Stress-test responses:</strong></p>
+    <p>1. ${data.st_q1}</p>
+    <p>2. ${data.st_q2}</p>
+    <p>3. ${data.st_q3}</p>
+  </div>`;
+
+  document.getElementById('declarationDisplay').innerHTML = html;
+  goTo(6);
+  toast('Declaration finalised! Export and submit via Teams.');
+}
+
+// ── Gather all data ──
+function gatherAll(){
+  return {
+    name: getVal('studentName'),
+    id: getVal('studentID'),
+    rq: getVal('rq'),
+    currentTrack: getRadio('currentTrack'),
+    whyChose: getVal('whyChose'),
+    q1: getRadio('q1'), q2: getRadio('q2'), q3: getRadio('q3'), q4: getRadio('q4'),
+    discomfort: getVal('discomfort'),
+    scores: {...scores},
+    st_q1: getVal('st_q1'), st_q2: getVal('st_q2'), st_q3: getVal('st_q3'),
+    decision: getRadio('decision'),
+    newTrack: getRadio('newTrack'),
+    newRQ: getVal('newRQ'),
+    respecReason: getVal('respecReason'),
+    confirmReason: getVal('confirmReason'),
+    signoff: getVal('signoff'),
+    date: new Date().toISOString()
+  };
+}
+
+// ── Export TXT ──
+function exportTxt(){
+  const d = gatherAll();
+  const isR = d.decision === 'respec';
+  let txt = `PARADIGM CRISIS DECLARATION — PSIR220\n`;
+  txt += `${'='.repeat(50)}\n`;
+  txt += `Date: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}\n`;
+  txt += `Student: ${d.name} (${d.id})\n\n`;
+  txt += `DECISION: ${isR ? 'RE-SPEC' : 'CONFIRMED'}\n`;
+  txt += `Original Track: ${d.currentTrack}\n`;
+  if(isR) txt += `New Track: ${d.newTrack}\n`;
+  txt += `\nResearch Question: ${isR && d.newRQ ? d.newRQ : d.rq}\n`;
+  txt += `\n${'─'.repeat(50)}\n`;
+  txt += `DIAGNOSTIC SCORES\n`;
+  txt += `Positivist: ${d.scores.pos}/20\n`;
+  txt += `Interpretivist: ${d.scores.int}/20\n`;
+  txt += `Critical: ${d.scores.crit}/20\n`;
+  txt += `\n${'─'.repeat(50)}\n`;
+  txt += `REFLECTION\n\n`;
+  txt += `Why I originally chose this track:\n${d.whyChose}\n\n`;
+  txt += `Moment of discomfort:\n${d.discomfort}\n\n`;
+  txt += `Confidence level: ${d.q4}/5\n\n`;
+  txt += `${'─'.repeat(50)}\n`;
+  txt += `STRESS-TEST RESPONSES\n\n`;
+  txt += `1. What would change if I switched?\n${d.st_q1}\n\n`;
+  txt += `2. What would I lose?\n${d.st_q2}\n\n`;
+  txt += `3. Which paradigm feels most honest?\n${d.st_q3}\n\n`;
+  txt += `${'─'.repeat(50)}\n`;
+  txt += `RATIONALE\n${isR ? d.respecReason : d.confirmReason}\n\n`;
+  txt += `Signed: ${d.signoff}\n`;
+
+  download(txt, `ParadigmDeclaration_${d.name.replace(/\s/g,'_')}.txt`, 'text/plain');
+}
+
+// ── Export HTM ──
+function exportHTML(){
+  const content = document.getElementById('declarationDisplay').innerHTML;
+  const d = gatherAll();
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Paradigm Declaration – ${d.name}</title>
+<style>body{font-family:'Segoe UI',sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e;background:#fff}
+.declaration{border:3px solid #0f3460;border-radius:14px;padding:28px;text-align:center;margin:20px 0}
+.declaration h2{color:#0f3460}.choice{font-size:1.3rem;font-weight:700;margin:12px 0}
+.choice.confirm{color:#065f46}.choice.respec{color:#9d174d}
+.card{background:#f9fafb;border-radius:10px;padding:20px;margin:16px 0;border-left:4px solid #6366f1}
+h3{color:#0f3460;margin-bottom:8px}p{line-height:1.7;margin-bottom:6px}</style></head>
+<body>${content}</body></html>`;
+  download(html, `ParadigmDeclaration_${d.name.replace(/\s/g,'_')}.htm`, 'text/html');
+}
+
+function download(content, filename, type){
+  const blob = new Blob([content],{type:type+';charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── Local Storage ──
+function saveDraft(){
+  try{ localStorage.setItem('paradigmCrisis', JSON.stringify(gatherAll())); } catch(e){}
+}
+function loadDraft(){
+  try{
+    const d = JSON.parse(localStorage.getItem('paradigmCrisis'));
+    if(!d) return;
+    if(d.name) document.getElementById('studentName').value = d.name;
+    if(d.id) document.getElementById('studentID').value = d.id;
+    if(d.rq) document.getElementById('rq').value = d.rq;
+    if(d.whyChose) document.getElementById('whyChose').value = d.whyChose;
+    if(d.discomfort) document.getElementById('discomfort').value = d.discomfort;
+    if(d.st_q1) document.getElementById('st_q1').value = d.st_q1;
+    if(d.st_q2) document.getElementById('st_q2').value = d.st_q2;
+    if(d.st_q3) document.getElementById('st_q3').value = d.st_q3;
+    if(d.confirmReason) document.getElementById('confirmReason').value = d.confirmReason;
+    if(d.respecReason) document.getElementById('respecReason').value = d.respecReason;
+    if(d.newRQ) document.getElementById('newRQ').value = d.newRQ;
+    if(d.signoff) document.getElementById('signoff').value = d.signoff;
+    toast('Previous draft loaded.');
+  }catch(e){}
+}
+loadDraft();
+
+// Auto-save every 30s
+setInterval(saveDraft, 30000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annotated Bibliography Builder — Core Quest 1</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .js-warning {
+    background: #fef2f2;
+    border-bottom: 2px solid #fca5a5;
+    padding: 1.2rem 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #991b1b;
+    line-height: 1.6;
+  }
+  .js-warning strong { display: block; font-size: 1.05rem; margin-bottom: 0.3rem; }
+  .js-warning.hidden { display: none; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+
+  h1 {
+    text-align: center; font-size: 1.7rem; margin-bottom: 0.2rem;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { text-align: center; color: #64748b; font-size: 0.92rem; margin-bottom: 0.2rem; }
+  .due-date { text-align: center; color: #dc2626; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .points-badge {
+    text-align: center; margin-bottom: 1.8rem;
+  }
+  .points-badge span {
+    display: inline-block; background: #d1fae5; color: #065f46;
+    padding: 0.25rem 0.9rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700;
+  }
+
+  /* Tabs */
+  .main-tabs {
+    display: flex; gap: 0.2rem; margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0; flex-wrap: wrap;
+  }
+
+  .main-tab {
+    padding: 0.65rem 1.1rem; border: none; background: transparent;
+    color: #64748b; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all 0.2s; font-family: inherit;
+  }
+
+  .main-tab:hover { color: #1e293b; }
+  .main-tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: #fff; border-radius: 14px; padding: 1.5rem;
+    border: 2px solid #e2e8f0; margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .card-header {
+    display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;
+  }
+
+  .card-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+
+  .card-icon.blue { background: #dbeafe; color: #1d4ed8; }
+  .card-icon.purple { background: #ede9fe; color: #6d28d9; }
+  .card-icon.pink { background: #fce7f3; color: #be185d; }
+  .card-icon.green { background: #d1fae5; color: #059669; }
+  .card-icon.amber { background: #fef3c7; color: #b45309; }
+  .card-icon.slate { background: #f1f5f9; color: #475569; }
+
+  .card-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
+  .card-subtitle { font-size: 0.78rem; color: #94a3b8; }
+
+  /* Form elements */
+  .field { margin-bottom: 1rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field-label {
+    display: block; font-size: 0.8rem; font-weight: 600;
+    color: #475569; margin-bottom: 0.35rem;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .field-hint { font-size: 0.78rem; color: #94a3b8; margin-bottom: 0.35rem; font-style: italic; }
+
+  input[type="text"], textarea, select {
+    width: 100%; padding: 0.65rem 0.9rem;
+    border-radius: 10px; border: 2px solid #e2e8f0;
+    background: #f8fafc; color: #1e293b;
+    font-size: 0.88rem; font-family: inherit; outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus { border-color: #2563eb; background: #fff; }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+  /* Paradigm pills */
+  .paradigm-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .paradigm-pill {
+    padding: 0.45rem 1rem; border-radius: 999px;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.82rem; font-weight: 600; color: #64748b;
+  }
+
+  .paradigm-pill:hover { border-color: #94a3b8; }
+  .paradigm-pill.sel-positivist { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+  .paradigm-pill.sel-interpretivist { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; }
+  .paradigm-pill.sel-critical { border-color: #db2777; background: #fdf2f8; color: #be185d; }
+
+  /* Source type tags */
+  .type-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .type-pill {
+    padding: 0.35rem 0.8rem; border-radius: 999px;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.78rem; font-weight: 600; color: #64748b;
+  }
+
+  .type-pill:hover { border-color: #94a3b8; }
+  .type-pill.selected { border-color: #0f766e; background: #f0fdfa; color: #0f766e; }
+
+  /* Balance tracker */
+  .tracker-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+  }
+
+  .tracker-box {
+    background: #f8fafc; border-radius: 10px; padding: 0.8rem 1rem;
+    border: 1px solid #e2e8f0; text-align: center;
+  }
+
+  .tracker-number { font-size: 1.6rem; font-weight: 700; }
+  .tracker-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tracker-number.blue { color: #2563eb; }
+  .tracker-number.green { color: #16a34a; }
+  .tracker-number.amber { color: #d97706; }
+  .tracker-number.red { color: #dc2626; }
+
+  /* Requirements checklist */
+  .req-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.45rem 0; font-size: 0.85rem; color: #64748b;
+  }
+
+  .req-dot {
+    width: 20px; height: 20px; border-radius: 6px;
+    border: 2px solid #e2e8f0; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-size: 0.65rem;
+    transition: all 0.3s;
+  }
+
+  .req-dot.done { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .req-item.done-item { color: #1e293b; font-weight: 500; }
+
+  /* Source list items */
+  .source-item {
+    background: #fff; border-radius: 12px; padding: 1rem 1.2rem;
+    border: 2px solid #e2e8f0; margin-bottom: 0.6rem;
+    display: flex; align-items: flex-start; gap: 0.8rem;
+    transition: all 0.2s; cursor: pointer;
+  }
+
+  .source-item:hover { border-color: #94a3b8; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+  .source-number {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: #f1f5f9; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.8rem;
+    color: #475569; flex-shrink: 0;
+  }
+
+  .source-info { flex: 1; min-width: 0; }
+  .source-cite { font-weight: 600; font-size: 0.88rem; color: #0f172a; line-height: 1.4; }
+  .source-tags { display: flex; gap: 0.3rem; margin-top: 0.3rem; flex-wrap: wrap; }
+
+  .mini-tag {
+    padding: 0.12rem 0.5rem; border-radius: 999px;
+    font-size: 0.68rem; font-weight: 600;
+  }
+
+  .mini-tag.peer { background: #d1fae5; color: #065f46; }
+  .mini-tag.non-peer { background: #fef3c7; color: #92400e; }
+  .mini-tag.dataset { background: #dbeafe; color: #1d4ed8; }
+  .mini-tag.primary { background: #ede9fe; color: #6d28d9; }
+  .mini-tag.foundation { background: #fce7f3; color: #be185d; }
+  .mini-tag.complete { background: #d1fae5; color: #065f46; }
+  .mini-tag.incomplete { background: #fef2f2; color: #dc2626; }
+
+  .source-actions { display: flex; gap: 0.3rem; flex-shrink: 0; }
+
+  .source-btn {
+    width: 30px; height: 30px; border-radius: 8px;
+    border: 1px solid #e2e8f0; background: #f8fafc;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 0.8rem; color: #64748b;
+    transition: all 0.2s;
+  }
+
+  .source-btn:hover { background: #e2e8f0; }
+  .source-btn.delete:hover { background: #fef2f2; color: #dc2626; border-color: #fca5a5; }
+
+  /* Suggestion cards */
+  .sug-card {
+    background: #fffbeb; border: 2px solid #fde68a;
+    border-radius: 12px; padding: 1rem 1.2rem;
+    margin-bottom: 0.6rem; cursor: pointer; transition: all 0.2s;
+  }
+
+  .sug-card:hover { border-color: #f59e0b; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+  .sug-name { font-weight: 700; font-size: 0.9rem; color: #92400e; }
+  .sug-work { font-size: 0.82rem; color: #b45309; font-style: italic; }
+  .sug-arg { font-size: 0.8rem; color: #78716c; margin-top: 0.3rem; line-height: 1.4; }
+  .sug-add { font-size: 0.78rem; color: #d97706; font-weight: 600; margin-top: 0.4rem; }
+
+  /* Debate map columns */
+  .debate-columns {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.8rem; margin-bottom: 1rem;
+  }
+
+  .debate-col {
+    background: #fff; border-radius: 12px; padding: 0.8rem;
+    border: 2px solid #e2e8f0; min-height: 100px;
+  }
+
+  .debate-col h4 {
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem; border-bottom: 2px solid #e2e8f0;
+  }
+
+  .debate-col.pos-col h4 { color: #1d4ed8; border-color: #bfdbfe; }
+  .debate-col.int-col h4 { color: #6d28d9; border-color: #ddd6fe; }
+  .debate-col.cri-col h4 { color: #be185d; border-color: #fbcfe8; }
+
+  .debate-source { padding: 0.35rem 0; font-size: 0.8rem; color: #334155; border-bottom: 1px solid #f1f5f9; }
+  .debate-source:last-child { border-bottom: none; }
+  .debate-empty { font-size: 0.8rem; color: #cbd5e1; font-style: italic; padding: 0.5rem 0; }
+
+  /* Alerts */
+  .alert {
+    padding: 0.7rem 1rem; border-radius: 10px; font-size: 0.84rem;
+    margin-bottom: 0.8rem; line-height: 1.5;
+  }
+
+  .alert-amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+  .alert-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .alert-blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .alert-red { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+  /* Buttons */
+  .btn {
+    padding: 0.65rem 1.2rem; border-radius: 10px;
+    border: 2px solid #e2e8f0; background: #fff;
+    color: #475569; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+
+  .btn:hover { border-color: #94a3b8; background: #f1f5f9; }
+
+  .btn-primary { background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; border: none; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
+
+  .btn-success { background: #16a34a; color: #fff; border: none; }
+  .btn-success:hover { background: #15803d; transform: translateY(-1px); }
+
+  .btn-amber { background: #f59e0b; color: #fff; border: none; }
+  .btn-amber:hover { background: #d97706; transform: translateY(-1px); }
+
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+
+  hr.divider { border: none; border-top: 2px dashed #e2e8f0; margin: 1rem 0; }
+
+  .empty-state { text-align: center; padding: 2.5rem 1rem; color: #94a3b8; }
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #16a34a; color: #fff;
+    padding: 0.9rem 2rem; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem;
+    transition: transform 0.4s ease; z-index: 100;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.35); z-index: 200;
+    align-items: flex-start; justify-content: center; padding: 2rem 1rem;
+    overflow-y: auto;
+  }
+
+  .modal-overlay.visible { display: flex; }
+
+  .modal {
+    background: #fff; border-radius: 16px; padding: 1.8rem;
+    max-width: 720px; width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    margin: auto;
+  }
+
+  .modal h2 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+
+  /* Example toggle */
+  .example-toggle {
+    background: #f1f5f9; border-radius: 10px; padding: 0.7rem 1rem;
+    cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    color: #475569; border: 1px solid #e2e8f0; margin-bottom: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  .example-toggle:hover { background: #e2e8f0; }
+
+  .example-content {
+    display: none; background: #f8fafc; border-radius: 10px;
+    padding: 1rem 1.2rem; border: 1px solid #e2e8f0;
+    font-size: 0.84rem; line-height: 1.6; color: #475569;
+    margin-bottom: 1rem;
+  }
+
+  .example-content.visible { display: block; }
+  .example-content strong { color: #0f172a; }
+
+  @media (max-width: 700px) {
+    .debate-columns { grid-template-columns: 1fr; }
+    .tracker-grid { grid-template-columns: 1fr 1fr; }
+    .main-tab { padding: 0.5rem 0.7rem; font-size: 0.78rem; }
+  }
+
+  @media print {
+    .main-tabs, .btn-row, .js-warning, .toast, .modal-overlay,
+    .sug-card, .source-actions, .source-btn, .example-toggle,
+    .example-content, #tab-suggest, #tab-requirements { display: none !important; }
+    .tab-panel { display: block !important; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    body { padding: 0.5rem; background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<!-- JS Warning Banner -->
+<div class="js-warning" id="js-warning">
+  <strong>This app needs to run in a browser</strong>
+  If you're viewing this inside Teams, SharePoint, or OneDrive, the interactive features won't work.<br>
+  <strong>Fix:</strong> Download this file, then open it in Chrome, Firefox, or Edge.
+</div>
+
+<div class="container">
+  <h1>Annotated Bibliography Builder</h1>
+  <p class="subtitle">Core Quest 1 — IR / Political Science</p>
+  <p class="due-date">Due: March 25, 2026 · 11:59 PM</p>
+  <div class="points-badge"><span>+10 points · Completion of all fields required</span></div>
+
+  <!-- Tabs -->
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="showTab('setup')" data-tab="setup">Setup</button>
+    <button class="main-tab" onclick="showTab('requirements')" data-tab="requirements">Requirements</button>
+    <button class="main-tab" onclick="showTab('suggest')" data-tab="suggest">Suggestions</button>
+    <button class="main-tab" onclick="showTab('sources')" data-tab="sources">Sources</button>
+    <button class="main-tab" onclick="showTab('debate')" data-tab="debate">Debate Map</button>
+    <button class="main-tab" onclick="showTab('export')" data-tab="export">Export</button>
+  </div>
+
+  <!-- TAB: SETUP -->
+  <div class="tab-panel active" id="tab-setup">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon blue">1</div>
+        <div>
+          <div class="card-title">Your Research Setup</div>
+          <div class="card-subtitle">Refined from Assignment 1 — this drives suggestions and tracks requirements</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Your Name</label>
+        <input type="text" id="s-name" placeholder="e.g. Elif İmeci" oninput="saveState()">
+      </div>
+      <div class="field">
+        <label class="field-label">Research Question (refined version)</label>
+        <div class="field-hint">This should be your updated question from Assignment 1</div>
+        <textarea id="s-rq" style="min-height:55px" placeholder="e.g. Why do states fail to comply with international human rights treaties despite ratification?" oninput="saveState()"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Your Paradigm Track</label>
+        <div class="paradigm-pills" id="s-paradigm">
+          <span class="paradigm-pill" onclick="setSetup('paradigm','positivist',this)">Positivist · The Strategist</span>
+          <span class="paradigm-pill" onclick="setSetup('paradigm','interpretivist',this)">Interpretivist · The Storyteller</span>
+          <span class="paradigm-pill" onclick="setSetup('paradigm','critical',this)">Critical / Postmodern · The Critic</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Primary Subfield</label>
+        <select id="s-subfield" onchange="saveState()">
+          <option value="">Select...</option>
+          <option value="security">Security & Strategic Studies</option>
+          <option value="conflict">Conflict & Peace</option>
+          <option value="ipe">International Political Economy</option>
+          <option value="institutions">International Institutions & Law</option>
+          <option value="human-rights">Human Rights</option>
+          <option value="foreign-policy">Foreign Policy Analysis</option>
+          <option value="identity">Identity & Constructivism</option>
+          <option value="postcolonial">Postcolonial & Global South</option>
+          <option value="feminist">Gender & Feminist IR</option>
+          <option value="environment">Environment & Climate</option>
+          <option value="democratization">Democratization & Regimes</option>
+          <option value="european">European Politics & Integration</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Keywords (comma-separated)</label>
+        <div class="field-hint">Key concepts from your research question — helps the suggestion engine</div>
+        <input type="text" id="s-keywords" placeholder="e.g. compliance, norms, treaties, human rights" oninput="saveState()">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Citation Style</label>
+        <div class="paradigm-pills" id="s-citation-style">
+          <span class="paradigm-pill" onclick="setCitStyle('apa',this)" style="border-color:#0f766e;color:#0f766e" id="cite-apa">APA</span>
+          <span class="paradigm-pill" onclick="setCitStyle('chicago',this)">Chicago</span>
+        </div>
+        <div class="field-hint" style="margin-top:0.3rem">Pick one and stay consistent throughout</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateSuggestions(); showTab('suggest');">Get Scholar Suggestions →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: REQUIREMENTS -->
+  <div class="tab-panel" id="tab-requirements">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon green">✓</div>
+        <div>
+          <div class="card-title">Requirements Tracker</div>
+          <div class="card-subtitle">Live tracking based on your sources — green means met</div>
+        </div>
+      </div>
+
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.6rem;">All Tracks</p>
+      <div id="req-all"></div>
+
+      <hr class="divider">
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.6rem;" id="req-track-label">Track-Specific Requirements</p>
+      <div id="req-track"></div>
+
+      <hr class="divider">
+      <p style="font-weight:700; font-size:0.88rem; margin-bottom:0.6rem;">Submission</p>
+      <div id="req-submit"></div>
+    </div>
+  </div>
+
+  <!-- TAB: SUGGESTIONS -->
+  <div class="tab-panel" id="tab-suggest">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon amber">★</div>
+        <div>
+          <div class="card-title">Scholar Suggestions</div>
+          <div class="card-subtitle">Starting points based on your question — click to add</div>
+        </div>
+      </div>
+
+      <div class="alert alert-blue">These are seeds for your research, not a substitute for your own searching. You may use Google Scholar AI to find sources. <strong>You may not use AI to write your annotations.</strong></div>
+
+      <div id="suggestions-list">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <p>Fill in your Setup first, then come back here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: SOURCES -->
+  <div class="tab-panel" id="tab-sources">
+
+    <!-- Tracker -->
+    <div class="card" style="padding:1rem 1.2rem">
+      <div class="tracker-grid" id="tracker-grid">
+        <div class="tracker-box">
+          <div class="tracker-number" id="t-total">0</div>
+          <div class="tracker-label">Total Sources</div>
+        </div>
+        <div class="tracker-box">
+          <div class="tracker-number" id="t-peer">0</div>
+          <div class="tracker-label">Peer-Reviewed</div>
+        </div>
+        <div class="tracker-box">
+          <div class="tracker-number" id="t-nonpeer">0</div>
+          <div class="tracker-label">Non-Academic</div>
+        </div>
+        <div class="tracker-box">
+          <div class="tracker-number" id="t-complete">0</div>
+          <div class="tracker-label">Fully Annotated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source List -->
+    <div id="source-list"></div>
+
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-primary" onclick="openSourceModal(-1)">+ Add New Source</button>
+    </div>
+  </div>
+
+  <!-- TAB: DEBATE MAP -->
+  <div class="tab-panel" id="tab-debate">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon pink">⚔</div>
+        <div>
+          <div class="card-title">Debate Map</div>
+          <div class="card-subtitle">How your sources talk to each other across schools of thought</div>
+        </div>
+      </div>
+
+      <div class="debate-columns" id="debate-columns"></div>
+
+      <div class="alert alert-amber">Use this view to check: Are you engaging with rival explanations? Can you see disagreements across paradigms? If one column is empty, you have a gap.</div>
+    </div>
+  </div>
+
+  <!-- TAB: EXPORT -->
+  <div class="tab-panel" id="tab-export">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon green">↓</div>
+        <div>
+          <div class="card-title">Export for Teams Submission</div>
+          <div class="card-subtitle">Download your annotated bibliography as a file</div>
+        </div>
+      </div>
+
+      <div id="export-status"></div>
+
+      <div class="field" style="margin-top:1rem">
+        <label class="field-label">AI Tool Disclosure</label>
+        <div class="field-hint">If you used AI tools to find sources, add one sentence explaining how. Required by course policy.</div>
+        <textarea id="ai-disclosure" style="min-height:50px" placeholder="e.g. I used Google Scholar AI to find initial sources on compliance theory. All annotations are my own work." oninput="saveState()"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveDraft()">Save Draft</button>
+        <button class="btn" onclick="loadDraft()">Load Draft</button>
+        <button class="btn btn-primary" onclick="exportHTML()">Export HTML</button>
+        <button class="btn btn-success" onclick="exportText()">Export Text</button>
+        <button class="btn btn-amber" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+
+    <!-- Example entries -->
+    <div class="card" style="margin-top:1rem">
+      <div class="card-header">
+        <div class="card-icon slate">?</div>
+        <div>
+          <div class="card-title">Example Entries</div>
+          <div class="card-subtitle">Click to see what a strong annotation looks like</div>
+        </div>
+      </div>
+
+      <div class="example-toggle" onclick="toggleExample('ex-pos')">Example A · Positivist — Populism in Italy vs Germany</div>
+      <div class="example-content" id="ex-pos">
+        <strong>CITATION:</strong><br>
+        Inglehart, R., & Norris, P. (2016). Trump, Brexit, and the rise of populism: Economic have-nots and cultural backlash. <em>Harvard Kennedy School Faculty Research Working Paper Series.</em><br><br>
+        <strong>WHAT IT SAYS:</strong><br>
+        Inglehart and Norris argue that the rise of populism in Western democracies is driven by two reinforcing factors: economic insecurity following the 2008 crisis and a cultural backlash among older, less educated voters against progressive social change. They draw on survey data from over 30 countries to test both explanations, finding that cultural backlash has stronger explanatory power than economic grievance alone.<br><br>
+        <strong>MY EVALUATION:</strong><br>
+        This is a highly cited, rigorous comparative study with strong data. The limitation for my question is that it treats Western democracies as a single category — it does not explain why Italy and Germany diverged so sharply. I will use it as a theoretical baseline but need country-specific sources to explain the variation.<br><br>
+        <strong>HOW IT CONNECTS:</strong><br>
+        This source gives me my two main independent variables — economic insecurity and cultural backlash — and a method for testing them using survey data. It directly challenges purely economic explanations for populism, which sets up the puzzle I am trying to solve. Connects with Mudde (2004) on my list who defines the populist ideology itself.
+      </div>
+
+      <div class="example-toggle" onclick="toggleExample('ex-int')">Example B · Interpretivist — Wars and Women's Rights</div>
+      <div class="example-content" id="ex-int">
+        <strong>CITATION:</strong><br>
+        Enloe, C. (2000). <em>Maneuvers: The international politics of militarizing women's lives.</em> University of California Press.<br><br>
+        <strong>WHAT IT SAYS:</strong><br>
+        Enloe examines how states and militaries deliberately shape and exploit women's roles during and after conflict. Using a feminist interpretive lens, she traces how mobilizing women for wartime labor or service creates expectations that can either expand rights or be reversed once the conflict ends. Her method is interpretive — she reads policy documents, propaganda, and personal testimonies as texts revealing gendered power structures.<br><br>
+        <strong>MY EVALUATION:</strong><br>
+        Essential for my interpretivist framework. Enloe does not use quantitative data, which means I cannot extract measurable variables from her work — but that is not her point and not my goal either. Her limitation is that she focuses heavily on Western and American cases, so I need to supplement with scholarship on the Global South.<br><br>
+        <strong>HOW IT CONNECTS:</strong><br>
+        Enloe gives me my interpretive framework — I will read post-war policy documents and public discourse in both my cases the way she reads them, looking for how gender roles are constructed and contested. She directly challenges liberal accounts that treat women's rights as automatic byproducts of democratization.
+      </div>
+
+      <div class="example-toggle" onclick="toggleExample('ex-cri')">Example C · Critical — Globalization and Human Mobility</div>
+      <div class="example-content" id="ex-cri">
+        <strong>CITATION:</strong><br>
+        Bauman, Z. (1998). <em>Globalization: The human consequences.</em> Columbia University Press.<br><br>
+        <strong>WHAT IT SAYS:</strong><br>
+        Bauman argues that globalization produces a profound stratification of mobility — the wealthy and capital move freely across borders while the poor are increasingly immobilized and surveilled. He introduces the concepts of "tourists" (those who move by choice) and "vagabonds" (those who move by necessity). His method is critical-theoretical, drawing on sociology, philosophy, and political economy.<br><br>
+        <strong>MY EVALUATION:</strong><br>
+        This is the theoretical backbone of my entire project. Written in 1998, so it predates the smartphone era and the algorithmic border control systems I want to examine. I will need to update his argument with more recent empirical work on biometric surveillance and visa regimes. Still foundational.<br><br>
+        <strong>HOW IT CONNECTS:</strong><br>
+        Bauman gives me the critical vocabulary — tourists vs vagabonds, liquid modernity, stratified mobility — that I will use to frame my analysis of contemporary border regimes.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Source Add/Edit Modal -->
+<div class="modal-overlay" id="source-modal" onclick="if(event.target===this)this.classList.remove('visible')">
+  <div class="modal">
+    <h2 id="modal-title">Add Source</h2>
+    <p style="color:#64748b; font-size:0.84rem; margin-bottom:1rem;">Use the three-field template: What It Says, My Evaluation, How It Connects. Rough sentences and notes are fine.</p>
+
+    <div class="field">
+      <label class="field-label">Citation</label>
+      <div class="field-hint">Full citation in APA or Chicago — be consistent</div>
+      <textarea id="m-citation" style="min-height:55px" placeholder='e.g. Simmons, B. A. (2009). Mobilizing for Human Rights: International Law in Domestic Politics. Cambridge University Press.'></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Source Type</label>
+      <div class="type-pills" id="m-type">
+        <span class="type-pill" onclick="setSourceType('peer-reviewed',this)">Peer-Reviewed</span>
+        <span class="type-pill" onclick="setSourceType('non-academic',this)">Non-Academic</span>
+        <span class="type-pill" onclick="setSourceType('dataset',this)">Dataset</span>
+        <span class="type-pill" onclick="setSourceType('primary-source',this)">Primary Source</span>
+        <span class="type-pill" onclick="setSourceType('foundational-text',this)">Foundational Text</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">School of Thought</label>
+      <div class="paradigm-pills" id="m-paradigm">
+        <span class="paradigm-pill" onclick="setModalParadigm('positivist',this)">Positivist</span>
+        <span class="paradigm-pill" onclick="setModalParadigm('interpretivist',this)">Interpretivist</span>
+        <span class="paradigm-pill" onclick="setModalParadigm('critical',this)">Critical</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label class="field-label">What It Says</label>
+      <div class="field-hint">3–4 sentences. What is the main argument or finding? What evidence or method does the author use?</div>
+      <textarea id="m-says" style="min-height:100px" placeholder="Summarize the author's main argument, the evidence they use, and their key findings..."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">My Evaluation</label>
+      <div class="field-hint">2–3 sentences. Is it credible? Relevant to your question? Any limitations — too old, too narrow, biased perspective?</div>
+      <textarea id="m-eval" style="min-height:90px" placeholder="Your honest assessment of the source's quality and relevance to your project..."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How It Connects</label>
+      <div class="field-hint">2–3 sentences. How does this help you answer your question? Does it agree or disagree with another source on your list? Where does it fit in your argument?</div>
+      <textarea id="m-connects" style="min-height:90px" placeholder="How this source fits into your project and relates to your other sources..."></textarea>
+    </div>
+
+    <div class="btn-row" style="justify-content:flex-end">
+      <button class="btn" onclick="document.getElementById('source-modal').classList.remove('visible')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSource()">Save Source</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Hide JS warning
+document.getElementById('js-warning').classList.add('hidden');
+
+// State
+let setup = { name:'', rq:'', paradigm:'', subfield:'', keywords:'', citStyle:'apa' };
+let sources = [];
+let editIdx = -1;
+let mParadigm = '';
+let mType = '';
+
+// Scholar DB (condensed)
+const DB = [
+  { name:"Kenneth Waltz", work:"Theory of International Politics (1979)", p:"positivist", sf:["security"], kw:["anarchy","structure","balance of power","realism","neorealism"], arg:"The anarchic structure of the international system drives states to balance power." },
+  { name:"John Mearsheimer", work:"The Tragedy of Great Power Politics (2001)", p:"positivist", sf:["security","conflict"], kw:["offensive realism","great powers","hegemony","competition","power"], arg:"Great powers are compelled to maximize power, making conflict inevitable." },
+  { name:"Robert Jervis", work:"Perception and Misperception in International Politics (1976)", p:"positivist", sf:["security","foreign-policy"], kw:["misperception","cognitive bias","security dilemma","crisis","decision-making"], arg:"Cognitive biases cause leaders to misperceive others' intentions, driving conflict." },
+  { name:"James Fearon", work:"Rationalist Explanations for War (1995)", p:"positivist", sf:["conflict"], kw:["bargaining","war","rationalist","commitment","information"], arg:"War results from private information, commitment problems, or issue indivisibility." },
+  { name:"Bruce Bueno de Mesquita", work:"The Logic of Political Survival (2003)", p:"positivist", sf:["conflict","democratization"], kw:["selectorate","winning coalition","regime","leader survival","public goods"], arg:"Leaders' survival depends on satisfying their winning coalition." },
+  { name:"Jack Levy", work:"The Diversionary Theory of War (1989)", p:"positivist", sf:["conflict","foreign-policy"], kw:["diversionary war","domestic politics","preventive war","public opinion"], arg:"Leaders may initiate external conflict to divert from domestic problems." },
+  { name:"Stephen Walt", work:"The Origins of Alliances (1987)", p:"positivist", sf:["security"], kw:["balance of threat","alliances","threat","realism","Middle East"], arg:"States balance against threats, not simply against power." },
+  { name:"Robert Keohane", work:"After Hegemony (1984)", p:"positivist", sf:["institutions","ipe"], kw:["institutions","cooperation","hegemony","regimes","liberal institutionalism"], arg:"Institutions enable cooperation even without a hegemon." },
+  { name:"Lisa Martin", work:"Democratic Commitments (2000)", p:"positivist", sf:["institutions"], kw:["democracy","treaties","credibility","legislatures","commitment"], arg:"Democratic states make more credible commitments due to legislative oversight." },
+  { name:"Beth Simmons", work:"Mobilizing for Human Rights (2009)", p:"positivist", sf:["human-rights","institutions"], kw:["human rights","treaties","compliance","mobilization","ratification","litigation"], arg:"Treaties improve rights by empowering domestic groups to mobilize." },
+  { name:"Andrew Moravcsik", work:"The Choice for Europe (1998)", p:"positivist", sf:["european","ipe"], kw:["European integration","intergovernmentalism","EU","bargaining"], arg:"EU integration is driven by domestic interests and intergovernmental bargaining." },
+  { name:"Helen Milner", work:"Interests, Institutions, and Information (1997)", p:"positivist", sf:["ipe","institutions"], kw:["domestic politics","cooperation","information","legislatures"], arg:"Domestic politics is the main obstacle to international cooperation." },
+  { name:"Robert Gilpin", work:"War and Change in World Politics (1981)", p:"positivist", sf:["ipe","security"], kw:["hegemony","decline","rising powers","power transition","world order"], arg:"Hegemonic decline triggers instability and potential war." },
+  { name:"Bruce Russett", work:"Grasping the Democratic Peace (1993)", p:"positivist", sf:["conflict","democratization"], kw:["democratic peace","democracy","war","norms"], arg:"Democracies almost never fight wars against each other." },
+  { name:"Barbara Geddes", work:"Paradigms and Sand Castles (2003)", p:"positivist", sf:["democratization"], kw:["authoritarian regimes","regime breakdown","typology","military","personalist"], arg:"Different authoritarian regime types break down in different ways." },
+  { name:"Adam Przeworski", work:"Democracy and Development (2000)", p:"positivist", sf:["democratization"], kw:["democratization","economic development","modernization","regime transitions"], arg:"Development doesn't cause democratization but helps democracies survive." },
+  { name:"Alexander Wendt", work:"Social Theory of International Politics (1999)", p:"interpretivist", sf:["identity","security"], kw:["constructivism","anarchy","identity","social construction","norms","ideas"], arg:"Anarchy is what states make of it — identities and interests are socially constructed." },
+  { name:"Martha Finnemore", work:"National Interests in International Society (1996)", p:"interpretivist", sf:["institutions","human-rights"], kw:["norms","international organizations","norm diffusion","socialization"], arg:"International organizations teach states new norms and reshape interests." },
+  { name:"Peter Katzenstein", work:"The Culture of National Security (1996)", p:"interpretivist", sf:["security","identity"], kw:["culture","national security","identity","norms","threat"], arg:"Security policy is shaped by culture and identity, not just material threats." },
+  { name:"Nina Tannenwald", work:"The Nuclear Taboo (2007)", p:"interpretivist", sf:["security"], kw:["nuclear","taboo","norms","deterrence","non-use"], arg:"A normative taboo, not just deterrence, explains nuclear non-use." },
+  { name:"Kathryn Sikkink", work:"The Justice Cascade (2011)", p:"interpretivist", sf:["human-rights"], kw:["justice","accountability","human rights","prosecution","impunity","transitional justice"], arg:"A global norm of individual accountability has cascaded across countries." },
+  { name:"Ted Hopf", work:"Social Construction of International Politics (2002)", p:"interpretivist", sf:["identity","foreign-policy"], kw:["identity","foreign policy","Russia","domestic","constructivism"], arg:"Dominant domestic identities determine how states categorize others." },
+  { name:"Friedrich Kratochwil", work:"Rules, Norms, and Decisions (1989)", p:"interpretivist", sf:["institutions","identity"], kw:["rules","norms","reasoning","argumentation","international law"], arg:"International politics operates through norms and practical reasoning." },
+  { name:"Ole Wæver", work:"Securitization Theory (1995)", p:"interpretivist", sf:["security"], kw:["securitization","speech act","threat","Copenhagen School","framing"], arg:"Security is a speech act — issues become threats when framed as existential." },
+  { name:"Barry Buzan", work:"People, States and Fear (1991)", p:"interpretivist", sf:["security"], kw:["security","broadening","military","political","economic","societal","environmental"], arg:"Security must be broadened beyond the military dimension." },
+  { name:"Vendulka Kubálková", work:"Foreign Policy in a Constructed World (2001)", p:"interpretivist", sf:["foreign-policy","identity"], kw:["foreign policy","constructivism","agency","rules"], arg:"FPA and constructivism need each other." },
+  { name:"Iver Neumann", work:"Uses of the Other (1999)", p:"interpretivist", sf:["identity"], kw:["other","othering","identity","Europe","discourse"], arg:"State identities are constructed through the definition of an Other." },
+  { name:"Robert Cox", work:"Social Forces, States and World Orders (1981)", p:"critical", sf:["ipe"], kw:["critical theory","hegemony","Gramsci","emancipation","power"], arg:"Theory is always for someone — mainstream IR serves existing power structures." },
+  { name:"Andrew Linklater", work:"The Transformation of Political Community (1998)", p:"critical", sf:["identity","institutions"], kw:["cosmopolitanism","exclusion","sovereignty","emancipation"], arg:"Sovereign states unjustly exclude — political community must be transformed." },
+  { name:"David Campbell", work:"Writing Security (1992)", p:"critical", sf:["security","identity","foreign-policy"], kw:["poststructuralism","identity","foreign policy","discourse","deconstruction"], arg:"Foreign policy is identity construction, not a response to pre-existing threats." },
+  { name:"R.B.J. Walker", work:"Inside/Outside (1993)", p:"critical", sf:["identity"], kw:["inside/outside","sovereignty","anarchy","critique","binary"], arg:"The inside/outside binary is a political construction IR reproduces." },
+  { name:"Gayatri Spivak", work:"Can the Subaltern Speak? (1988)", p:"critical", sf:["postcolonial"], kw:["subaltern","postcolonial","representation","voice","power","Global South"], arg:"Western knowledge systems systematically silence the most marginalized." },
+  { name:"Siba Grovogui", work:"Sovereigns, Quasi Sovereigns, and Africans (1996)", p:"critical", sf:["postcolonial","institutions"], kw:["sovereignty","race","Africa","international law","colonial"], arg:"International law has been racially structured, denying African states full sovereignty." },
+  { name:"Amitav Acharya", work:"The End of American World Order (2014)", p:"critical", sf:["postcolonial","institutions","security"], kw:["multiplex","non-Western","norm subsidiarity","ASEAN","regional order"], arg:"The liberal order was never truly global — a multiplex world is emerging." },
+  { name:"Branwen Gruffydd Jones", work:"Decolonizing International Relations (2006)", p:"critical", sf:["postcolonial"], kw:["decolonizing","Eurocentrism","colonial","IR discipline"], arg:"IR was born from colonial projects and must rethink its categories." },
+  { name:"J. Ann Tickner", work:"Gender in International Relations (1992)", p:"critical", sf:["feminist","security"], kw:["gender","feminism","realism","masculinity","standpoint","women"], arg:"Mainstream IR is built on masculinist assumptions that hide women's experiences." },
+  { name:"Cynthia Enloe", work:"Bananas, Beaches and Bases (1989)", p:"critical", sf:["feminist","ipe","security"], kw:["gender","feminism","military","globalization","women","everyday"], arg:"International politics depends on the systematic manipulation of gender." },
+  { name:"Laura Shepherd", work:"Gender, Violence and Security (2008)", p:"critical", sf:["feminist","security"], kw:["WPS","UNSCR 1325","gender","violence","Women Peace Security"], arg:"The WPS agenda risks disciplining gender into existing power structures." },
+  { name:"Christine Sylvester", work:"Feminist International Relations (2002)", p:"critical", sf:["feminist"], kw:["feminism","experience","empathy","embodiment","standpoint"], arg:"Feminist IR must rethink what counts as IR by centering experience." },
+  { name:"Robyn Eckersley", work:"The Green State (2004)", p:"critical", sf:["environment"], kw:["green state","ecology","sovereignty","environmental justice"], arg:"The state should be transformed to take ecological responsibility beyond borders." },
+  { name:"Peter Dauvergne", work:"The Shadows of Consumption (2008)", p:"critical", sf:["environment","ipe"], kw:["consumption","environment","corporate power","Global South","ecological"], arg:"Environmental destruction is driven by wealthy-country consumption." },
+];
+
+// Tab switching
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector(`.main-tab[data-tab="${id}"]`).classList.add('active');
+  if (id === 'sources') renderSources();
+  if (id === 'debate') renderDebate();
+  if (id === 'requirements') renderRequirements();
+  if (id === 'export') renderExportStatus();
+}
+
+// Setup helpers
+function setSetup(key, val, el) {
+  setup[key] = val;
+  el.parentElement.querySelectorAll('.paradigm-pill').forEach(p => p.className = 'paradigm-pill');
+  el.classList.add('sel-' + val);
+  saveState();
+}
+
+function setCitStyle(val, el) {
+  setup.citStyle = val;
+  document.querySelectorAll('#s-citation-style .paradigm-pill').forEach(p => {
+    p.className = 'paradigm-pill';
+    p.style.borderColor = '#e2e8f0'; p.style.color = '#64748b';
+  });
+  el.className = 'paradigm-pill selected';
+  el.style.borderColor = '#0f766e'; el.style.color = '#0f766e'; el.style.background = '#f0fdfa';
+  saveState();
+}
+
+function getSetup() {
+  setup.name = document.getElementById('s-name').value.trim();
+  setup.rq = document.getElementById('s-rq').value.trim();
+  setup.subfield = document.getElementById('s-subfield').value;
+  setup.keywords = document.getElementById('s-keywords').value.trim();
+}
+
+// Suggestions
+function generateSuggestions() {
+  getSetup();
+  const c = document.getElementById('suggestions-list');
+  if (!setup.rq) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>Enter a research question in Setup first.</p></div>'; return; }
+
+  const uKW = setup.keywords.toLowerCase().split(',').map(k => k.trim()).filter(k => k);
+  const uRQ = setup.rq.toLowerCase();
+
+  let scored = DB.map(s => {
+    let sc = 0;
+    if (setup.subfield && s.sf.includes(setup.subfield)) sc += 10;
+    s.kw.forEach(k => { if (uRQ.includes(k)) sc += 5; uKW.forEach(u => { if (k.includes(u)||u.includes(k)) sc += 3; }); });
+    if (s.arg.toLowerCase().split(/\s+/).some(w => uKW.some(u => w.includes(u)))) sc += 2;
+    if (s.p === setup.paradigm) sc += 2;
+    return { ...s, sc };
+  });
+
+  scored.sort((a,b) => b.sc - a.sc);
+
+  const topOf = (par,n) => scored.filter(s => s.p === par && s.sc > 0).slice(0,n);
+  const home = topOf(setup.paradigm||'positivist', 5);
+  const rivals = [];
+  ['positivist','interpretivist','critical'].forEach(p => { if(p!==setup.paradigm) rivals.push(...topOf(p,3)); });
+
+  let all = [...home,...rivals];
+  if(all.length<5) all = scored.filter(s=>s.sc>0).slice(0,10);
+  if(all.length===0) all = scored.slice(0,8);
+  const seen = new Set();
+  all = all.filter(s => { if(seen.has(s.name)) return false; seen.add(s.name); return true; });
+
+  let html = '';
+  if(home.length) {
+    html += '<p style="font-weight:700;font-size:0.88rem;margin-bottom:0.5rem;color:#1d4ed8;">Your Paradigm Track</p>';
+    home.forEach(s => html += mkSug(s));
+  }
+  if(rivals.length) {
+    html += '<p style="font-weight:700;font-size:0.88rem;margin:1rem 0 0.5rem;color:#be185d;">Rival Explanations</p>';
+    html += '<div class="alert alert-amber">Your bibliography <strong>must</strong> engage with scholars who explain your puzzle differently.</div>';
+    rivals.forEach(s => html += mkSug(s));
+  }
+  c.innerHTML = html || '<div class="empty-state"><div class="empty-icon">🤔</div><p>No strong matches. Try more keywords.</p></div>';
+}
+
+function mkSug(s) {
+  const pc = s.p==='positivist'?'peer':'peer';
+  return `<div class="sug-card" onclick="addFromSug('${s.name.replace(/'/g,"\\'")}')">
+    <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem">
+      <span class="mini-tag ${s.p==='positivist'?'peer':s.p==='interpretivist'?'primary':'foundation'}">${s.p}</span>
+      <span class="sug-name">${s.name}</span>
+    </div>
+    <div class="sug-work">${s.work}</div>
+    <div class="sug-arg">${s.arg}</div>
+    <div class="sug-add">Click to add to your bibliography →</div>
+  </div>`;
+}
+
+function addFromSug(name) {
+  const s = DB.find(d => d.name === name);
+  if(!s) return;
+  openSourceModal(-1);
+  document.getElementById('m-citation').value = `${s.name}. ${s.work}.`;
+  mParadigm = s.p;
+  document.querySelectorAll('#m-paradigm .paradigm-pill').forEach(p => {
+    p.className = 'paradigm-pill';
+    if(p.textContent.toLowerCase().includes(s.p.substring(0,4))) p.classList.add('sel-'+s.p);
+  });
+  document.getElementById('modal-title').textContent = 'Add Source — ' + s.name;
+}
+
+// Source Modal
+function openSourceModal(idx) {
+  editIdx = idx;
+  if(idx >= 0) {
+    const s = sources[idx];
+    document.getElementById('m-citation').value = s.citation||'';
+    document.getElementById('m-says').value = s.says||'';
+    document.getElementById('m-eval').value = s.eval||'';
+    document.getElementById('m-connects').value = s.connects||'';
+    mParadigm = s.paradigm||'';
+    mType = s.type||'';
+    document.querySelectorAll('#m-paradigm .paradigm-pill').forEach(p => {
+      p.className='paradigm-pill';
+      if(mParadigm && p.textContent.toLowerCase().includes(mParadigm.substring(0,4))) p.classList.add('sel-'+mParadigm);
+    });
+    document.querySelectorAll('#m-type .type-pill').forEach(t => {
+      t.className='type-pill';
+      if(mType && t.textContent.toLowerCase().replace(/[\s-]/g,'').includes(mType.replace(/[\s-]/g,'').substring(0,6))) t.classList.add('selected');
+    });
+    document.getElementById('modal-title').textContent = 'Edit Source #' + (idx+1);
+  } else {
+    ['m-citation','m-says','m-eval','m-connects'].forEach(id => document.getElementById(id).value = '');
+    mParadigm=''; mType='';
+    document.querySelectorAll('#m-paradigm .paradigm-pill').forEach(p=>p.className='paradigm-pill');
+    document.querySelectorAll('#m-type .type-pill').forEach(t=>t.className='type-pill');
+    document.getElementById('modal-title').textContent = 'Add Source';
+  }
+  document.getElementById('source-modal').classList.add('visible');
+}
+
+function setModalParadigm(v,el) {
+  mParadigm=v;
+  el.parentElement.querySelectorAll('.paradigm-pill').forEach(p=>p.className='paradigm-pill');
+  el.classList.add('sel-'+v);
+}
+
+function setSourceType(v,el) {
+  mType=v;
+  el.parentElement.querySelectorAll('.type-pill').forEach(t=>t.className='type-pill');
+  el.classList.add('selected');
+}
+
+function saveSource() {
+  const s = {
+    citation: document.getElementById('m-citation').value.trim(),
+    says: document.getElementById('m-says').value.trim(),
+    eval: document.getElementById('m-eval').value.trim(),
+    connects: document.getElementById('m-connects').value.trim(),
+    paradigm: mParadigm,
+    type: mType,
+  };
+  if(!s.citation) { showToast('Add a citation first'); return; }
+  if(editIdx>=0) { sources[editIdx]=s; showToast('Source updated'); }
+  else { sources.push(s); showToast('Source #'+(sources.length)+' added'); }
+  document.getElementById('source-modal').classList.remove('visible');
+  saveState(); renderSources();
+}
+
+function deleteSource(i) {
+  if(confirm('Remove source #'+(i+1)+'?')) { sources.splice(i,1); saveState(); renderSources(); showToast('Source removed'); }
+}
+
+function moveSource(i, dir) {
+  const j = i + dir;
+  if(j<0||j>=sources.length) return;
+  [sources[i],sources[j]] = [sources[j],sources[i]];
+  saveState(); renderSources();
+}
+
+// Render sources
+function renderSources() {
+  const list = document.getElementById('source-list');
+  const total = sources.length;
+  const peer = sources.filter(s=>s.type==='peer-reviewed'||s.type==='foundational-text').length;
+  const nonpeer = sources.filter(s=>s.type==='non-academic').length;
+  const complete = sources.filter(s=>s.citation&&s.says&&s.eval&&s.connects).length;
+
+  document.getElementById('t-total').textContent = total;
+  document.getElementById('t-total').className = 'tracker-number ' + (total>=10?'green':total>=7?'amber':'red');
+  document.getElementById('t-peer').textContent = peer;
+  document.getElementById('t-peer').className = 'tracker-number ' + (peer>=8?'green':peer>=5?'amber':'blue');
+  document.getElementById('t-nonpeer').textContent = nonpeer;
+  document.getElementById('t-nonpeer').className = 'tracker-number ' + (nonpeer<=2?'green':'red');
+  document.getElementById('t-complete').textContent = complete;
+  document.getElementById('t-complete').className = 'tracker-number ' + (complete===total&&total>0?'green':'amber');
+
+  if(total===0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><p>No sources yet. Use Suggestions or add manually.</p></div>';
+    return;
+  }
+
+  let html = '';
+  sources.forEach((s,i) => {
+    const isComplete = s.citation&&s.says&&s.eval&&s.connects;
+    const typeTag = s.type ? `<span class="mini-tag ${s.type==='peer-reviewed'?'peer':s.type==='non-academic'?'non-peer':s.type==='dataset'?'dataset':s.type==='primary-source'?'primary':'foundation'}">${s.type}</span>` : '';
+    const pTag = s.paradigm ? `<span class="mini-tag ${s.paradigm==='positivist'?'dataset':s.paradigm==='interpretivist'?'primary':'foundation'}">${s.paradigm}</span>` : '';
+    const statusTag = `<span class="mini-tag ${isComplete?'complete':'incomplete'}">${isComplete?'complete':'incomplete'}</span>`;
+
+    html += `<div class="source-item" onclick="openSourceModal(${i})">
+      <div class="source-number">${i+1}</div>
+      <div class="source-info">
+        <div class="source-cite">${s.citation.length>120?s.citation.substring(0,120)+'...':s.citation}</div>
+        <div class="source-tags">${typeTag}${pTag}${statusTag}</div>
+      </div>
+      <div class="source-actions" onclick="event.stopPropagation()">
+        <button class="source-btn" onclick="moveSource(${i},-1)" title="Move up">↑</button>
+        <button class="source-btn" onclick="moveSource(${i},1)" title="Move down">↓</button>
+        <button class="source-btn" onclick="openSourceModal(${i})" title="Edit">✎</button>
+        <button class="source-btn delete" onclick="deleteSource(${i})" title="Delete">✕</button>
+      </div>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+// Requirements
+function renderRequirements() {
+  const total = sources.length;
+  const peer = sources.filter(s=>s.type==='peer-reviewed'||s.type==='foundational-text').length;
+  const nonpeer = sources.filter(s=>s.type==='non-academic').length;
+  const complete = sources.filter(s=>s.citation&&s.says&&s.eval&&s.connects).length;
+  const datasets = sources.filter(s=>s.type==='dataset').length;
+  const primary = sources.filter(s=>s.type==='primary-source').length;
+  const foundation = sources.filter(s=>s.type==='foundational-text').length;
+
+  const mk = (done,label) => `<div class="req-item ${done?'done-item':''}"><div class="req-dot ${done?'done':''}">${done?'✓':''}</div><span>${label}</span></div>`;
+
+  document.getElementById('req-all').innerHTML =
+    mk(total>=10, `Minimum 10 sources (you have ${total})`) +
+    mk(peer>=8, `At least 8 peer-reviewed (you have ${peer})`) +
+    mk(nonpeer<=2, `Maximum 2 non-academic sources (you have ${nonpeer})`) +
+    mk(nonpeer===0||sources.filter(s=>s.type==='non-academic'&&s.eval).length===nonpeer, 'Non-academic sources justified in evaluation') +
+    mk(complete===total&&total>0, `All entries fully annotated (${complete}/${total})`);
+
+  const p = setup.paradigm;
+  const trackLabel = document.getElementById('req-track-label');
+  let trackHTML = '';
+
+  if(p==='positivist') {
+    trackLabel.textContent = 'Positivist Track Requirements';
+    trackHTML = mk(true, 'Quantitative or comparative studies') +
+      mk(datasets>=1, `At least 1 dataset — World Bank, SIPRI, UN, etc. (you have ${datasets})`) +
+      mk(true, 'Theoretical literature on your key variables');
+  } else if(p==='interpretivist') {
+    trackLabel.textContent = 'Interpretivist Track Requirements';
+    trackHTML = mk(true, 'Historical accounts, case studies, archival or ethnographic work') +
+      mk(primary>=1, `At least 1 primary source — speech, treaty, document, interview (you have ${primary})`) +
+      mk(true, 'Theoretical literature on your interpretive framework');
+  } else if(p==='critical') {
+    trackLabel.textContent = 'Critical / Postmodern Track Requirements';
+    trackHTML = mk(true, 'Discourse analysis or postcolonial scholarship') +
+      mk(foundation>=1, `At least 1 foundational critical theory text (you have ${foundation})`) +
+      mk(true, 'Empirical material providing text or discourse to analyze');
+  } else {
+    trackLabel.textContent = 'Select your paradigm track in Setup first';
+    trackHTML = '<div class="alert alert-amber">Go to Setup and select your paradigm track to see specific requirements.</div>';
+  }
+
+  document.getElementById('req-track').innerHTML = trackHTML;
+
+  const hasRQ = setup.rq.length > 0;
+  const hasPar = setup.paradigm.length > 0;
+  const hasAI = document.getElementById('ai-disclosure').value.trim().length > 0;
+
+  document.getElementById('req-submit').innerHTML =
+    mk(hasRQ, 'Research question provided') +
+    mk(hasPar, 'Paradigm track selected') +
+    mk(hasAI, 'AI tool disclosure statement');
+}
+
+// Debate map
+function renderDebate() {
+  const g = { positivist:[], interpretivist:[], critical:[] };
+  sources.forEach(s => { if(g[s.paradigm]) g[s.paradigm].push(s); });
+
+  document.getElementById('debate-columns').innerHTML = [
+    {p:'positivist',l:'Positivist',c:'pos-col'},
+    {p:'interpretivist',l:'Interpretivist',c:'int-col'},
+    {p:'critical',l:'Critical / Postmodern',c:'cri-col'}
+  ].map(col => {
+    const items = g[col.p];
+    const content = items.length===0 ? '<div class="debate-empty">No sources yet</div>' :
+      items.map(s => {
+        const auth = s.citation.match(/^([^.(,]+)/);
+        return `<div class="debate-source"><strong>${auth?auth[1].trim():'?'}</strong><br><span style="font-size:0.76rem;color:#64748b">${s.says?s.says.substring(0,80)+'...':''}</span></div>`;
+      }).join('');
+    return `<div class="debate-col ${col.c}"><h4>${col.l} (${items.length})</h4>${content}</div>`;
+  }).join('');
+}
+
+// Export status
+function renderExportStatus() {
+  const el = document.getElementById('export-status');
+  const total = sources.length;
+  const complete = sources.filter(s=>s.citation&&s.says&&s.eval&&s.connects).length;
+  const hasRQ = setup.rq.length>0;
+  const hasPar = setup.paradigm.length>0;
+
+  let alerts = [];
+  if(total<10) alerts.push(`You have ${total}/10 required sources.`);
+  if(complete<total) alerts.push(`${total-complete} source(s) still need annotations.`);
+  if(!hasRQ) alerts.push('Research question missing.');
+  if(!hasPar) alerts.push('Paradigm track not selected.');
+
+  if(alerts.length) {
+    el.innerHTML = `<div class="alert alert-red"><strong>Not ready for submission:</strong> ${alerts.join(' ')}</div>`;
+  } else {
+    el.innerHTML = `<div class="alert alert-green"><strong>Ready to export.</strong> ${total} sources, all annotated. Review the examples below if you want to check your quality.</div>`;
+  }
+}
+
+// Export text
+function exportText() {
+  getSetup();
+  const ai = document.getElementById('ai-disclosure').value.trim();
+  const g = {positivist:[],interpretivist:[],critical:[],other:[]};
+  sources.forEach(s => { if(g[s.paradigm]) g[s.paradigm].push(s); else g.other.push(s); });
+
+  let t = `ANNOTATED BIBLIOGRAPHY\nCore Quest 1\n${'═'.repeat(50)}\n\n`;
+  t += `RESEARCH QUESTION:\n${setup.rq}\n\n`;
+  t += `PARADIGM TRACK: ${setup.paradigm?setup.paradigm.charAt(0).toUpperCase()+setup.paradigm.slice(1):'(not selected)'}\n\n`;
+  t += `${'─'.repeat(50)}\n\n`;
+
+  let num = 1;
+  const writeGroup = (label, arr) => {
+    if(!arr.length) return;
+    t += `\n${label.toUpperCase()}\n${'═'.repeat(50)}\n\n`;
+    arr.forEach(s => {
+      t += `SOURCE ${num}\n${'─'.repeat(30)}\n`;
+      t += `CITATION:\n${s.citation}\n\n`;
+      t += `WHAT IT SAYS:\n${s.says||'(not completed)'}\n\n`;
+      t += `MY EVALUATION:\n${s.eval||'(not completed)'}\n\n`;
+      t += `HOW IT CONNECTS:\n${s.connects||'(not completed)'}\n\n`;
+      num++;
+    });
+  };
+
+  writeGroup('Positivist Sources', g.positivist);
+  writeGroup('Interpretivist Sources', g.interpretivist);
+  writeGroup('Critical / Postmodern Sources', g.critical);
+  writeGroup('Other Sources', g.other);
+
+  if(ai) { t += `\n${'─'.repeat(50)}\nAI TOOL DISCLOSURE:\n${ai}\n`; }
+
+  const blob = new Blob([t], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`AnnotatedBibliography_${setup.name.replace(/\s+/g,'_')||'draft'}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Exported as text');
+}
+
+// Export HTML
+function exportHTML() {
+  getSetup();
+  const ai = document.getElementById('ai-disclosure').value.trim();
+  const g = {positivist:[],interpretivist:[],critical:[],other:[]};
+  sources.forEach(s => { if(g[s.paradigm]) g[s.paradigm].push(s); else g.other.push(s); });
+
+  let h = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Annotated Bibliography — ${setup.name}</title>
+  <style>body{font-family:'Segoe UI',system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1.5rem;color:#1e293b;line-height:1.7;background:#fff;}
+  h1{font-size:1.5rem;border-bottom:3px solid #2563eb;padding-bottom:0.5rem;} h2{font-size:1.1rem;margin-top:2rem;padding:0.5rem 0.8rem;border-radius:6px;}
+  .pos{background:#eff6ff;color:#1d4ed8;} .int{background:#f5f3ff;color:#6d28d9;} .cri{background:#fdf2f8;color:#be185d;}
+  .meta{color:#64748b;font-size:0.9rem;margin-bottom:1.5rem;} .entry{margin-bottom:1.8rem;padding-bottom:1.5rem;border-bottom:1px solid #f1f5f9;}
+  .citation{font-weight:700;margin-bottom:0.5rem;font-size:0.95rem;} .flabel{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;color:#94a3b8;font-weight:600;margin-top:0.6rem;}
+  .fval{font-size:0.9rem;color:#334155;} .ai{margin-top:2rem;padding:1rem;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;font-size:0.85rem;color:#475569;}
+  </style></head><body>`;
+
+  h += `<h1>Annotated Bibliography</h1><div class="meta"><strong>${setup.name}</strong><br><br><strong>Research Question:</strong> ${setup.rq}<br><strong>Paradigm Track:</strong> ${setup.paradigm?setup.paradigm.charAt(0).toUpperCase()+setup.paradigm.slice(1):''}</div>`;
+
+  const labels = {positivist:['Positivist Sources','pos'],interpretivist:['Interpretivist Sources','int'],critical:['Critical / Postmodern Sources','cri'],other:['Other Sources','']};
+  let num = 1;
+
+  ['positivist','interpretivist','critical','other'].forEach(p => {
+    if(!g[p].length) return;
+    h += `<h2 class="${labels[p][1]}">${labels[p][0]}</h2>`;
+    g[p].forEach(s => {
+      h += `<div class="entry"><div class="citation">Source ${num}. ${s.citation}</div>`;
+      h += `<div class="flabel">What It Says</div><div class="fval">${s.says||'<em>(not completed)</em>'}</div>`;
+      h += `<div class="flabel">My Evaluation</div><div class="fval">${s.eval||'<em>(not completed)</em>'}</div>`;
+      h += `<div class="flabel">How It Connects</div><div class="fval">${s.connects||'<em>(not completed)</em>'}</div>`;
+      h += `</div>`;
+      num++;
+    });
+  });
+
+  if(ai) h += `<div class="ai"><strong>AI Tool Disclosure:</strong> ${ai}</div>`;
+  h += `</body></html>`;
+
+  const blob = new Blob([h], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`AnnotatedBibliography_${setup.name.replace(/\s+/g,'_')||'draft'}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Exported as HTML');
+}
+
+// Examples toggle
+function toggleExample(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('visible');
+}
+
+// Save/Load
+function saveState() {
+  getSetup();
+  localStorage.setItem('abDraft', JSON.stringify({
+    setup, sources, ai: document.getElementById('ai-disclosure').value
+  }));
+}
+
+function saveDraft() { saveState(); showToast('Draft saved to browser'); }
+
+function loadDraft() {
+  const raw = localStorage.getItem('abDraft');
+  if(!raw) { showToast('No saved draft found'); return; }
+  const d = JSON.parse(raw);
+  if(d.setup) {
+    setup = d.setup;
+    document.getElementById('s-name').value = setup.name||'';
+    document.getElementById('s-rq').value = setup.rq||'';
+    document.getElementById('s-subfield').value = setup.subfield||'';
+    document.getElementById('s-keywords').value = setup.keywords||'';
+    if(setup.paradigm) {
+      document.querySelectorAll('#s-paradigm .paradigm-pill').forEach(p => {
+        p.className='paradigm-pill';
+        if(p.textContent.toLowerCase().includes(setup.paradigm.substring(0,4))) p.classList.add('sel-'+setup.paradigm);
+      });
+    }
+  }
+  if(d.sources) sources = d.sources;
+  if(d.ai) document.getElementById('ai-disclosure').value = d.ai;
+  renderSources();
+  showToast('Draft loaded');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className='toast show';
+  setTimeout(()=>t.className='toast', 3000);
+}
+
+// Init
+renderSources();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scholarly Speed Dating — Scholar Selector</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Paradigm Tabs */
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tab {
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+  }
+
+  .tab:hover { border-color: #94a3b8; color: #1e293b; }
+  .tab.active-positivist { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+  .tab.active-interpretivist { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; }
+  .tab.active-critical { border-color: #db2777; background: #fdf2f8; color: #be185d; }
+  .tab.active-all { border-color: #94a3b8; background: #f1f5f9; color: #1e293b; }
+
+  /* Search */
+  .search-bar {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #1e293b;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .search-bar:focus { border-color: #2563eb; }
+  .search-bar::placeholder { color: #94a3b8; }
+
+  /* Scholar Cards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.3rem;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+  .card.positivist:hover { border-color: #2563eb; }
+  .card.interpretivist:hover { border-color: #7c3aed; }
+  .card.critical:hover { border-color: #db2777; }
+
+  .card.selected.positivist { border-color: #2563eb; background: #eff6ff; }
+  .card.selected.interpretivist { border-color: #7c3aed; background: #f5f3ff; }
+  .card.selected.critical { border-color: #db2777; background: #fdf2f8; }
+
+  .card-paradigm {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.7rem;
+  }
+
+  .card-paradigm.positivist { background: #dbeafe; color: #1d4ed8; }
+  .card-paradigm.interpretivist { background: #ede9fe; color: #6d28d9; }
+  .card-paradigm.critical { background: #fce7f3; color: #be185d; }
+
+  .card-subfield {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    background: #f1f5f9;
+    color: #64748b;
+    margin-left: 0.3rem;
+  }
+
+  .card h3 { font-size: 1.1rem; margin-bottom: 0.3rem; color: #0f172a; }
+  .card .work { color: #64748b; font-size: 0.82rem; font-style: italic; margin-bottom: 0.6rem; }
+  .card .argument { color: #334155; font-size: 0.85rem; line-height: 1.5; }
+
+  .card .spots {
+    margin-top: 0.8rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .spots-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .spot-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    transition: all 0.3s;
+  }
+
+  .spot-dot.filled { background: #16a34a; border-color: #16a34a; }
+  .spot-dot.filled.warning { background: #d97706; border-color: #d97706; }
+
+  /* Expanded Card Detail */
+  .card-detail {
+    display: none;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.83rem;
+    line-height: 1.6;
+    color: #475569;
+  }
+
+  .card-detail.visible { display: block; }
+  .card-detail strong { color: #0f172a; }
+
+  /* Selection Panel */
+  .selection-panel {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 2px solid #e2e8f0;
+    margin-top: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .selection-panel h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #0f172a;
+  }
+
+  .selection-panel .student-input {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .selection-panel input, .selection-panel select {
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .selection-panel input:focus, .selection-panel select:focus {
+    border-color: #2563eb;
+  }
+
+  .input-full {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 0.9rem;
+    outline: none;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.3s;
+  }
+
+  .input-full:focus { border-color: #2563eb; }
+
+  .selected-scholar-display {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  .selected-scholar-display.has-selection {
+    justify-content: flex-start;
+    color: #1e293b;
+    border-color: #2563eb;
+    background: #eff6ff;
+  }
+
+  .btn-confirm {
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .btn-confirm.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-confirm.ready:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+    background: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-number.blue { color: #2563eb; }
+  .stat-number.purple { color: #7c3aed; }
+  .stat-number.pink { color: #db2777; }
+  .stat-number.green { color: #16a34a; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #16a34a;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.4s ease;
+    z-index: 100;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Counter badge */
+  .counter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 600px) {
+    .selection-panel .student-input {
+      grid-template-columns: 1fr;
+    }
+    h1 { font-size: 1.4rem; }
+    .stats-bar { gap: 0.8rem; }
+    .stat { padding: 0.6rem 1rem; }
+    .stat-number { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Scholarly Speed Dating</h1>
+  <p class="subtitle">Choose your scholar · Max 2 students per scholar · Click a card to learn more</p>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-number blue" id="count-pos">16</div>
+      <div class="stat-label">Positivist</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number purple" id="count-int">11</div>
+      <div class="stat-label">Interpretivist</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number pink" id="count-crit">15</div>
+      <div class="stat-label">Critical</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number green" id="count-total">42</div>
+      <div class="stat-label">Total Scholars</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active-all" onclick="filterCards('all')">All Scholars</button>
+    <button class="tab" onclick="filterCards('positivist')">Positivist · The Strategist</button>
+    <button class="tab" onclick="filterCards('interpretivist')">Interpretivist · The Storyteller</button>
+    <button class="tab" onclick="filterCards('critical')">Critical · The Critic</button>
+  </div>
+
+  <input type="text" class="search-bar" placeholder="Search by name, topic, method, or keyword..." oninput="searchCards(this.value)">
+
+  <div class="counter-badge" id="results-counter">Showing 42 of 42 scholars</div>
+
+  <div class="cards-grid" id="cards-grid"></div>
+
+  <!-- Selection Panel -->
+  <div class="selection-panel">
+    <h2>Your Selection</h2>
+    <div class="student-input">
+      <input type="text" id="student-name" placeholder="Your full name" oninput="checkReady()">
+      <select id="student-paradigm" onchange="checkReady()">
+        <option value="">Your paradigm track...</option>
+        <option value="positivist">Positivist · The Strategist</option>
+        <option value="interpretivist">Interpretivist · The Storyteller</option>
+        <option value="critical">Critical / Postmodern · The Critic</option>
+      </select>
+    </div>
+    <input type="text" class="input-full" id="student-rq" placeholder="Your research question (from Assignment 1)" oninput="checkReady()">
+
+    <div class="selected-scholar-display" id="selected-display">
+      Click a scholar card above to select them
+    </div>
+
+    <button class="btn-confirm" id="btn-confirm" onclick="confirmSelection()">
+      Confirm Selection
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const scholars = [
+  // POSITIVIST — Security & Conflict
+  { name: "Kenneth Waltz", paradigm: "positivist", subfield: "Security",
+    work: "Theory of International Politics (1979)",
+    argument: "The international system's anarchic structure — not human nature or states' internal characteristics — drives states to balance power and ensures recurring patterns of conflict.",
+    method: "Structural theory; deductive systems-level analysis",
+    criticism: "Criticized for being too parsimonious — cannot explain foreign policy variation, change over time, or the role of ideas and identity." },
+
+  { name: "John Mearsheimer", paradigm: "positivist", subfield: "Security",
+    work: "The Tragedy of Great Power Politics (2001)",
+    argument: "Great powers are compelled by the structure of the international system to maximize their share of power, making conflict and competition inevitable — there are no status quo powers.",
+    method: "Historical case studies of great power behavior since 1792",
+    criticism: "Overestimates the drive for hegemony; cannot easily account for sustained cooperation (e.g., EU) or states that choose restraint." },
+
+  { name: "Robert Jervis", paradigm: "positivist", subfield: "Security",
+    work: "Perception and Misperception in International Politics (1976)",
+    argument: "Leaders frequently misperceive the intentions and capabilities of other states due to cognitive biases, and these misperceptions are a major cause of war and escalation.",
+    method: "Cognitive psychology applied to historical case studies of crisis decision-making",
+    criticism: "Difficult to test systematically — how do you measure misperception independently of the outcomes it supposedly causes?" },
+
+  { name: "James Fearon", paradigm: "positivist", subfield: "Conflict",
+    work: "Rationalist Explanations for War (1995)",
+    argument: "Since war is costly, rational states should always prefer a negotiated settlement — war occurs because of private information with incentives to misrepresent, commitment problems, or issue indivisibility.",
+    method: "Formal bargaining models; game theory",
+    criticism: "Assumes rationality and unitary actors; struggles to explain wars driven by domestic politics, ideology, or emotion." },
+
+  { name: "Bruce Bueno de Mesquita", paradigm: "positivist", subfield: "Comparative/Conflict",
+    work: "The Logic of Political Survival (2003)",
+    argument: "Leaders' survival depends on satisfying their 'winning coalition' — this selectorate theory explains why democracies produce public goods and autocracies produce private goods.",
+    method: "Formal models and large-N statistical analysis",
+    criticism: "Reductionist — reduces all political behavior to leader survival; the categories (selectorate, winning coalition) can be hard to operationalize." },
+
+  { name: "Jack Levy", paradigm: "positivist", subfield: "Conflict",
+    work: "The Diversionary Theory of War (1989)",
+    argument: "Leaders sometimes initiate conflict to divert public attention from domestic problems, and declining powers may launch preventive wars before their window of opportunity closes.",
+    method: "Comparative historical case studies; large-N quantitative tests",
+    criticism: "Diversionary war theory has mixed empirical support — the causal mechanisms linking domestic trouble to external conflict are hard to isolate." },
+
+  { name: "Stephen Walt", paradigm: "positivist", subfield: "Security",
+    work: "The Origins of Alliances (1987)",
+    argument: "States balance against threats, not simply against power — threat is a function of aggregate power, geographic proximity, offensive capability, and perceived aggressive intentions.",
+    method: "Comparative case studies of Middle Eastern alliance formation",
+    criticism: "Difficult to measure 'perceived intentions' objectively; the theory can become tautological if threat is defined after the fact." },
+
+  { name: "Robert Keohane", paradigm: "positivist", subfield: "Institutions/IPE",
+    work: "After Hegemony (1984)",
+    argument: "International institutions facilitate cooperation among self-interested states by reducing transaction costs, providing information, and establishing expectations — even without a hegemon.",
+    method: "Rational-choice institutionalism; structured case comparisons",
+    criticism: "Overly optimistic about institutions — critics argue institutions reflect power rather than constrain it, and compliance is often shallow." },
+
+  { name: "Lisa Martin", paradigm: "positivist", subfield: "Institutions",
+    work: "Democratic Commitments (2000)",
+    argument: "Democratic states make more credible international commitments because legislative involvement in treaty-making raises the domestic costs of reneging.",
+    method: "Quantitative analysis of treaty ratification; comparative institutional analysis",
+    criticism: "Assumes legislative oversight functions uniformly across democracies; may overstate the binding power of domestic institutions." },
+
+  { name: "Beth Simmons", paradigm: "positivist", subfield: "International Law",
+    work: "Mobilizing for Human Rights (2009)",
+    argument: "International human rights treaties improve rights practices — not by constraining governments directly, but by empowering domestic groups to mobilize and litigate using treaty commitments.",
+    method: "Large-N statistical analysis across 160+ countries combined with qualitative case studies",
+    criticism: "Selection effects — states that ratify may already be improving; the causal arrow between treaties and domestic mobilization is debated." },
+
+  { name: "Andrew Moravcsik", paradigm: "positivist", subfield: "European Politics/IPE",
+    work: "The Choice for Europe (1998)",
+    argument: "European integration is best explained by the economic interests of powerful domestic groups, intergovernmental bargaining, and institutional delegation — not by supranational entrepreneurs or ideology.",
+    method: "Structured comparison of five major EU treaty negotiations; process tracing",
+    criticism: "Downplays the independent role of EU institutions and ideas; too state-centric to explain supranational dynamics." },
+
+  { name: "Helen Milner", paradigm: "positivist", subfield: "IPE",
+    work: "Interests, Institutions, and Information (1997)",
+    argument: "International cooperation fails not because of anarchy but because of domestic politics — the distribution of information and power between executives, legislatures, and interest groups shapes whether states cooperate.",
+    method: "Formal models with structured case comparisons",
+    criticism: "Blurs the line between international and comparative politics; formal models may oversimplify the messiness of domestic politics." },
+
+  { name: "Robert Gilpin", paradigm: "positivist", subfield: "IPE",
+    work: "War and Change in World Politics (1981)",
+    argument: "The international system is shaped by a dominant hegemon whose decline triggers instability and potential war, as rising powers challenge the existing order.",
+    method: "Historical analysis of hegemonic cycles from antiquity to the modern era",
+    criticism: "Overly deterministic — hegemonic transitions don't always lead to war (e.g., Britain to the US); difficult to predict timing." },
+
+  { name: "Bruce Russett", paradigm: "positivist", subfield: "Democratic Peace",
+    work: "Grasping the Democratic Peace (1993)",
+    argument: "Democracies almost never fight wars against each other — this democratic peace is one of the strongest empirical regularities in IR, driven by shared norms and institutional constraints.",
+    method: "Large-N quantitative analysis of interstate conflict dyads",
+    criticism: "Definitional debates (what counts as a democracy? what counts as a war?); may be an artifact of Cold War alliances or economic interdependence." },
+
+  { name: "Barbara Geddes", paradigm: "positivist", subfield: "Comparative/Regimes",
+    work: "Paradigms and Sand Castles (2003)",
+    argument: "Different types of authoritarian regimes (military, single-party, personalist) break down in systematically different ways — lumping all autocracies together leads to flawed theories.",
+    method: "Large-N statistical analysis of authoritarian regime duration and breakdown",
+    criticism: "Regime typologies can be blurry in practice — many regimes are hybrids that don't fit neatly into categories." },
+
+  { name: "Adam Przeworski", paradigm: "positivist", subfield: "Democratization",
+    work: "Democracy and Development (2000)",
+    argument: "Economic development does not cause democratization, but it does help democracies survive once established — democracies in wealthy countries almost never collapse.",
+    method: "Large-N statistical analysis of regime transitions across 135 countries (1950–1990)",
+    criticism: "Contested causal story — some argue development does cause democratization (modernization theory); the mechanism linking wealth to democratic survival is debated." },
+
+  // INTERPRETIVIST
+  { name: "Alexander Wendt", paradigm: "interpretivist", subfield: "Constructivism",
+    work: "Social Theory of International Politics (1999)",
+    argument: "Anarchy does not have a single logic — it is 'what states make of it.' State identities and interests are socially constructed through interaction, not given by the system's structure.",
+    method: "Theoretical/philosophical argument drawing on sociological theory (Giddens, Mead)",
+    criticism: "Remains state-centric despite claiming to move beyond materialism; the theory is better at describing than predicting." },
+
+  { name: "Martha Finnemore", paradigm: "interpretivist", subfield: "Norms/IO",
+    work: "National Interests in International Society (1996)",
+    argument: "International organizations don't just serve state interests — they actively teach states new norms and reshape what states believe their interests are.",
+    method: "Comparative case studies of UNESCO, Red Cross, and World Bank norm diffusion",
+    criticism: "If IOs are so powerful at shaping norms, why do states so often ignore or defy them? Selection bias in case choice." },
+
+  { name: "Peter Katzenstein", paradigm: "interpretivist", subfield: "Security/Identity",
+    work: "The Culture of National Security (1996)",
+    argument: "National security policy is shaped by culture, identity, and norms — not just material threats. What states define as a 'threat' is culturally constructed.",
+    method: "Edited volume with structured case comparisons across countries",
+    criticism: "Culture is notoriously difficult to measure and can become a residual explanation — invoked when material factors fail." },
+
+  { name: "Nina Tannenwald", paradigm: "interpretivist", subfield: "Norms/Security",
+    work: "The Nuclear Taboo (2007)",
+    argument: "A normative taboo — not just deterrence — explains why nuclear weapons have not been used since 1945. The taboo evolved gradually and now powerfully constrains even great powers.",
+    method: "Process tracing of US nuclear decision-making across multiple crises",
+    criticism: "Is it really a taboo, or just strategic calculation dressed up in normative language? Hard to distinguish norm from interest." },
+
+  { name: "Kathryn Sikkink", paradigm: "interpretivist", subfield: "Human Rights/Norms",
+    work: "The Justice Cascade (2011)",
+    argument: "A global trend toward holding leaders individually accountable for human rights violations has cascaded across countries, fundamentally shifting norms of sovereignty and impunity.",
+    method: "Mixed — quantitative data on prosecutions combined with process tracing in Latin America and Europe",
+    criticism: "Overly optimistic — many perpetrators still enjoy impunity; the 'cascade' may be more uneven and reversible than claimed." },
+
+  { name: "Ted Hopf", paradigm: "interpretivist", subfield: "Identity/Foreign Policy",
+    work: "Social Construction of International Politics (2002)",
+    argument: "States' foreign policies are driven by dominant domestic identities — the way a society understands itself determines how it categorizes others as friends or threats.",
+    method: "Discourse analysis of Soviet/Russian identity texts (novels, films, newspapers, textbooks)",
+    criticism: "How do you get from diffuse cultural identity to specific foreign policy decisions? The causal mechanism can feel underdetermined." },
+
+  { name: "Friedrich Kratochwil", paradigm: "interpretivist", subfield: "Norms/Law",
+    work: "Rules, Norms, and Decisions (1989)",
+    argument: "International politics is governed by rules and norms that operate through practical reasoning and argumentation — not through causal regularities that can be tested positivistically.",
+    method: "Philosophical/interpretive analysis of legal and normative reasoning",
+    criticism: "So abstract it's difficult to apply empirically; critics say it abandons any possibility of cumulative social science." },
+
+  { name: "Ole Wæver", paradigm: "interpretivist", subfield: "Security",
+    work: "Securitization theory — Copenhagen School (1995/1998)",
+    argument: "Security is not an objective condition but a speech act — an issue becomes a 'security' issue when a powerful actor successfully frames it as an existential threat, enabling emergency measures.",
+    method: "Discourse analysis of securitizing moves in policy speeches and documents",
+    criticism: "Overemphasizes elite speech acts — what about silent security practices, audiences that reject securitization, or non-verbal threats?" },
+
+  { name: "Barry Buzan", paradigm: "interpretivist", subfield: "Security",
+    work: "People, States and Fear (1983/1991)",
+    argument: "Security must be broadened beyond the military sector to include political, economic, societal, and environmental dimensions — and analyzed at the regional level through 'security complexes.'",
+    method: "Conceptual framework building; regional comparative analysis",
+    criticism: "If everything is security, nothing is — broadening the concept too far risks making it analytically useless." },
+
+  { name: "Vendulka Kubálková", paradigm: "interpretivist", subfield: "Foreign Policy",
+    work: "Foreign Policy in a Constructed World (2001)",
+    argument: "Foreign policy analysis and constructivism need each other — constructivism provides the ontology (socially constructed reality), FPA provides the agency and decision-making focus.",
+    method: "Rule-oriented constructivism; interpretive case studies",
+    criticism: "Remains relatively niche — hasn't generated the empirical research program that mainstream constructivism or FPA have." },
+
+  { name: "Iver Neumann", paradigm: "interpretivist", subfield: "Identity",
+    work: "Uses of the Other (1999)",
+    argument: "State and regional identities are constructed through the definition of an 'Other' — Europe's identity, for example, has been constituted through its representations of 'the East.'",
+    method: "Discourse analysis and historical genealogy of identity narratives",
+    criticism: "Risk of essentialism in reverse — defining identity solely through othering can oversimplify complex, plural identity processes." },
+
+  // CRITICAL
+  { name: "Robert Cox", paradigm: "critical", subfield: "Critical Theory/IPE",
+    work: "Social Forces, States and World Orders (1981)",
+    argument: "'Theory is always for someone and for some purpose.' Mainstream IR theory serves existing power structures; critical theory must expose these structures and envision alternatives for emancipation.",
+    method: "Historical materialist analysis of world orders; Gramscian concepts of hegemony",
+    criticism: "Better at critique than construction — what does the alternative world order actually look like? Can be vague on policy prescriptions." },
+
+  { name: "Andrew Linklater", paradigm: "critical", subfield: "Critical Theory",
+    work: "The Transformation of Political Community (1998)",
+    argument: "The sovereign state unjustly excludes — political community must be transformed to include those beyond borders, moving toward cosmopolitan principles of inclusion and dialogue.",
+    method: "Normative political theory drawing on Habermas and Frankfurt School",
+    criticism: "Utopian — offers no realistic path from the current state system to cosmopolitan political community; ignores power realities." },
+
+  { name: "David Campbell", paradigm: "critical", subfield: "Poststructuralism",
+    work: "Writing Security (1992)",
+    argument: "Foreign policy is not a response to pre-existing threats — it is a practice of identity construction that produces the boundaries between self and other, domestic and foreign, safe and threatening.",
+    method: "Discourse analysis and deconstruction of US foreign policy texts",
+    criticism: "If there are no real threats, only constructed ones, how do you explain material violence? Can feel disconnected from policy reality." },
+
+  { name: "R.B.J. Walker", paradigm: "critical", subfield: "Poststructuralism",
+    work: "Inside/Outside (1993)",
+    argument: "The inside/outside binary — domestic order vs. international anarchy — is not a description of reality but a political construction that the discipline of IR reproduces and legitimizes.",
+    method: "Political theory; genealogical critique of IR's foundational concepts",
+    criticism: "Highly abstract — difficult to translate into empirical research or concrete political analysis." },
+
+  { name: "Gayatri Chakravorty Spivak", paradigm: "critical", subfield: "Postcolonial",
+    work: "Can the Subaltern Speak? (1988)",
+    argument: "Western knowledge systems, including well-intentioned scholarship, systematically silence the voices of the most marginalized — the subaltern cannot 'speak' within dominant structures of representation.",
+    method: "Deconstructive literary and philosophical analysis",
+    criticism: "Extremely dense and inaccessible prose; critics argue the argument is self-defeating — if subalterns can't speak, what is the scholar's role?" },
+
+  { name: "Siba Grovogui", paradigm: "critical", subfield: "Postcolonial",
+    work: "Sovereigns, Quasi Sovereigns, and Africans (1996)",
+    argument: "International law and sovereignty have been racially structured from the start — African states were systematically denied full sovereign status through legal doctrines rooted in colonial and racial hierarchies.",
+    method: "Historical and legal analysis of international law's application in Africa",
+    criticism: "Can the argument be extended beyond Africa? Some question whether the framework adequately accounts for African agency within the system." },
+
+  { name: "Amitav Acharya", paradigm: "critical", subfield: "Non-Western IR",
+    work: "The End of American World Order (2014)",
+    argument: "The liberal international order was never truly global — a multiplex world of diverse regional orders is emerging, and IR theory must move beyond Western-centric frameworks through 'norm subsidiarity.'",
+    method: "Historical comparative analysis of regional institutions (especially ASEAN); conceptual innovation",
+    criticism: "The 'multiplex' concept can be vague — is it a description, a prediction, or a normative aspiration? Relationship to existing theory is debated." },
+
+  { name: "Branwen Gruffydd Jones", paradigm: "critical", subfield: "Postcolonial",
+    work: "Decolonizing International Relations (2006)",
+    argument: "IR as a discipline was born out of colonial and imperial projects and continues to reproduce Eurocentric assumptions — decolonizing IR requires fundamentally rethinking its categories and canon.",
+    method: "Critical historiography of the IR discipline; postcolonial theory",
+    criticism: "If IR's foundations are irredeemably colonial, can the discipline be reformed from within, or must it be abandoned entirely?" },
+
+  { name: "J. Ann Tickner", paradigm: "critical", subfield: "Feminist IR",
+    work: "Gender in International Relations (1992)",
+    argument: "Mainstream IR theory — especially realism — is built on masculinist assumptions (power, autonomy, rationality) that render women's experiences invisible and distort our understanding of global politics.",
+    method: "Feminist standpoint theory; critique and reinterpretation of canonical IR texts",
+    criticism: "Realists argue gender is irrelevant to structural analysis; some feminists argue Tickner doesn't go far enough beyond the state." },
+
+  { name: "Cynthia Enloe", paradigm: "critical", subfield: "Feminist IR",
+    work: "Bananas, Beaches and Bases (1989)",
+    argument: "International politics depends on the systematic manipulation of gender — from military wives to sweatshop workers to diplomatic hostesses, women's lives are deeply political and essential to how the global system operates.",
+    method: "Ethnographic sensibility; feminist curiosity applied to everyday sites of international politics",
+    criticism: "Anecdotal and unsystematic according to positivist critics; lacks a falsifiable theoretical framework." },
+
+  { name: "Laura Shepherd", paradigm: "critical", subfield: "Feminist IR",
+    work: "Gender, Violence and Security (2008)",
+    argument: "The Women, Peace and Security agenda (UNSCR 1325) was a milestone but also disciplined gender into institutional frameworks that can reinforce the very power structures feminism seeks to challenge.",
+    method: "Discourse analysis of UN policy texts and WPS implementation",
+    criticism: "Risk of undermining a hard-won policy achievement by being too critical of WPS from within." },
+
+  { name: "Christine Sylvester", paradigm: "critical", subfield: "Feminist IR",
+    work: "Feminist International Relations: An Unfinished Journey (2002)",
+    argument: "Feminist IR must go beyond 'adding women' to existing theories — it needs to fundamentally rethink what counts as international relations by centering experience, empathy, and embodiment.",
+    method: "Feminist epistemology; narrative and experiential analysis (including war experience)",
+    criticism: "Too fragmented — moving between standpoint, postmodern, and empiricist feminisms without settling on a coherent research program." },
+
+  { name: "Robyn Eckersley", paradigm: "critical", subfield: "Environmental",
+    work: "The Green State (2004)",
+    argument: "The state can and should be transformed into a 'green state' that takes ecological responsibility beyond its borders — ecological democracy requires rethinking sovereignty and representation.",
+    method: "Normative political theory; comparative analysis of environmental governance",
+    criticism: "Idealistic — states are driven by economic growth imperatives that fundamentally conflict with ecological limits." },
+
+  { name: "Peter Dauvergne", paradigm: "critical", subfield: "Environmental/IPE",
+    work: "The Shadows of Consumption (2008)",
+    argument: "Global environmental destruction is driven by the political economy of consumption in wealthy countries — corporate power and consumerism systematically shift ecological costs onto the Global South.",
+    method: "Political economy analysis of global commodity chains and environmental impacts",
+    criticism: "Can downplay agency in the Global South; solution of reducing consumption is politically unrealistic without structural alternatives." },
+];
+
+let selectedScholar = null;
+let currentFilter = 'all';
+let currentSearch = '';
+
+function renderCards() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+
+  const filtered = scholars.filter(s => {
+    const matchFilter = currentFilter === 'all' || s.paradigm === currentFilter;
+    const matchSearch = currentSearch === '' ||
+      (s.name + s.work + s.argument + s.subfield + s.method + s.criticism)
+        .toLowerCase().includes(currentSearch.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  // Update counter
+  document.getElementById('results-counter').textContent =
+    `Showing ${filtered.length} of ${scholars.length} scholars`;
+
+  filtered.forEach((s) => {
+    const globalIndex = scholars.indexOf(s);
+    const isSelected = selectedScholar === globalIndex;
+    const card = document.createElement('div');
+    card.className = `card ${s.paradigm} ${isSelected ? 'selected' : ''}`;
+    card.onclick = () => toggleCard(globalIndex);
+    card.innerHTML = `
+      <span class="card-paradigm ${s.paradigm}">${s.paradigm}</span>
+      <span class="card-subfield">${s.subfield}</span>
+      <h3>${s.name}</h3>
+      <div class="work">${s.work}</div>
+      <div class="argument">${s.argument}</div>
+      <div class="card-detail ${isSelected ? 'visible' : ''}">
+        <p><strong>Method:</strong> ${s.method}</p>
+        <p style="margin-top:0.4rem"><strong>Key criticism:</strong> ${s.criticism}</p>
+      </div>
+      <div class="spots">
+        <span>Spots available</span>
+        <div class="spots-dots">
+          <div class="spot-dot"></div>
+          <div class="spot-dot"></div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function toggleCard(index) {
+  selectedScholar = selectedScholar === index ? null : index;
+  renderCards();
+  updateSelectionDisplay();
+  checkReady();
+}
+
+function filterCards(paradigm) {
+  currentFilter = paradigm;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.className = 'tab';
+    if (paradigm === 'all' && t.textContent.includes('All')) t.className = 'tab active-all';
+    if (paradigm === 'positivist' && t.textContent.includes('Positivist')) t.className = 'tab active-positivist';
+    if (paradigm === 'interpretivist' && t.textContent.includes('Interpretivist')) t.className = 'tab active-interpretivist';
+    if (paradigm === 'critical' && t.textContent.includes('Critical')) t.className = 'tab active-critical';
+  });
+  renderCards();
+}
+
+function searchCards(query) {
+  currentSearch = query;
+  renderCards();
+}
+
+function updateSelectionDisplay() {
+  const display = document.getElementById('selected-display');
+  if (selectedScholar !== null) {
+    const s = scholars[selectedScholar];
+    display.className = 'selected-scholar-display has-selection';
+    display.innerHTML = `<div><strong>${s.name}</strong> · <span style="color:#64748b">${s.work}</span></div>`;
+  } else {
+    display.className = 'selected-scholar-display';
+    display.innerHTML = 'Click a scholar card above to select them';
+  }
+}
+
+function checkReady() {
+  const name = document.getElementById('student-name').value.trim();
+  const paradigm = document.getElementById('student-paradigm').value;
+  const rq = document.getElementById('student-rq').value.trim();
+  const btn = document.getElementById('btn-confirm');
+  btn.className = (name && paradigm && rq && selectedScholar !== null)
+    ? 'btn-confirm ready' : 'btn-confirm';
+}
+
+function confirmSelection() {
+  const name = document.getElementById('student-name').value.trim();
+  const s = scholars[selectedScholar];
+  const toast = document.getElementById('toast');
+  toast.textContent = `✓  ${name} → ${s.name} · Selection confirmed!`;
+  toast.className = 'toast show';
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+renderCards();
+</script>
+
+</body>
+</html>
