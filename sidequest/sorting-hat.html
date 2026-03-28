@@ -14,43 +14,382 @@ header p{font-size:.85rem;color:#666;margin-top:4px}
 
 main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
 
-.card{background:#fff;border-radius:12px;padding:24px 28px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:5px solid #6366f1}
-.card h2{font-size:1.2rem;color:#0f3460;margin-bottom:8px}
-.card h3{font-size:1.05rem;color:#0f3460;margin-bottom:6px}
-.card p{font-size:.95rem;line-height:1.7;margin-bottom:6px}
-
-/* Progress */
 .progress-bar{background:#e5e7eb;height:8px;border-radius:4px;margin:16px 0;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#0f3460);border-radius:4px;transition:width .4s}
-.progress-text{font-size:.8rem;color:#888;text-align:center;margin-bottom:8px}
+.progress-text{font-size:.8rem;color:#888;text-align:center}
 
-/* Question */
-.question-card{background:#fff;border-radius:14px;padding:28px;margin:16px 0;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center}
-.question-card .q-number{font-size:.8rem;color:#6366f1;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.question-card h2{font-size:1.15rem;color:#1a1a2e;margin-bottom:20px;line-height:1.6}
+.screen{display:none;animation:fadeIn .3s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-.options{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.card{background:#fff;border-radius:12px;padding:28px;margin:16px 0;box-shadow:0 3px 12px rgba(0,0,0,.07);text-align:center}
+.card h2{font-size:1.15rem;color:#1a1a2e;margin-bottom:8px;line-height:1.6}
+.card p{font-size:.95rem;line-height:1.7;color:#555}
+
+.scenario{background:#f0f4ff;border-radius:10px;padding:16px 20px;margin-bottom:16px;font-size:.95rem;line-height:1.7;font-style:italic;border-left:4px solid #6366f1;text-align:left}
+
+.q-label{font-size:.78rem;color:#6366f1;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+
+.options{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .option{background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;padding:14px 18px;cursor:pointer;transition:.2s;text-align:left;font-size:.95rem;line-height:1.5}
 .option:hover{border-color:#6366f1;background:#f0f4ff}
-.option.selected{border-color:#0f3460;background:#e0e7ff;font-weight:600}
 
-/* Scenario */
-.scenario{background:#f0f4ff;border-radius:10px;padding:16px 20px;margin-bottom:16px;font-size:.95rem;line-height:1.7;font-style:italic;border-left:4px solid #6366f1}
+button{padding:10px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:16px}
+button:hover{transform:translateY(-1px)}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
 
-/* Result */
-.result{text-align:center;padding:32px 24px}
-.result .hat-icon{font-size:4rem;margin-bottom:12px}
-.result h1{font-size:1.8rem;margin-bottom:4px}
-.result .track-name{font-size:1.3rem;font-weight:700;margin:8px 0 16px}
-.result .track-name.pos{color:#1e40af}
-.result .track-name.int{color:#92400e}
-.result .track-name.crit{color:#9d174d}
-.result .description{font-size:1rem;line-height:1.7;max-width:560px;margin:0 auto 20px;text-align:left}
+.badge{display:inline-block;padding:3px 12px;border-radius:14px;font-size:.8rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
 
-.score-section{margin:20px 0}
+/* Results */
+.result-icon{font-size:4rem;margin-bottom:12px}
+.result-title{font-size:1.6rem;color:#0f3460;margin-bottom:4px}
+.result-track{font-size:1.3rem;font-weight:700;margin:8px 0 16px}
+.result-track.pos{color:#1e40af}
+.result-track.int{color:#92400e}
+.result-track.crit{color:#9d174d}
+.result-desc{font-size:.95rem;line-height:1.7;text-align:left;max-width:560px;margin:0 auto 20px}
+
 .score-row{display:flex;align-items:center;gap:12px;margin:8px 0}
-.score-label{width:120px;font-size:.88rem;font-weight:600;text-align:right}
-.score-bar-bg{flex:1;height:14px;background:#e5e7eb;border-radius:7px;overflow:hidden}
-.score-bar-fill{height:100%;border-radius:7px;transition:width .6s}
-.score-bar-fill.pos{background:#2563eb}
-.score-bar-fill.int{background:#d
+.score-label{width:110px;font-size:.85rem;font-weight:600;text-align:right}
+.score-pct{width:40px;font-size:.85rem;font-weight:700;text-align:left}
+.bar-bg{flex:1;height:14px;background:#e5e7eb;border-radius:7px;overflow:hidden}
+.bar-fill{height:100%;border-radius:7px;transition:width .6s}
+.bar-fill.pos{background:#2563eb}
+.bar-fill.int{background:#d97706}
+.bar-fill.crit{background:#db2777}
+
+.ambition-box{background:#f9fafb;border-radius:10px;padding:16px 20px;margin:16px 0;text-align:left;border:1px solid #e5e7eb}
+.ambition-box h3{font-size:1rem;color:#0f3460;margin-bottom:6px}
+.ambition-box p{font-size:.9rem;line-height:1.6;color:#555}
+
+.btn-row{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:11px 24px;border-radius:9px;font-weight:600;font-size:.9rem;opacity:0;transition:.4s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The Epistemology Sorting Hat</h1>
+  <p>PSIR220 · Side Quest · Discover your paradigm identity</p>
+</header>
+
+<main>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <div class="card">
+    <div style="font-size:3rem;margin-bottom:12px;">🎩</div>
+    <h2>Welcome to the Sorting Hat</h2>
+    <p>This is not a test — there are no right or wrong answers. The Hat will ask you 12 questions about how you see the world, what puzzles interest you, and what kind of researcher you want to become. At the end, it will suggest which paradigm track fits you best.</p>
+    <p style="margin-top:12px;"><strong>You can take this as many times as you like.</strong> Your result may change as you learn more — that's the point.</p>
+    <button class="btn-primary" onclick="startQuiz()">Put on the Hat</button>
+  </div>
+</div>
+
+<!-- QUESTIONS -->
+<div class="screen" id="quizScreen">
+  <div class="progress-text" id="progText">Question 1 of 12</div>
+  <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+  <div class="card" id="questionCard"></div>
+</div>
+
+<!-- AMBITION -->
+<div class="screen" id="ambitionScreen">
+  <div class="card">
+    <div class="q-label">One last thing</div>
+    <h2>What kind of scholar do you want to be?</h2>
+    <p style="margin-bottom:16px;color:#666;">This doesn't change your score — it helps the Hat understand your aspirations.</p>
+    <div class="options">
+      <div class="option" onclick="setAmbition(this,'explain')">I want to <strong>explain</strong> — find patterns, test theories, and build models that predict outcomes.</div>
+      <div class="option" onclick="setAmbition(this,'understand')">I want to <strong>understand</strong> — get inside events, recover meaning, and tell stories that illuminate how people experience politics.</div>
+      <div class="option" onclick="setAmbition(this,'challenge')">I want to <strong>challenge</strong> — question assumptions, expose power, and change how we think about who gets heard.</div>
+      <div class="option" onclick="setAmbition(this,'unsure')">I'm <strong>not sure yet</strong> — I'm still figuring out what research means to me.</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="resultScreen">
+  <div class="card" id="resultCard"></div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="exportResult()">Download Result</button>
+    <button class="btn-secondary" onclick="retake()">Retake</button>
+  </div>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var scores = {pos:0, int:0, crit:0};
+var currentQ = 0;
+var ambition = '';
+
+var questions = [
+  {
+    scenario: "You read a news story about a country where a peace agreement just collapsed. Your first instinct is to ask:",
+    options: [
+      {text: "What variables changed? Was it a shift in military balance, an economic shock, or a leadership change?", s:"pos"},
+      {text: "What did the agreement mean to the people living there? How did each side understand the promises differently?", s:"int"},
+      {text: "Whose interests did the agreement serve in the first place? Was it designed to maintain an unequal status quo?", s:"crit"}
+    ]
+  },
+  {
+    scenario: "A professor shows you two conflicting studies about the same topic — one finds a strong effect, the other finds nothing. You think:",
+    options: [
+      {text: "One of them probably has a flawed research design. I'd check the data, sample size, and controls.", s:"pos"},
+      {text: "They might be studying different contexts where the same concept means different things. Context matters.", s:"int"},
+      {text: "I'd ask who funded each study and what institutional pressures shaped the questions they were allowed to ask.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "You're choosing a topic for a research paper. Which of these feels most like your kind of puzzle?",
+    options: [
+      {text: "Why do some democracies survive economic crises while others collapse? I want to compare 30 cases and find the pattern.", s:"pos"},
+      {text: "How did ordinary citizens in one country experience and narrate a political transition? I want to read their letters and speeches.", s:"int"},
+      {text: "How does the international community decide which crises count as 'humanitarian' and which get ignored? I want to expose the logic.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "You have to explain your research to a friend who doesn't study politics. You'd most naturally say:",
+    options: [
+      {text: "'I'm trying to figure out what causes X — like a scientist testing a hypothesis.'", s:"pos"},
+      {text: "'I'm trying to understand how people in a particular situation made sense of what was happening to them.'", s:"int"},
+      {text: "'I'm trying to show that something everyone takes for granted is actually a product of power that benefits certain groups.'", s:"crit"}
+    ]
+  },
+  {
+    scenario: "You're in a seminar and someone presents a dataset showing that countries with more trade have fewer wars. Your reaction:",
+    options: [
+      {text: "Interesting — but is the relationship causal? I'd want to see the controls for GDP, alliance ties, and regime type.", s:"pos"},
+      {text: "Numbers can't capture the whole story. I'd want to know how leaders in those countries actually talked about trade and peace.", s:"int"},
+      {text: "Who defined 'war'? Structural violence and economic coercion don't show up in conflict datasets.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "A friend says: 'The researcher should be objective and keep their personal views out of the analysis.' You think:",
+    options: [
+      {text: "Agreed — rigorous method is how we separate what we believe from what the evidence shows.", s:"pos"},
+      {text: "Total objectivity is impossible, but reflexivity — being honest about your perspective — is the next best thing.", s:"int"},
+      {text: "The claim to objectivity is itself political. It hides the fact that all research serves someone's interests.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "You're given funding to study migration. Your first move is to:",
+    options: [
+      {text: "Download migration flow data from the UN and look for correlations with economic indicators across 100 countries.", s:"pos"},
+      {text: "Travel to a border community and interview people about how they understand home, belonging, and movement.", s:"int"},
+      {text: "Analyse government policy documents to show how 'the migrant' is constructed as a threat in official discourse.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "Which of these books would you pick up first in a bookshop?",
+    options: [
+      {text: "A data-driven analysis of why some countries get rich and others stay poor — with charts and regressions.", s:"pos"},
+      {text: "An oral history of a revolution told through the voices of the people who lived through it.", s:"int"},
+      {text: "A critique of how 'development' became a way for powerful nations to reshape the Global South in their image.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "Your ideal research output would be:",
+    options: [
+      {text: "A finding that other researchers can replicate and test in different settings.", s:"pos"},
+      {text: "A rich narrative that makes readers see a familiar event in a completely new way.", s:"int"},
+      {text: "An argument that changes how people think about justice, power, or who gets to speak.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "When you hear the word 'theory,' you think of:",
+    options: [
+      {text: "A set of propositions that generate testable predictions about how the world works.", s:"pos"},
+      {text: "A lens or framework that helps you interpret events and understand how actors see their world.", s:"int"},
+      {text: "A tool for critique — a way to reveal what dominant narratives hide or naturalise.", s:"crit"}
+    ]
+  },
+  {
+    scenario: "A classmate says: 'IR theory is too abstract — it doesn't help real people.' You respond:",
+    options: [
+      {text: "'Good theory does help — it identifies what works, so policymakers can make better decisions.'", s:"pos"},
+      {text: "'Theory helps us understand how people experience politics — that understanding is valuable in itself.'", s:"int"},
+      {text: "'The question is whose 'help' we're talking about. Theory should serve the marginalised, not the powerful.'", s:"crit"}
+    ]
+  },
+  {
+    scenario: "You're writing the conclusion of your paper. Your final sentence is most likely to say something like:",
+    options: [
+      {text: "'These findings suggest that future research should test this relationship in additional cases with updated data.'", s:"pos"},
+      {text: "'This case reveals the importance of attending to how actors construct meaning in moments of political uncertainty.'", s:"int"},
+      {text: "'Until we confront the power structures that produce these outcomes, no amount of data will lead to justice.'", s:"crit"}
+    ]
+  }
+];
+
+var trackInfo = {
+  pos: {
+    name: "Strategist",
+    full: "Positivist / Strategist",
+    icon: "🔬",
+    color: "pos",
+    desc: "You think like a scientist. You want to explain, predict, and generalise. You believe that careful observation, measurement, and systematic comparison can reveal causal patterns in international politics. Your instinct is to ask 'what causes this?' and to answer with evidence that others can replicate and test. You're drawn to data, hypotheses, and the satisfying clarity of a well-designed research framework.",
+    strengths: "Rigour, replicability, and the ability to make broad claims that travel across cases. Your work can directly inform policy by identifying what works and what doesn't.",
+    challenge: "Remember that not everything that matters can be measured. The richness of human meaning and the hidden operations of power may escape your datasets. Engage seriously with rival schools — they see things your methods can't."
+  },
+  int: {
+    name: "Storyteller",
+    full: "Interpretivist / Storyteller",
+    icon: "📖",
+    color: "int",
+    desc: "You think like a historian or anthropologist. You want to understand how people make sense of their political world — how identity, meaning, culture, and narrative shape what happens and why. You believe that context is everything: the same event can mean entirely different things depending on who experiences it. You're drawn to close reading, thick description, and the voices of those who lived through the events you study.",
+    strengths: "Depth, nuance, and the ability to reveal what quantitative studies miss. Your work gives voice to experience and reminds us that politics is made by people, not just variables.",
+    challenge: "Be ready to defend the generalisability of your insights. A single case brilliantly told still needs to speak to broader questions. And don't dismiss positivist evidence just because it feels reductive — engage with it."
+  },
+  crit: {
+    name: "Disruptor",
+    full: "Critical / Postmodern / Disruptor",
+    icon: "⚡",
+    color: "crit",
+    desc: "You think like a critic and an activist. You want to expose how power operates through the categories, discourses, and institutions that most people take for granted. You believe that knowledge is never neutral — it always serves someone's interests — and that the job of the researcher is to ask who benefits, who is silenced, and how things could be otherwise. You're drawn to deconstruction, genealogy, and the voices of those who have been written out of the mainstream story.",
+    strengths: "The ability to see what others don't question. Your work challenges dominant narratives and opens space for marginalised perspectives. You remind the discipline that method and theory are never innocent.",
+    challenge: "Critique is powerful, but it's not enough on its own. Be prepared to say what you're for, not just what you're against. And engage charitably with the schools you criticise — the strongest critique is one that takes the other side seriously."
+  }
+};
+
+function startQuiz(){
+  scores = {pos:0, int:0, crit:0};
+  currentQ = 0;
+  ambition = '';
+  showScreen('quizScreen');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  var q = questions[currentQ];
+  var pct = Math.round((currentQ/questions.length)*100);
+  document.getElementById('progText').textContent = 'Question '+(currentQ+1)+' of '+questions.length;
+  document.getElementById('progFill').style.width = pct+'%';
+
+  var html = '<div class="q-label">Question '+(currentQ+1)+'</div>';
+  html += '<div class="scenario">'+q.scenario+'</div>';
+  html += '<div class="options">';
+  for(var i=0;i<q.options.length;i++){
+    html += '<div class="option" onclick="answer(\''+q.options[i].s+'\')">'+q.options[i].text+'</div>';
+  }
+  html += '</div>';
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function answer(s){
+  scores[s]++;
+  currentQ++;
+  if(currentQ < questions.length){
+    renderQuestion();
+  } else {
+    document.getElementById('progFill').style.width = '100%';
+    document.getElementById('progText').textContent = 'Almost there...';
+    showScreen('ambitionScreen');
+  }
+}
+
+function setAmbition(el, val){
+  ambition = val;
+  document.querySelectorAll('#ambitionScreen .option').forEach(function(o){o.style.borderColor='#e5e7eb';o.style.background='#f9fafb';o.style.fontWeight='400';});
+  el.style.borderColor = '#0f3460';
+  el.style.background = '#e0e7ff';
+  el.style.fontWeight = '600';
+  setTimeout(showResult, 400);
+}
+
+function showResult(){
+  var total = scores.pos + scores.int + scores.crit;
+  var pPos = Math.round((scores.pos/total)*100);
+  var pInt = Math.round((scores.int/total)*100);
+  var pCrit = Math.round((scores.crit/total)*100);
+
+  var winner = 'pos';
+  if(scores.int >= scores.pos && scores.int >= scores.crit) winner = 'int';
+  if(scores.crit >= scores.pos && scores.crit >= scores.int) winner = 'crit';
+
+  var t = trackInfo[winner];
+
+  var ambitionText = '';
+  if(ambition === 'explain') ambitionText = 'Your aspiration to <strong>explain and predict</strong> aligns with the Strategist mindset. Theory-testing and evidence-driven policy relevance will come naturally to you.';
+  else if(ambition === 'understand') ambitionText = 'Your aspiration to <strong>understand and interpret</strong> aligns with the Storyteller mindset. Deep contextual knowledge and narrative richness will be your strengths.';
+  else if(ambition === 'challenge') ambitionText = 'Your aspiration to <strong>challenge and transform</strong> aligns with the Disruptor mindset. Critical questioning and emancipatory thinking will drive your research.';
+  else ambitionText = "You're still exploring — and that's perfectly fine at this stage. Let the course help you discover what kind of scholar you want to become.";
+
+  var ambitionMatch = (ambition === 'explain' && winner === 'pos') || (ambition === 'understand' && winner === 'int') || (ambition === 'challenge' && winner === 'crit');
+
+  var html = '<div style="font-size:4rem;margin-bottom:8px;">'+t.icon+'</div>';
+  html += '<div class="result-title">The Hat says...</div>';
+  html += '<div class="result-track '+t.color+'">'+t.full+'</div>';
+  html += '<div class="result-desc">'+t.desc+'</div>';
+
+  html += '<div style="max-width:400px;margin:0 auto;">';
+  html += '<div class="score-row"><div class="score-label">Strategist</div><div class="bar-bg"><div class="bar-fill pos" style="width:'+pPos+'%"></div></div><div class="score-pct">'+pPos+'%</div></div>';
+  html += '<div class="score-row"><div class="score-label">Storyteller</div><div class="bar-bg"><div class="bar-fill int" style="width:'+pInt+'%"></div></div><div class="score-pct">'+pInt+'%</div></div>';
+  html += '<div class="score-row"><div class="score-label">Disruptor</div><div class="bar-bg"><div class="bar-fill crit" style="width:'+pCrit+'%"></div></div><div class="score-pct">'+pCrit+'%</div></div>';
+  html += '</div>';
+
+  html += '<div class="ambition-box"><h3>Your Ambition</h3><p>'+ambitionText+'</p>';
+  if(ambition !== 'unsure' && !ambitionMatch){
+    html += '<p style="margin-top:8px;color:#92400e;"><strong>Interesting tension:</strong> your instincts point one way but your aspirations point another. This is worth reflecting on — the Paradigm Crisis tool can help you work through it.</p>';
+  }
+  html += '</div>';
+
+  html += '<div class="ambition-box"><h3>Your Strengths</h3><p>'+t.strengths+'</p></div>';
+  html += '<div class="ambition-box"><h3>Your Challenge</h3><p>'+t.challenge+'</p></div>';
+
+  document.getElementById('resultCard').innerHTML = html;
+  showScreen('resultScreen');
+}
+
+function retake(){
+  showScreen('intro');
+}
+
+function exportResult(){
+  var total = scores.pos + scores.int + scores.crit;
+  var winner = 'pos';
+  if(scores.int >= scores.pos && scores.int >= scores.crit) winner = 'int';
+  if(scores.crit >= scores.pos && scores.crit >= scores.int) winner = 'crit';
+  var t = trackInfo[winner];
+
+  var txt = 'EPISTEMOLOGY SORTING HAT — PSIR220\n';
+  txt += '====================================\n';
+  txt += 'Date: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+'\n\n';
+  txt += 'RESULT: '+t.full+'\n\n';
+  txt += 'Scores:\n';
+  txt += '  Strategist (Positivist): '+scores.pos+'/'+total+' ('+Math.round(scores.pos/total*100)+'%)\n';
+  txt += '  Storyteller (Interpretivist): '+scores.int+'/'+total+' ('+Math.round(scores.int/total*100)+'%)\n';
+  txt += '  Disruptor (Critical): '+scores.crit+'/'+total+' ('+Math.round(scores.crit/total*100)+'%)\n\n';
+  txt += 'Ambition: '+ambition+'\n\n';
+  txt += 'Description:\n'+t.desc+'\n\n';
+  txt += 'Strengths:\n'+t.strengths+'\n\n';
+  txt += 'Challenge:\n'+t.challenge+'\n';
+
+  var blob = new Blob([txt],{type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SortingHat_Result.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
+
