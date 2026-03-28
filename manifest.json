@@ -1,0 +1,14 @@
+{
+  "name": "PSIR220 – The Research Quest",
+  "short_name": "PSIR220",
+  "start_url": "/PSIR220/",
+  "scope": "/PSIR220/",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#0f3460",
+  "icons": [
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml"},
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}
