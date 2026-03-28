@@ -11,29 +11,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
 
-.login-overlay{position:fixed;inset:0;background:#f5f5f5;z-index:1000;display:flex;align-items:center;justify-content:center}
-.login-overlay.hidden{display:none}
-.login-box{background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 4px 20px rgba(0,0,0,.1)}
-.login-box h1{font-size:1.6rem;color:#0f3460;margin-bottom:4px}
-.login-box .sub{font-size:.9rem;color:#666;margin-bottom:20px}
-.login-box label{display:block;font-weight:600;margin:10px 0 4px;font-size:.88rem;color:#16213e}
-.login-box input,.login-box select{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:7px;font-size:.95rem;font-family:inherit}
-.login-box input:focus,.login-box select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
-.login-box .error{color:#dc2626;font-size:.85rem;margin-top:4px;display:none}
-.login-box button{width:100%;margin-top:16px;padding:11px;background:#0f3460;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}
-.login-box button:hover{background:#16213e}
-
-.app{display:none}
-.app.visible{display:flex;min-height:100vh}
+.app{display:flex;min-height:100vh}
 
 .sidebar{width:260px;background:#fff;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s}
 .sidebar-header{padding:18px 20px;border-bottom:1px solid #e5e7eb}
 .sidebar-header h2{font-size:1.1rem;color:#0f3460}
 .sidebar-header p{font-size:.78rem;color:#888;margin-top:2px}
-.sidebar-profile{padding:14px 20px;background:#f0f4ff;border-bottom:1px solid #e5e7eb}
-.sidebar-profile .name{font-weight:700;font-size:.9rem;color:#0f3460}
-.sidebar-profile .detail{font-size:.78rem;color:#666}
-.sidebar-profile .paradigm{margin-top:4px}
 .sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
 .nav-section{padding:8px 20px 4px;font-size:.7rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:.88rem;color:#555;cursor:pointer;transition:.15s;text-decoration:none}
@@ -41,8 +24,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
 .nav-item.active{background:#e0e7ff;color:#0f3460;font-weight:600}
 .nav-item .icon{width:20px;text-align:center}
 .nav-item .due{margin-left:auto;font-size:.7rem;color:#999}
-.sidebar-footer{padding:12px 20px;border-top:1px solid #e5e7eb;font-size:.78rem}
-.sidebar-footer a{color:#6366f1;cursor:pointer;text-decoration:none}
+.sidebar-footer{padding:12px 20px;border-top:1px solid #e5e7eb;font-size:.78rem;color:#888}
 
 .content{margin-left:260px;flex:1;min-height:100vh}
 .content iframe{width:100%;height:100vh;border:none}
@@ -50,9 +32,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
 .menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:100;background:#0f3460;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:1.1rem;cursor:pointer}
 
 .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
-.badge-pos{background:#dbeafe;color:#1e40af}
-.badge-int{background:#fef3c7;color:#92400e}
-.badge-crit{background:#fce7f3;color:#9d174d}
 .badge-done{background:#d1fae5;color:#065f46}
 .badge-active{background:#e0e7ff;color:#3730a3}
 .badge-upcoming{background:#f3f4f6;color:#999}
@@ -85,52 +64,21 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
 
 <noscript><div style="background:#fef3c7;color:#92400e;text-align:center;padding:14px;font-weight:600;">This app requires JavaScript. Open in Chrome, Firefox, or Edge.</div></noscript>
 
-<!-- Login -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <h1>The Research Quest</h1>
-    <p class="sub">PSIR220 · Spring 2025–26</p>
-    <label for="loginID">Student ID</label>
-    <input type="text" id="loginID" placeholder="e.g. 23700762" oninput="validateID()">
-    <div class="error" id="idError">ID not found in the class roster.</div>
-    <label for="loginName">Full Name</label>
-    <input type="text" id="loginName" placeholder="Auto-fills from ID" readonly>
-    <label for="loginEmail">Email</label>
-    <input type="text" id="loginEmail" placeholder="Auto-fills from ID" readonly>
-    <label for="loginParadigm">Paradigm Track</label>
-    <select id="loginParadigm">
-      <option value="">— Select —</option>
-      <option value="Positivist">Positivist / Strategist</option>
-      <option value="Interpretivist">Interpretivist / Storyteller</option>
-      <option value="Critical">Critical / Postmodern / Disruptor</option>
-    </select>
-    <button onclick="login()">Enter the Quest</button>
-  </div>
-</div>
-
-<!-- Install banner -->
 <div class="install-banner" id="installBanner">
   Install this app for offline access <button onclick="installApp()">Install</button>
 </div>
 
-<!-- Mobile toggle -->
-<button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">&#9776;</button>
+<button class="menu-toggle" onclick="toggleSidebar()">&#9776;</button>
 
-<!-- App -->
-<div class="app" id="app">
+<div class="app">
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h2>The Research Quest</h2>
       <p>PSIR220 · Spring 2025–26</p>
     </div>
-    <div class="sidebar-profile">
-      <div class="name" id="profileName">—</div>
-      <div class="detail" id="profileID">—</div>
-      <div class="paradigm" id="profileParadigm"></div>
-    </div>
     <div class="sidebar-nav">
       <div class="nav-section">Home</div>
-      <a class="nav-item active" onclick="showDashboard(this)" id="navDash"><span class="icon">&#127968;</span> Dashboard</a>
+      <a class="nav-item active" onclick="showDashboard(this)"><span class="icon">&#127968;</span> Dashboard</a>
 
       <div class="nav-section">Core Quests</div>
       <a class="nav-item" onclick="loadTool('tools/annotated-bib.html',this)"><span class="icon">&#128218;</span> Annotated Bibliography <span class="due">Mar 25</span></a>
@@ -148,14 +96,14 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
       <a class="nav-item" onclick="loadTool('lectures/lit-review-lecture.html',this)"><span class="icon">&#127891;</span> Literature Reviews</a>
     </div>
     <div class="sidebar-footer">
-      <a onclick="switchProfile()">Switch profile</a>
+      PSIR220 · Erol Kaymak · EMU
     </div>
   </nav>
 
   <div class="content" id="content">
     <div class="dashboard" id="dashboard">
-      <h1 id="dashGreeting">Welcome</h1>
-      <p>Your tools and assignments — all in one place.</p>
+      <h1>The Research Quest</h1>
+      <p>PSIR220 · Your tools and assignments — all in one place.</p>
       <div class="dash-grid">
         <div class="dash-card done" onclick="loadToolByURL('tools/annotated-bib.html')">
           <h3>&#128218; Annotated Bibliography</h3>
@@ -210,76 +158,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
 </div>
 
 <script>
-var roster=[
-{id:"20330968",name:"Mustafa \u00C7elebi",email:"20330968@emu.edu.tr"},
-{id:"21330653",name:"\u0130pek Su Feyzio\u011Flu",email:"21330653@emu.edu.tr"},
-{id:"21901516",name:"Melissa Ifeoma Odunze",email:"21901516@emu.edu.tr"},
-{id:"21903454",name:"Sesame Tlotlo Motshome",email:"21903454@emu.edu.tr"},
-{id:"22000039",name:"Halil Keskin",email:"22000039@emu.edu.tr"},
-{id:"23000047",name:"Zafer Efe Aksu",email:"23000047@emu.edu.tr"},
-{id:"23000050",name:"Yaprak Eskiocak",email:"23000050@emu.edu.tr"},
-{id:"23000053",name:"Elif \u0130meci",email:"23000053@emu.edu.tr"},
-{id:"23000057",name:"Ece \u00D6yk\u00FC \u00D6zkan",email:"23000057@emu.edu.tr"},
-{id:"23000123",name:"K\u00FCbra Birer",email:"23000123@emu.edu.tr"},
-{id:"23000124",name:"Ece Zeynep G\u00F6kyar",email:"23000124@emu.edu.tr"},
-{id:"23700762",name:"Aysel Rahmanova",email:"23700762@emu.edu.tr"},
-{id:"24450101",name:"Mehmet Yasin Dolğun",email:"24450101@emu.edu.tr"},
-{id:"24701026",name:"Aruzhan Amangeldy",email:"24701026@emu.edu.tr"},
-{id:"24772779",name:"Rifky Alfauzan",email:"24772779@emu.edu.tr"},
-{id:"24773488",name:"Sabel Hamcho",email:"24773488@emu.edu.tr"}
-];
-
-function findStudent(id){
-  for(var i=0;i<roster.length;i++){if(roster[i].id===id)return roster[i];}
-  return null;
-}
-
-function validateID(){
-  var id=document.getElementById('loginID').value.trim();
-  var s=findStudent(id);
-  if(s){
-    document.getElementById('loginName').value=s.name;
-    document.getElementById('loginEmail').value=s.email;
-    document.getElementById('idError').style.display='none';
-  }else{
-    document.getElementById('loginName').value='';
-    document.getElementById('loginEmail').value='';
-    if(id.length>=8)document.getElementById('idError').style.display='block';
-  }
-}
-
-function login(){
-  var id=document.getElementById('loginID').value.trim();
-  var name=document.getElementById('loginName').value.trim();
-  var paradigm=document.getElementById('loginParadigm').value;
-  if(!name){document.getElementById('idError').style.display='block';return;}
-  if(!paradigm){alert('Please select your paradigm track.');return;}
-  var profile={id:id,name:name,email:document.getElementById('loginEmail').value.trim(),paradigm:paradigm};
-  localStorage.setItem('psir220_profile',JSON.stringify(profile));
-  activateApp(profile);
-}
-
-function activateApp(profile){
-  document.getElementById('loginOverlay').classList.add('hidden');
-  document.getElementById('app').classList.add('visible');
-  document.getElementById('profileName').textContent=profile.name;
-  document.getElementById('profileID').textContent=profile.id;
-  var pc=profile.paradigm==='Positivist'?'badge-pos':profile.paradigm==='Interpretivist'?'badge-int':'badge-crit';
-  var pl=profile.paradigm==='Positivist'?'Strategist':profile.paradigm==='Interpretivist'?'Storyteller':'Disruptor';
-  document.getElementById('profileParadigm').innerHTML='<span class="badge '+pc+'">'+pl+'</span>';
-  document.getElementById('dashGreeting').textContent='Welcome, '+profile.name.split(' ')[0];
-}
-
-function switchProfile(){
-  localStorage.removeItem('psir220_profile');
-  location.reload();
-}
-
-try{
-  var saved=JSON.parse(localStorage.getItem('psir220_profile'));
-  if(saved&&saved.name)activateApp(saved);
-}catch(e){}
-
 var dashHTML=document.getElementById('dashboard').outerHTML;
 
 function showDashboard(el){
@@ -290,27 +168,18 @@ function showDashboard(el){
 
 function loadTool(url,el){
   setActive(el);
-  document.getElementById('content').innerHTML='<iframe src="'+url+'" onload="injectProfile(this)"></iframe>';
+  document.getElementById('content').innerHTML='<iframe src="'+url+'"></iframe>';
   document.getElementById('sidebar').classList.remove('open');
 }
 
 function loadToolByURL(url){
-  document.getElementById('content').innerHTML='<iframe src="'+url+'" onload="injectProfile(this)"></iframe>';
+  document.getElementById('content').innerHTML='<iframe src="'+url+'"></iframe>';
   document.getElementById('sidebar').classList.remove('open');
 }
 
 function setActive(el){
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
   if(el)el.classList.add('active');
-}
-
-function injectProfile(frame){
-  try{
-    var p=JSON.parse(localStorage.getItem('psir220_profile'));
-    if(p&&frame&&frame.contentWindow){
-      frame.contentWindow.postMessage({type:'psir220_profile',profile:p},'*');
-    }
-  }catch(e){}
 }
 
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
