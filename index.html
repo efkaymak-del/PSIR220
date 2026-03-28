@@ -35,15 +35,18 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
 .badge-done{background:#d1fae5;color:#065f46}
 .badge-active{background:#e0e7ff;color:#3730a3}
 .badge-upcoming{background:#f3f4f6;color:#999}
+.badge-quest{background:#fef3c7;color:#92400e}
 
-.dashboard{padding:28px 32px;max-width:900px}
+.dashboard{padding:28px 32px;max-width:940px}
 .dashboard h1{font-size:1.6rem;color:#0f3460;margin-bottom:6px}
-.dashboard>p{color:#666;margin-bottom:16px}
+.dashboard>p{color:#666;margin-bottom:20px}
+.section-title{font-size:1.1rem;font-weight:700;color:#0f3460;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid #e5e7eb}
 .dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .dash-card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 2px 6px rgba(0,0,0,.05);border-left:4px solid #e5e7eb;cursor:pointer;transition:.2s}
 .dash-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .dash-card.active{border-left-color:#6366f1}
 .dash-card.done{border-left-color:#16a34a}
+.dash-card.quest{border-left-color:#d97706}
 .dash-card h3{font-size:.95rem;color:#0f3460;margin-bottom:4px}
 .dash-card p{font-size:.83rem;color:#666;line-height:1.5}
 .dash-card .due-date{font-size:.75rem;color:#999;margin-top:8px}
@@ -77,23 +80,28 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
       <p>PSIR220 · Spring 2025–26</p>
     </div>
     <div class="sidebar-nav">
+
       <div class="nav-section">Home</div>
       <a class="nav-item active" onclick="showDashboard(this)"><span class="icon">&#127968;</span> Dashboard</a>
 
       <div class="nav-section">Core Quests</div>
-      <a class="nav-item" onclick="loadTool('tools/annotated-bib.html',this)"><span class="icon">&#128218;</span> Annotated Bibliography <span class="due">Mar 25</span></a>
-      <a class="nav-item" onclick="loadTool('tools/lit-review.html',this)"><span class="icon">&#128221;</span> Literature Review <span class="due">Apr 25</span></a>
+      <a class="nav-item" onclick="loadTool('tools/annotated-bib.htm',this)"><span class="icon">&#128218;</span> Annotated Bibliography <span class="due">Mar 25</span></a>
+      <a class="nav-item" onclick="loadTool('tools/Literature-Review-app.html',this)"><span class="icon">&#128221;</span> Literature Review <span class="due">Apr 25</span></a>
 
-      <div class="nav-section">Workshop Tools</div>
-      <a class="nav-item" onclick="loadTool('tools/character-card.html',this)"><span class="icon">&#127917;</span> Character Card</a>
-      <a class="nav-item" onclick="loadTool('tools/scholar-selector.html',this)"><span class="icon">&#128270;</span> Scholar Selector</a>
-      <a class="nav-item" onclick="loadTool('tools/lit-map.html',this)"><span class="icon">&#128506;</span> Literature Map</a>
-      <a class="nav-item" onclick="loadTool('tools/paradigm-crisis.html',this)"><span class="icon">&#9889;</span> Paradigm Crisis</a>
-      <a class="nav-item" onclick="loadTool('tools/n-size-slider.html',this)"><span class="icon">&#128202;</span> N-Size Slider</a>
+      <div class="nav-section">Toolkit</div>
+      <a class="nav-item" onclick="loadTool('tools/Lit-Review-Mapping.html',this)"><span class="icon">&#128506;</span> Literature Map</a>
+      <a class="nav-item" onclick="loadTool('tools/paradigms.htm',this)"><span class="icon">&#9889;</span> Paradigm Crisis</a>
+      <a class="nav-item" onclick="loadTool('tools/N-size-slider.htm',this)"><span class="icon">&#128202;</span> N-Size Slider</a>
+
+      <div class="nav-section">Side Quests</div>
+      <a class="nav-item" onclick="loadTool('side-quests/sorting-hat.html',this)"><span class="icon">&#127913;</span> Sorting Hat</a>
+      <a class="nav-item" onclick="loadTool('tools/Character-card-app.html',this)"><span class="icon">&#127917;</span> Character Card</a>
+      <a class="nav-item" onclick="loadTool('tools/Scholarly-characters-speed-dating.html',this)"><span class="icon">&#128270;</span> Scholar Selector</a>
 
       <div class="nav-section">Lectures</div>
-      <a class="nav-item" onclick="loadTool('lectures/causal-engine.html',this)"><span class="icon">&#127891;</span> Causal Engine</a>
-      <a class="nav-item" onclick="loadTool('lectures/lit-review-lecture.html',this)"><span class="icon">&#127891;</span> Literature Reviews</a>
+      <a class="nav-item" onclick="loadTool('lectures/causality-and-paradigms.html',this)"><span class="icon">&#127891;</span> Causal Engine</a>
+      <a class="nav-item" onclick="loadTool('lectures/Literature-review-presentation.html',this)"><span class="icon">&#127891;</span> Literature Reviews</a>
+
     </div>
     <div class="sidebar-footer">
       PSIR220 · Erol Kaymak · EMU
@@ -103,56 +111,76 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f
   <div class="content" id="content">
     <div class="dashboard" id="dashboard">
       <h1>The Research Quest</h1>
-      <p>PSIR220 · Your tools and assignments — all in one place.</p>
+      <p>PSIR220 · Your tools, assignments, and adventures — all in one place.</p>
+
+      <div class="section-title">Core Quests</div>
       <div class="dash-grid">
-        <div class="dash-card done" onclick="loadToolByURL('tools/annotated-bib.html')">
+        <div class="dash-card done" onclick="loadToolByURL('tools/annotated-bib.htm')">
           <h3>&#128218; Annotated Bibliography</h3>
           <span class="badge badge-done">Core Quest 1 · 10 pts</span>
           <p>Build your evaluated source collection.</p>
           <div class="due-date">Due: March 25, 2026</div>
         </div>
-        <div class="dash-card active" onclick="loadToolByURL('tools/lit-review.html')">
+        <div class="dash-card active" onclick="loadToolByURL('tools/Literature-Review-app.html')">
           <h3>&#128221; Literature Review Builder</h3>
           <span class="badge badge-active">Core Quest 2 · 10 pts</span>
           <p>Draft your four-section review with quality checks.</p>
           <div class="due-date">Due: April 25, 2026</div>
         </div>
-        <div class="dash-card done" onclick="loadToolByURL('tools/character-card.html')">
-          <h3>&#127917; Character Card</h3>
-          <span class="badge badge-done">Workshop</span>
-          <p>Scholar profile for speed dating.</p>
-        </div>
-        <div class="dash-card done" onclick="loadToolByURL('tools/scholar-selector.html')">
-          <h3>&#128270; Scholar Selector</h3>
-          <span class="badge badge-done">Workshop</span>
-          <p>Browse 40+ IR scholars across paradigms.</p>
-        </div>
-        <div class="dash-card done" onclick="loadToolByURL('tools/lit-map.html')">
+      </div>
+
+      <div class="section-title">Toolkit</div>
+      <div class="dash-grid">
+        <div class="dash-card done" onclick="loadToolByURL('tools/Lit-Review-Mapping.html')">
           <h3>&#128506; Visual Literature Map</h3>
           <span class="badge badge-done">Week 5</span>
           <p>Drag-and-drop debate mapping.</p>
         </div>
-        <div class="dash-card active" onclick="loadToolByURL('tools/paradigm-crisis.html')">
+        <div class="dash-card active" onclick="loadToolByURL('tools/paradigms.htm')">
           <h3>&#9889; Paradigm Crisis</h3>
           <span class="badge badge-active">Week 6</span>
           <p>Confirm or re-spec your paradigm track.</p>
         </div>
-        <div class="dash-card active" onclick="loadToolByURL('tools/n-size-slider.html')">
+        <div class="dash-card active" onclick="loadToolByURL('tools/N-size-slider.htm')">
           <h3>&#128202; N-Size Slider</h3>
           <span class="badge badge-active">Week 7</span>
           <p>Case numbers, methods, and design alignment.</p>
         </div>
-        <div class="dash-card" onclick="loadToolByURL('lectures/causal-engine.html')">
-          <h3>&#127891; Lecture: Causal Engine</h3>
-          <span class="badge badge-upcoming">Slides</span>
-          <p>Week 6 — building X to Y chains.</p>
+      </div>
+
+      <div class="section-title">Side Quests</div>
+      <div class="dash-grid">
+        <div class="dash-card quest" onclick="loadToolByURL('side-quests/sorting-hat.html')">
+          <h3>&#127913; Epistemology Sorting Hat</h3>
+          <span class="badge badge-quest">Side Quest</span>
+          <p>Discover your paradigm identity through 12 scenario questions.</p>
         </div>
-        <div class="dash-card" onclick="loadToolByURL('lectures/lit-review-lecture.html')">
-          <h3>&#127891; Lecture: Literature Reviews</h3>
+        <div class="dash-card quest" onclick="loadToolByURL('tools/Character-card-app.html')">
+          <h3>&#127917; Character Card</h3>
+          <span class="badge badge-quest">Side Quest</span>
+          <p>Scholar profile for speed dating.</p>
+        </div>
+        <div class="dash-card quest" onclick="loadToolByURL('tools/Scholarly-characters-speed-dating.html')">
+          <h3>&#128270; Scholar Selector</h3>
+          <span class="badge badge-quest">Side Quest</span>
+          <p>Browse 40+ IR scholars across paradigms.</p>
+        </div>
+      </div>
+
+      <div class="section-title">Lectures</div>
+      <div class="dash-grid">
+        <div class="dash-card" onclick="loadToolByURL('lectures/causality-and-paradigms.html')">
+          <h3>&#127891; Building the Causal Engine</h3>
+          <span class="badge badge-upcoming">Slides</span>
+          <p>Week 6 — X to mechanism to Y.</p>
+        </div>
+        <div class="dash-card" onclick="loadToolByURL('lectures/Literature-review-presentation.html')">
+          <h3>&#127891; Writing a Literature Review</h3>
           <span class="badge badge-upcoming">Slides</span>
           <p>From bibliography to scholarly conversation.</p>
         </div>
       </div>
+
     </div>
   </div>
 </div>
