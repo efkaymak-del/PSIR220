@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building the Causal Engine — PSIR220 Week 6</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Slide container */
+  .deck {
+    width: 100vw; height: 100vh;
+    position: relative; overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 4rem 6rem;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+
+  .slide.active {
+    opacity: 1; transform: translateX(0);
+    pointer-events: all;
+  }
+
+  .slide.exit {
+    opacity: 0; transform: translateX(-60px);
+  }
+
+  /* Slide types */
+  .slide-title {
+    background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 50%, #fdf2f8 100%);
+  }
+
+  .slide-section {
+    background: #fff;
+  }
+
+  .slide-dark {
+    background: #0f172a; color: #e2e8f0;
+  }
+
+  .slide-blue { background: #eff6ff; }
+  .slide-purple { background: #f5f3ff; }
+  .slide-pink { background: #fdf2f8; }
+  .slide-amber { background: #fffbeb; }
+  .slide-green { background: #f0fdf4; }
+
+  /* Typography */
+  .s-overtitle {
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+  }
+
+  .s-overtitle.blue { color: #2563eb; }
+  .s-overtitle.purple { color: #7c3aed; }
+  .s-overtitle.pink { color: #db2777; }
+  .s-overtitle.amber { color: #d97706; }
+  .s-overtitle.green { color: #059669; }
+  .s-overtitle.slate { color: #64748b; }
+
+  .s-title {
+    font-size: 2.8rem; font-weight: 800;
+    line-height: 1.15; text-align: center;
+    max-width: 800px; margin-bottom: 1rem;
+  }
+
+  .s-title.gradient {
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .s-subtitle {
+    font-size: 1.15rem; color: #64748b;
+    text-align: center; max-width: 650px;
+    line-height: 1.6;
+  }
+
+  .s-h2 {
+    font-size: 2rem; font-weight: 800;
+    line-height: 1.2; margin-bottom: 1.5rem;
+    max-width: 750px;
+  }
+
+  .s-text {
+    font-size: 1.15rem; line-height: 1.7;
+    max-width: 700px; color: #334155;
+  }
+
+  .s-text + .s-text { margin-top: 1rem; }
+
+  .s-big {
+    font-size: 1.8rem; font-weight: 700;
+    line-height: 1.4; max-width: 750px;
+    text-align: center;
+  }
+
+  .s-quote {
+    font-size: 1.5rem; font-style: italic;
+    line-height: 1.5; max-width: 650px;
+    text-align: center; color: #475569;
+    border-left: 4px solid #2563eb;
+    padding-left: 1.5rem; text-align: left;
+  }
+
+  .s-attribution {
+    font-size: 0.9rem; color: #94a3b8;
+    margin-top: 0.6rem; font-style: normal;
+  }
+
+  /* Diagram boxes */
+  .causal-chain {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 1.5rem 0; flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chain-box {
+    padding: 1rem 1.5rem; border-radius: 12px;
+    font-weight: 700; font-size: 1.1rem;
+    text-align: center; min-width: 120px;
+  }
+
+  .chain-box.x { background: #dbeafe; color: #1d4ed8; border: 2px solid #93c5fd; }
+  .chain-box.m { background: #fef3c7; color: #92400e; border: 2px solid #fde68a; }
+  .chain-box.y { background: #d1fae5; color: #065f46; border: 2px solid #6ee7b7; }
+  .chain-box.q { background: #fce7f3; color: #be185d; border: 2px solid #f9a8d4; }
+
+  .chain-arrow {
+    font-size: 1.8rem; color: #94a3b8; font-weight: 300;
+  }
+
+  /* Three column comparison */
+  .three-col {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem; max-width: 850px; width: 100%;
+    margin-top: 1rem;
+  }
+
+  .col-card {
+    border-radius: 14px; padding: 1.3rem;
+    border: 2px solid #e2e8f0;
+  }
+
+  .col-card.pos { background: #eff6ff; border-color: #bfdbfe; }
+  .col-card.int { background: #f5f3ff; border-color: #ddd6fe; }
+  .col-card.cri { background: #fdf2f8; border-color: #fbcfe8; }
+
+  .col-card h3 {
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 0.6rem;
+  }
+
+  .col-card.pos h3 { color: #1d4ed8; }
+  .col-card.int h3 { color: #6d28d9; }
+  .col-card.cri h3 { color: #be185d; }
+
+  .col-card p {
+    font-size: 0.92rem; line-height: 1.55; color: #334155;
+  }
+
+  .col-card .col-example {
+    margin-top: 0.6rem; padding-top: 0.6rem;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 0.82rem; color: #64748b;
+    font-style: italic;
+  }
+
+  /* Flaw cards */
+  .flaw-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; max-width: 800px; width: 100%;
+    margin-top: 1rem;
+  }
+
+  .flaw-card {
+    background: #fff; border-radius: 12px;
+    padding: 1.1rem; border: 2px solid #fecaca;
+  }
+
+  .flaw-card h4 {
+    font-size: 0.9rem; color: #dc2626;
+    margin-bottom: 0.3rem;
+  }
+
+  .flaw-card p {
+    font-size: 0.85rem; color: #475569; line-height: 1.5;
+  }
+
+  .flaw-card .flaw-fix {
+    margin-top: 0.4rem; font-size: 0.8rem;
+    color: #16a34a; font-weight: 600;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: #fff; border-radius: 14px;
+    padding: 1.5rem 2rem; border: 2px solid #e2e8f0;
+    max-width: 700px; margin-top: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+
+  .highlight-box.blue-border { border-color: #93c5fd; }
+  .highlight-box.amber-border { border-color: #fde68a; }
+
+  .highlight-box h4 {
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+
+  .highlight-box p {
+    font-size: 1.05rem; line-height: 1.6; color: #1e293b;
+  }
+
+  /* Step list */
+  .step-list {
+    max-width: 700px; width: 100%; margin-top: 1rem;
+  }
+
+  .step-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .step-num {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem; flex-shrink: 0;
+    background: #dbeafe; color: #1d4ed8;
+  }
+
+  .step-content h4 { font-size: 1rem; margin-bottom: 0.2rem; color: #0f172a; }
+  .step-content p { font-size: 0.95rem; color: #475569; line-height: 1.5; }
+
+  /* Navigation */
+  .nav {
+    position: fixed; bottom: 1.5rem;
+    left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 1rem;
+    background: #fff; padding: 0.6rem 1.2rem;
+    border-radius: 999px; border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    z-index: 100;
+  }
+
+  .nav-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 1.1rem; color: #475569;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .nav-counter {
+    font-size: 0.82rem; font-weight: 600; color: #64748b;
+    min-width: 60px; text-align: center;
+  }
+
+  .nav-progress {
+    width: 120px; height: 4px; background: #e2e8f0;
+    border-radius: 999px; overflow: hidden;
+  }
+
+  .nav-progress-fill {
+    height: 100%; background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: 999px; transition: width 0.3s;
+  }
+
+  /* Appear animation for elements within slides */
+  .appear {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .slide.active .appear { opacity: 1; transform: translateY(0); }
+  .slide.active .appear.d1 { transition-delay: 0.2s; }
+  .slide.active .appear.d2 { transition-delay: 0.4s; }
+  .slide.active .appear.d3 { transition-delay: 0.6s; }
+  .slide.active .appear.d4 { transition-delay: 0.8s; }
+
+  @media (max-width: 768px) {
+    .slide { padding: 2rem 1.5rem; }
+    .s-title { font-size: 1.8rem; }
+    .s-h2 { font-size: 1.4rem; }
+    .three-col { grid-template-columns: 1fr; }
+    .flaw-grid { grid-template-columns: 1fr; }
+    .s-text { font-size: 1rem; }
+    .s-big { font-size: 1.3rem; }
+  }
+
+  @media print {
+    .nav { display: none; }
+    .slide { position: relative; opacity: 1; transform: none;
+      pointer-events: all; page-break-after: always;
+      min-height: 100vh; }
+    .appear { opacity: 1; transform: none; }
+    body { overflow: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide slide-title active" data-n="1">
+    <div class="s-overtitle slate appear">PSIR220 · Week 6 · Session 1</div>
+    <div class="s-title gradient appear d1">Building the<br>Causal Engine</div>
+    <div class="s-subtitle appear d2">How does X produce Y — and why does your answer depend on who you ask?</div>
+    <div class="s-subtitle appear d3" style="margin-top:1.5rem; font-size:0.9rem; color:#94a3b8;">Baglione Ch. 6 · Abbott, "Methods of Discovery"</div>
+  </div>
+
+  <!-- SLIDE 2: Where we are -->
+  <div class="slide slide-blue" data-n="2">
+    <div class="s-overtitle blue appear">Where We Are</div>
+    <div class="s-h2 appear d1">You have a question.<br>You have sources.<br>You have a debate map.</div>
+    <div class="s-text appear d2">Your Annotated Bibliography collected the evidence. Your Literature Map organized it into schools of thought. Now you need to build the engine — the causal logic that connects your question to an answer.</div>
+    <div class="s-text appear d3" style="font-weight:700; color:#1d4ed8;">Today: How to think about causation — and how your paradigm track changes everything.</div>
+  </div>
+
+  <!-- SLIDE 3: What is a causal mechanism? -->
+  <div class="slide slide-section" data-n="3">
+    <div class="s-overtitle blue appear">The Core Idea</div>
+    <div class="s-h2 appear d1">Saying "X causes Y" is not enough.</div>
+    <div class="s-text appear d2">Anyone can claim a correlation. A research design requires you to explain <strong>how</strong> X produces Y — the chain of steps, the mechanism, the engine that makes it work.</div>
+    <div class="causal-chain appear d3">
+      <div class="chain-box x">X<br><span style="font-size:0.75rem;font-weight:400">Independent Variable</span></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box m">Mechanism<br><span style="font-size:0.75rem;font-weight:400">The "how"</span></div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box y">Y<br><span style="font-size:0.75rem;font-weight:400">Dependent Variable</span></div>
+    </div>
+    <div class="s-text appear d4" style="text-align:center; color:#64748b; font-size:0.95rem;">The mechanism is the engine. Without it, you have a claim. With it, you have a theory.</div>
+  </div>
+
+  <!-- SLIDE 4: Example -->
+  <div class="slide slide-section" data-n="4">
+    <div class="s-overtitle blue appear">Example</div>
+    <div class="s-h2 appear d1">Democratic Peace Theory</div>
+    <div class="s-text appear d2">The claim: Democracies don't fight wars against each other.</div>
+    <div class="causal-chain appear d3">
+      <div class="chain-box x">Democracy<br>(both states)</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box m">Shared norms of<br>compromise +<br>institutional<br>constraints</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box y">No war<br>between them</div>
+    </div>
+    <div class="s-text appear d4">Without the mechanism (shared norms + institutional constraints), "democracy causes peace" is just a pattern in the data. The mechanism is what makes it a <strong>theory</strong>. And it's what your rivals will attack.</div>
+  </div>
+
+  <!-- SLIDE 5: But here's the problem -->
+  <div class="slide slide-dark" data-n="5">
+    <div class="s-overtitle appear" style="color:#f59e0b;">The Problem</div>
+    <div class="s-big appear d1" style="color:#e2e8f0;">Not everyone agrees on what "causation" means.</div>
+    <div class="s-text appear d2" style="color:#94a3b8; text-align:center; max-width:600px;">Your paradigm track doesn't just change your method. It changes what counts as an explanation, what counts as evidence, and what the causal engine even looks like.</div>
+  </div>
+
+  <!-- SLIDE 6: Three tracks on causation -->
+  <div class="slide slide-section" data-n="6">
+    <div class="s-overtitle slate appear">Three Engines, Three Logics</div>
+    <div class="s-h2 appear d1" style="text-align:center;">How each track thinks about causation</div>
+    <div class="three-col appear d2">
+      <div class="col-card pos">
+        <h3>The Strategist</h3>
+        <p><strong>Causal logic:</strong> X causes Y. Find the independent variable, measure it, test it. Causation is regularity — if X, then Y, holding all else constant.</p>
+        <p style="margin-top:0.5rem"><strong>Engine type:</strong> Hypothesis → Variables → Test</p>
+        <div class="col-example">"Regime type (X) affects treaty compliance (Y) because democratic institutions raise the cost of defection."</div>
+      </div>
+      <div class="col-card int">
+        <h3>The Storyteller</h3>
+        <p><strong>Causal logic:</strong> X constitutes or shapes Y through meaning. Causation is process — trace how actors interpret situations and how those interpretations produce outcomes.</p>
+        <p style="margin-top:0.5rem"><strong>Engine type:</strong> Context → Interpretation → Action</p>
+        <div class="col-example">"The 'nuclear taboo' shapes state behavior not through material cost-benefit but through normative constraint — leaders don't use nukes because they've internalized it as unthinkable."</div>
+      </div>
+      <div class="col-card cri">
+        <h3>The Disruptor</h3>
+        <p><strong>Causal logic:</strong> Power structures produce and reproduce conditions. Causation is systemic — trace how discourse, institutions, and hierarchies create what appears "natural."</p>
+        <p style="margin-top:0.5rem"><strong>Engine type:</strong> Power → Discourse → Reality</p>
+        <div class="col-example">"European migration policy doesn't respond to a security 'threat' — it constructs African migrants as a threat through securitizing discourse, justifying exclusion."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Strategist deep dive -->
+  <div class="slide slide-blue" data-n="7">
+    <div class="s-overtitle blue appear">The Strategist's Engine</div>
+    <div class="s-h2 appear d1">If X, then Y — and here's why.</div>
+    <div class="s-text appear d2">The positivist causal engine has three parts: an independent variable (the cause), a dependent variable (the outcome), and a mechanism that explains how one produces the other. Your job is to isolate this mechanism and test whether it holds.</div>
+    <div class="causal-chain appear d3">
+      <div class="chain-box x">Economic crisis</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box m">Voters feel<br>"left behind"<br>↓<br>Demand for<br>anti-elite parties</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box y">Populist party<br>success</div>
+    </div>
+    <div class="highlight-box blue-border appear d4">
+      <h4>The Strategist's Question</h4>
+      <p>Can I observe variation in X and corresponding variation in Y? Can I rule out alternative explanations? Is the mechanism testable?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Storyteller deep dive -->
+  <div class="slide slide-purple" data-n="8">
+    <div class="s-overtitle purple appear">The Storyteller's Engine</div>
+    <div class="s-h2 appear d1">How do actors make sense of their world — and how does that produce outcomes?</div>
+    <div class="s-text appear d2">The interpretivist engine doesn't isolate variables — it traces processes. How did actors interpret a situation? How did those meanings shape what they did? The mechanism is meaning-making itself.</div>
+    <div class="causal-chain appear d3">
+      <div class="chain-box x">Post-war<br>moment</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box m">Women framed as<br>"mothers of the<br>nation" in public<br>discourse</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box y">Rights restricted<br>to reproductive<br>& domestic roles</div>
+    </div>
+    <div class="highlight-box appear d4" style="border-color:#c4b5fd;">
+      <h4>The Storyteller's Question</h4>
+      <p>Can I trace the process through which meaning was constructed? Can I show how interpretation led to action? Do my sources let me access the actors' own understandings?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Disruptor deep dive -->
+  <div class="slide slide-pink" data-n="9">
+    <div class="s-overtitle pink appear">The Disruptor's Engine</div>
+    <div class="s-h2 appear d1">What power structures produced this "reality" — and who benefits?</div>
+    <div class="s-text appear d2">The critical engine doesn't just explain outcomes — it questions the categories. Why is this called a "crisis"? Who defined "security"? The mechanism is power operating through discourse, institutions, and knowledge production.</div>
+    <div class="causal-chain appear d3">
+      <div class="chain-box x">Colonial<br>knowledge<br>systems</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box m">International law<br>classifies states<br>as "civilized" vs.<br>"uncivilized"</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box y">African states<br>denied full<br>sovereignty</div>
+    </div>
+    <div class="highlight-box appear d4" style="border-color:#f9a8d4;">
+      <h4>The Disruptor's Question</h4>
+      <p>What is taken for granted here that shouldn't be? Whose voice is missing? How does this discourse serve power — and how can I show that through systematic textual analysis?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Same puzzle, three engines -->
+  <div class="slide slide-section" data-n="10">
+    <div class="s-overtitle slate appear">Same Puzzle, Three Engines</div>
+    <div class="s-h2 appear d1" style="text-align:center; font-size:1.6rem;">Why do some states comply with human rights treaties<br>while others don't?</div>
+    <div class="three-col appear d2">
+      <div class="col-card pos">
+        <h3>Strategist</h3>
+        <p><strong>X:</strong> Treaty ratification<br><strong>Mechanism:</strong> Domestic groups use treaty commitments to mobilize and litigate<br><strong>Y:</strong> Improved human rights practices</p>
+        <div class="col-example">Simmons (2009) — test with large-N data across 160+ countries</div>
+      </div>
+      <div class="col-card int">
+        <h3>Storyteller</h3>
+        <p><strong>Context:</strong> Norm diffusion through IOs<br><strong>Mechanism:</strong> States internalize human rights norms through socialization, not just cost-benefit<br><strong>Outcome:</strong> Compliance as identity change</p>
+        <div class="col-example">Finnemore (1996) — trace how IOs taught states to value human rights</div>
+      </div>
+      <div class="col-card cri">
+        <h3>Disruptor</h3>
+        <p><strong>Power structure:</strong> Western-defined rights framework<br><strong>Mechanism:</strong> "Compliance" is measured by Western standards, silencing alternative conceptions of rights<br><strong>Outcome:</strong> Non-compliance as resistance, not failure</p>
+        <div class="col-example">Spivak (1988) — whose rights count?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Build yours -->
+  <div class="slide slide-amber" data-n="11">
+    <div class="s-overtitle amber appear">Your Turn</div>
+    <div class="s-h2 appear d1">Build Your Causal Engine</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>State your research question</h4>
+          <p>What are you trying to explain? Write it as a clear "why" or "how" question.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Identify X and Y</h4>
+          <p>What is the cause (or condition, or discourse) and what is the outcome (or practice, or construction)?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Name the mechanism</h4>
+          <p>What happens in between? How does X produce Y? This is the hardest part — and the most important.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Test it against a rival</h4>
+          <p>What would someone from a different track say? What's the alternative engine? If you can't state the rival, you don't understand the debate yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: Fatal Flaws -->
+  <div class="slide slide-section" data-n="12">
+    <div class="s-overtitle pink appear">Warning</div>
+    <div class="s-h2 appear d1" style="color:#dc2626;">Fatal Flaws in Causal Reasoning</div>
+    <div class="flaw-grid appear d2">
+      <div class="flaw-card">
+        <h4>Correlation ≠ Causation</h4>
+        <p>"Countries with more ice cream sales have higher crime rates." Both are caused by summer heat — not each other.</p>
+        <div class="flaw-fix">Fix: Name the mechanism. If you can't explain HOW, you haven't proven causation.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Reverse Causality</h4>
+        <p>"Democracy causes economic growth." Or does economic growth create conditions for democracy?</p>
+        <div class="flaw-fix">Fix: Establish temporal sequence. Which came first? Use process tracing.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Omitted Variable</h4>
+        <p>You found X → Y, but actually Z causes both. You left Z out of your model.</p>
+        <div class="flaw-fix">Fix: Consider alternative explanations explicitly. What else could explain Y?</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Tautology</h4>
+        <p>"Powerful states are powerful because they have power." Your explanation restates the thing you're trying to explain.</p>
+        <div class="flaw-fix">Fix: Make sure X and Y are defined independently of each other.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: More flaws -->
+  <div class="slide slide-section" data-n="13">
+    <div class="s-overtitle pink appear">More Fatal Flaws</div>
+    <div class="s-h2 appear d1" style="color:#dc2626;">These Will Sink Your Research Design</div>
+    <div class="flaw-grid appear d2">
+      <div class="flaw-card">
+        <h4>Unfalsifiability</h4>
+        <p>"Culture explains everything." If your theory can explain any outcome, it explains nothing. A good theory must be able to be wrong.</p>
+        <div class="flaw-fix">Fix: Ask yourself — what evidence would prove my argument wrong? If nothing could, redesign.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Selection Bias</h4>
+        <p>You only study cases where Y happened. You never look at cases where X was present but Y didn't occur.</p>
+        <div class="flaw-fix">Fix: Include variation in your dependent variable. Study both successes and failures.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Concept Stretching</h4>
+        <p>Using "populism" to describe everything from Trump to Erdoğan to Chávez without defining it precisely.</p>
+        <div class="flaw-fix">Fix: Define your key concepts clearly. What counts and what doesn't? Draw boundaries.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Normative Masquerading as Empirical</h4>
+        <p>"States should comply with human rights treaties" disguised as "States comply with treaties when..." Mixing ought with is.</p>
+        <div class="flaw-fix">Fix: Be explicit about whether your claim is normative or empirical. Both are valid — but don't confuse them.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: Connecting to literature -->
+  <div class="slide slide-green" data-n="14">
+    <div class="s-overtitle green appear">The Bridge</div>
+    <div class="s-h2 appear d1">Your Literature Map IS Your Debate<br>Between Causal Engines</div>
+    <div class="s-text appear d2">Look at your literature map. Each school of thought isn't just a different "perspective" — it's a different causal engine. The positivist sources offer one mechanism. The interpretivist sources offer another. The critical sources question the entire framing.</div>
+    <div class="s-text appear d3">Your Literature Review tells the story of these competing engines. Your Research Design commits to one — and explains why it's the most convincing one for your puzzle.</div>
+    <div class="highlight-box appear d4" style="border-color:#6ee7b7;">
+      <h4>The Key Move</h4>
+      <p>A research design is not "I think X causes Y." It is: "Here is my causal engine, here is how I will test it, and here is what would convince me I'm wrong."</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: Prep for next session -->
+  <div class="slide slide-section" data-n="15">
+    <div class="s-overtitle purple appear">Before Next Session</div>
+    <div class="s-h2 appear d1">The Paradigm Crisis</div>
+    <div class="s-text appear d2">Next session is the <strong>Paradigm Crisis</strong>. You will be asked hard questions about whether your track still fits your question. Some of you will realize it doesn't — and that's fine. The Re-Spec window is open until the end of Week 7.</div>
+    <div class="highlight-box appear d3" style="border-color:#c4b5fd;">
+      <h4>To Prepare</h4>
+      <p>Write down your causal engine: X → Mechanism → Y. Bring it to class. Be ready to defend it — and be ready to abandon it if a better engine exists on a different track.</p>
+    </div>
+    <div class="s-text appear d4" style="text-align:center; color:#64748b; font-size:0.9rem; margin-top:1rem;">Changing your mind is not failure. It's research.</div>
+  </div>
+
+  <!-- SLIDE 16: Closing -->
+  <div class="slide slide-title" data-n="16">
+    <div class="s-overtitle slate appear">Summary</div>
+    <div class="s-title gradient appear d1" style="font-size:2.2rem;">A claim without a mechanism<br>is just an opinion.<br><br>A mechanism without a rival<br>is just a story.<br><br>A rival without evidence<br>is just a debate.</div>
+    <div class="s-subtitle appear d2" style="margin-top:1.5rem;">Your job is to build the engine, name the rival, and find the evidence.</div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="nav-prev" onclick="go(-1)">←</button>
+  <div class="nav-progress">
+    <div class="nav-progress-fill" id="nav-fill"></div>
+  </div>
+  <div class="nav-counter" id="nav-counter">1 / 16</div>
+  <button class="nav-btn" id="nav-next" onclick="go(1)">→</button>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+
+function go(dir) {
+  const next = current + dir;
+  if(next < 0 || next >= total) return;
+
+  slides[current].classList.remove('active');
+  slides[current].classList.add('exit');
+
+  setTimeout(() => {
+    slides[current].classList.remove('exit');
+    current = next;
+    slides[current].classList.add('active');
+    updateNav();
+  }, 100);
+}
+
+function updateNav() {
+  document.getElementById('nav-counter').textContent = (current+1) + ' / ' + total;
+  document.getElementById('nav-prev').disabled = current === 0;
+  document.getElementById('nav-next').disabled = current === total - 1;
+  document.getElementById('nav-fill').style.width = ((current+1)/total*100) + '%';
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if(e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if(Math.abs(diff) > 50) { go(diff > 0 ? 1 : -1); }
+});
+
+updateNav();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Writing a Literature Review in IR & Political Science</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f5f5f5; color: #1a1a2e; overflow: hidden; height: 100vh; }
+
+  /* Slide container */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+  .slide { position: absolute; inset: 0; display: none; flex-direction: column; padding: 48px 64px; overflow-y: auto; }
+  .slide.active { display: flex; }
+
+  /* Typography */
+  h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 8px; color: #0f3460; }
+  h2 { font-size: 1.9rem; font-weight: 700; margin-bottom: 12px; color: #0f3460; }
+  h3 { font-size: 1.35rem; font-weight: 600; margin-bottom: 8px; color: #16213e; }
+  p, li { font-size: 1.15rem; line-height: 1.7; }
+  .subtitle { font-size: 1.25rem; color: #555; margin-bottom: 24px; }
+  .meta { font-size: 0.95rem; color: #888; margin-top: auto; padding-top: 16px; }
+
+  /* Accent colours */
+  .tag { display: inline-block; padding: 3px 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; margin: 2px 4px; }
+  .tag-pos { background: #dbeafe; color: #1e40af; }
+  .tag-int { background: #fef3c7; color: #92400e; }
+  .tag-crit { background: #fce7f3; color: #9d174d; }
+  .tag-all { background: #e0e7ff; color: #3730a3; }
+
+  /* Cards */
+  .card { background: #fff; border-radius: 12px; padding: 24px 28px; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.07); border-left: 5px solid #0f3460; }
+  .card.pos { border-left-color: #2563eb; }
+  .card.int { border-left-color: #d97706; }
+  .card.crit { border-left-color: #db2777; }
+  .card.good { border-left-color: #16a34a; }
+  .card.bad { border-left-color: #dc2626; }
+  .card h3 { margin-bottom: 6px; }
+
+  /* Columns */
+  .cols { display: flex; gap: 20px; flex-wrap: wrap; }
+  .cols > * { flex: 1; min-width: 260px; }
+
+  /* Example block */
+  .example { background: #fafaf5; border: 1px solid #e5e5d0; border-radius: 10px; padding: 20px 24px; margin: 12px 0; font-size: 1.05rem; line-height: 1.75; }
+  .example .label { font-weight: 700; color: #0f3460; display: block; margin-bottom: 6px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 1.05rem; }
+  th { background: #f0f4ff; font-weight: 600; color: #0f3460; }
+
+  /* Navigation */
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 12px 32px; background: rgba(255,255,255,.92); backdrop-filter: blur(6px); border-top: 1px solid #e5e7eb; z-index: 100; }
+  .nav button { padding: 8px 22px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: .2s; }
+  .nav button:hover { transform: translateY(-1px); }
+  .btn-prev { background: #e0e7ff; color: #3730a3; }
+  .btn-next { background: #0f3460; color: #fff; }
+  .btn-next:hover { background: #16213e; }
+  .counter { font-size: 0.95rem; color: #666; font-weight: 600; }
+
+  /* Lists inside slides */
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin-bottom: 6px; }
+
+  /* Highlight box */
+  .highlight { background: linear-gradient(135deg, #eff6ff, #f5f3ff); border-radius: 12px; padding: 20px 24px; margin: 12px 0; border: 1px solid #c7d2fe; }
+
+  /* Quote */
+  blockquote { border-left: 4px solid #6366f1; padding: 12px 20px; margin: 12px 0; background: #f8f7ff; font-style: italic; border-radius: 0 8px 8px 0; }
+
+  /* Fullscreen example */
+  .full-example { background: #fff; border-radius: 12px; padding: 28px 32px; margin: 12px 0; box-shadow: 0 2px 12px rgba(0,0,0,.08); font-size: 1.05rem; line-height: 1.8; }
+  .full-example p { margin-bottom: 12px; text-indent: 2em; }
+  .full-example p:first-child { text-indent: 0; }
+  .full-example .section-label { font-weight: 700; color: #0f3460; text-indent: 0 !important; margin-bottom: 4px; font-size: 1.1rem; }
+
+  /* Scrollable */
+  .scrollable { overflow-y: auto; max-height: calc(100vh - 160px); padding-bottom: 20px; }
+
+  @media (max-width: 768px) {
+    .slide { padding: 24px 20px; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    .cols { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 1 – Title ============ -->
+<div class="slide active" id="s1">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+    <p style="font-size:1rem; letter-spacing:2px; color:#6366f1; margin-bottom:12px;">PSIR220 — THE RESEARCH QUEST</p>
+    <h1 style="font-size:3rem; margin-bottom:16px;">Writing a Literature Review</h1>
+    <p class="subtitle" style="max-width:600px;">From Annotated Bibliography to Scholarly Conversation</p>
+    <div style="margin-top:20px;">
+      <span class="tag tag-pos">Strategist</span>
+      <span class="tag tag-int">Storyteller</span>
+      <span class="tag tag-crit">Disruptor</span>
+    </div>
+    <p class="meta" style="margin-top:40px;">Based on Baglione, Ch. 4 · Knopf & McMenamin (2008) · Week 6–7</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 2 – Where We Are ============ -->
+<div class="slide" id="s2">
+  <h2>Where We Are in the Quest</h2>
+  <p class="subtitle">You've gathered your sources. Now you make them talk to each other.</p>
+  <table>
+    <tr><th>Stage</th><th>Status</th><th>Output</th></tr>
+    <tr><td>Research Question</td><td style="color:#16a34a;">✓ Done</td><td>Single-sentence question + paradigm track</td></tr>
+    <tr><td>Character Card</td><td style="color:#16a34a;">✓ Done</td><td>Scholar profile for speed dating</td></tr>
+    <tr><td>Speed Dating</td><td style="color:#16a34a;">✓ Done</td><td>Epistemological awareness</td></tr>
+    <tr><td>Annotated Bibliography</td><td style="color:#16a34a;">✓ Done (Mar 25)</td><td>10+ evaluated sources</td></tr>
+    <tr><td>Visual Literature Map</td><td style="color:#16a34a;">✓ Done (Week 5)</td><td>Debate map by schools</td></tr>
+    <tr><td><strong>Literature Review</strong></td><td style="color:#d97706;">⬤ NOW</td><td><strong>1,000–1,500 word narrative</strong></td></tr>
+    <tr><td>Research Design</td><td style="color:#999;">○ Coming</td><td>Method, cases, variables</td></tr>
+    <tr><td>Final Paper</td><td style="color:#999;">○ Coming</td><td>Complete research paper</td></tr>
+  </table>
+  <p class="meta">Core Quest 2 · 10 points · Due April 25, 2026 11:59 PM</p>
+</div>
+
+<!-- ============ SLIDE 3 – What IS a Lit Review ============ -->
+<div class="slide" id="s3">
+  <h2>What a Literature Review Actually Is</h2>
+  <blockquote>"A literature review is an <strong>argument about the literature</strong> that justifies the selection of the question you want to answer and the basic approach to answering it." — Knopf & McMenamin (2008)</blockquote>
+  <div class="cols" style="margin-top:16px;">
+    <div class="card good">
+      <h3>It IS…</h3>
+      <p>A <strong>scholarly conversation</strong> — you walk the reader through what different camps believe, where they agree, where they clash, and what nobody has addressed yet. You organise by <em>argument</em>, not by author.</p>
+    </div>
+    <div class="card bad">
+      <h3>It is NOT…</h3>
+      <p>A book-report parade: "Author A says X. Author B says Y. Author C says Z." That's an annotated bibliography in disguise. If each paragraph discusses only one source, something is wrong.</p>
+    </div>
+  </div>
+  <div class="highlight" style="margin-top:16px;">
+    <h3>Baglione's Core Insight (Ch. 4)</h3>
+    <p>Group your sources into <strong>schools of thought</strong> — clusters of scholars who share a theoretical logic. Then show how these schools <em>debate</em> each other. Your literature review is a map of that debate, and you are the cartographer.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 4 – AB → LR Transformation ============ -->
+<div class="slide" id="s4">
+  <h2>From Annotated Bibliography → Literature Review</h2>
+  <p class="subtitle">Same sources, completely different product.</p>
+  <div class="cols">
+    <div class="card">
+      <h3>Annotated Bibliography</h3>
+      <p><strong>Unit of analysis:</strong> individual source</p>
+      <p><strong>Organisation:</strong> source by source</p>
+      <p><strong>Voice:</strong> descriptive — "This article argues…"</p>
+      <p><strong>Purpose:</strong> show you've read and evaluated each source</p>
+    </div>
+    <div class="card" style="border-left-color:#6366f1;">
+      <h3>Literature Review</h3>
+      <p><strong>Unit of analysis:</strong> school of thought / argument cluster</p>
+      <p><strong>Organisation:</strong> thematic — grouped by shared logic</p>
+      <p><strong>Voice:</strong> analytical — "Realists contend… but constructivists counter…"</p>
+      <p><strong>Purpose:</strong> map the debate and locate the gap your research fills</p>
+    </div>
+  </div>
+  <div class="highlight" style="margin-top:16px;">
+    <p><strong>The key move:</strong> you stop treating each source as a stand-alone entry and start weaving multiple sources into a single paragraph around a shared claim. Instead of ten isolated paragraphs, you produce a three- or four-section narrative.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 5 – Structure ============ -->
+<div class="slide" id="s5">
+  <h2>The Four-Section Structure</h2>
+  <p class="subtitle">Your literature review follows this arc.</p>
+  <div class="card pos" style="margin-top:12px;">
+    <h3>Section 1 — The Landscape <span style="font-weight:400; font-size:0.9rem;">(100–200 words · 1.5 pts)</span></h3>
+    <p>Frame the broad puzzle or debate. Why does this question matter? What makes it contentious or unresolved? Set the scene without diving into specific authors yet.</p>
+  </div>
+  <div class="card int">
+    <h3>Section 2 — The Schools of Thought <span style="font-weight:400; font-size:0.9rem;">(600–800 words · 4 pts)</span></h3>
+    <p>This is the heart. Group your sources into 2–3 schools. For each school, explain: the shared argument, the evidence or methods used, areas of agreement <em>within</em> the school, and points of disagreement <em>between</em> schools. Your own paradigm track gets the most detailed treatment.</p>
+  </div>
+  <div class="card crit">
+    <h3>Section 3 — The Gap <span style="font-weight:400; font-size:0.9rem;">(150–250 words · 2 pts)</span></h3>
+    <p>What does the debate miss? This could be an empirical gap (unstudied cases, missing data), a theoretical gap (logic that doesn't account for X), or a methodological gap (everyone uses the same method and no one tries Y).</p>
+  </div>
+  <div class="card good">
+    <h3>Section 4 — Your Contribution <span style="font-weight:400; font-size:0.9rem;">(100–200 words · 1.5 pts)</span></h3>
+    <p>State clearly how your research fills the gap. This paragraph is a bridge to the Research Design assignment coming next.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 6 – Schools of Thought Deep Dive ============ -->
+<div class="slide" id="s6">
+  <h2>Organising by Schools of Thought</h2>
+  <p class="subtitle">Baglione calls these "camps." Knopf & McMenamin call them "schools." Same idea.</p>
+  <div class="highlight">
+    <h3>How to identify a school</h3>
+    <p>A school of thought is a cluster of scholars who share a <strong>causal logic</strong> — they agree on the type of mechanism that drives outcomes, even if they disagree on details. Ask: "Do these authors explain the outcome using the same kind of reasoning?"</p>
+  </div>
+  <div class="cols" style="margin-top:12px;">
+    <div class="card pos">
+      <h3>Example: Why do states comply with human-rights treaties?</h3>
+      <p><strong>School A — Rationalist:</strong> States comply when material incentives (aid conditionality, trade access) make non-compliance costly (Hafner-Burton 2005; Simmons 2009).</p>
+      <p><strong>School B — Constructivist:</strong> Compliance follows socialisation — states internalise norms through sustained interaction with treaty bodies and peer pressure (Risse, Ropp & Sikkink 1999; Finnemore & Sikkink 1998).</p>
+      <p><strong>School C — Critical:</strong> "Compliance" is itself a discursive construction; powerful states define what counts as compliance to maintain hegemonic order (Mutua 2001; Doty 1996).</p>
+    </div>
+  </div>
+  <p style="margin-top:12px;"><strong>Notice:</strong> Each school is defined by its <em>logic</em>, not just its conclusion. Multiple authors are grouped under one heading. That's the move from AB to LR.</p>
+</div>
+
+<!-- ============ SLIDE 7 – Writing Moves ============ -->
+<div class="slide" id="s7">
+  <h2>Five Writing Moves for the Schools Section</h2>
+  <p class="subtitle">Use these sentence-level strategies to weave sources together.</p>
+  <div class="card" style="margin-top:8px;">
+    <h3>1. The Umbrella Statement</h3>
+    <p>Open a paragraph by naming the school's shared claim, then cite several authors together.</p>
+    <div class="example"><span class="label">Example:</span>"A prominent strand of the literature attributes treaty compliance to rational cost–benefit calculations. Hafner-Burton (2005) and Simmons (2009) both demonstrate that states respond to material incentives such as aid conditionality and trade access."</div>
+  </div>
+  <div class="card">
+    <h3>2. The Internal Nuance</h3>
+    <p>Show that scholars within a school still disagree on specifics.</p>
+    <div class="example"><span class="label">Example:</span>"While Simmons (2009) emphasises domestic litigation as the enforcement mechanism, Hafner-Burton (2005) points to naming-and-shaming by international organisations — suggesting that even within the rationalist camp, the precise pathway remains contested."</div>
+  </div>
+  <div class="card">
+    <h3>3. The Bridge / Pivot</h3>
+    <p>Transition between schools by highlighting the disagreement.</p>
+    <div class="example"><span class="label">Example:</span>"However, constructivists challenge this materialist logic. Risse et al. (1999) argue that compliance is not primarily driven by incentives but by a process of norm internalisation…"</div>
+  </div>
+  <div class="card">
+    <h3>4. The Synthesis</h3>
+    <p>Note where two schools surprisingly agree.</p>
+    <div class="example"><span class="label">Example:</span>"Despite their theoretical differences, both rationalists and constructivists agree that domestic institutions mediate the effect of international pressure — a point neither school has fully explored."</div>
+  </div>
+  <div class="card">
+    <h3>5. The Gap Sentence</h3>
+    <p>Signal what's missing — this is your setup for Section 3.</p>
+    <div class="example"><span class="label">Example:</span>"What remains largely unexamined in both accounts is the role of regional organisations, which operate at an intermediate level between domestic and global dynamics."</div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 8 – Common Fatal Flaws ============ -->
+<div class="slide" id="s8">
+  <h2>Common Fatal Flaws in Literature Reviews</h2>
+  <p class="subtitle">Avoid these — they are the most frequent reasons for low marks.</p>
+  <div class="cols">
+    <div class="card bad">
+      <h3>1. The Book-Report Parade</h3>
+      <p>"Author A says X. Author B says Y." Each paragraph = one source. No grouping, no comparison, no argument. This is an annotated bibliography with the headings removed.</p>
+      <p><strong>Fix:</strong> Merge sources that share a logic into a single paragraph under an umbrella statement.</p>
+    </div>
+    <div class="card bad">
+      <h3>2. Strawmanning Rivals</h3>
+      <p>Dismissing competing schools in a sentence ("Realists ignore identity") without engaging their strongest arguments. Knopf & McMenamin: "engage with the most charitable interpretation."</p>
+      <p><strong>Fix:</strong> Present each school's best case, then show <em>specifically</em> what it fails to explain.</p>
+    </div>
+    <div class="card bad">
+      <h3>3. The Ghost Gap</h3>
+      <p>Declaring a gap that isn't actually grounded in the review. "No one has studied X" — but you haven't shown why that matters or how it follows from the debate you just described.</p>
+      <p><strong>Fix:</strong> The gap must emerge logically from the clash between schools.</p>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:8px;">
+    <div class="card bad">
+      <h3>4. No Transitions</h3>
+      <p>Jumping from one school to another without signalling the relationship. The reader can't follow the argument's arc.</p>
+      <p><strong>Fix:</strong> Use pivot phrases: "However," "In contrast," "Building on this logic," "Despite this consensus."</p>
+    </div>
+    <div class="card bad">
+      <h3>5. Over-Quoting</h3>
+      <p>Filling the review with long block quotes instead of paraphrasing and synthesising. This signals you haven't processed the material.</p>
+      <p><strong>Fix:</strong> Paraphrase in your own words; quote only when exact phrasing matters (definitions, contested terms).</p>
+    </div>
+    <div class="card bad">
+      <h3>6. Losing Your Question</h3>
+      <p>Discussing fascinating tangents that don't connect back to your research question. As Knopf & McMenamin note: content should be included on a "need-to-know" basis, not a "look-at-what-I've-read" basis.</p>
+      <p><strong>Fix:</strong> Every paragraph should visibly serve the question.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 9 – Paradigm-Specific Tips ============ -->
+<div class="slide" id="s9">
+  <h2>Tips by Paradigm Track</h2>
+  <p class="subtitle">Your track shapes how you write the review — but you must still engage the others.</p>
+  <div class="cols">
+    <div class="card pos">
+      <h3><span class="tag tag-pos">Strategist</span> Positivist Track</h3>
+      <p>Your schools will often be defined by <strong>competing independent variables</strong>: School A says X causes Y; School B says Z causes Y. Highlight the <em>evidence</em> each side marshals (datasets, case comparisons, statistical methods). Your gap might be an untested variable, an under-studied region, or a missing interaction effect.</p>
+    </div>
+    <div class="card int">
+      <h3><span class="tag tag-int">Storyteller</span> Interpretivist Track</h3>
+      <p>Your schools may differ in <strong>how they interpret meaning</strong>: School A reads the event through identity; School B through institutional culture. Emphasise the <em>interpretive frameworks</em> and <em>primary sources</em> each camp draws on. Your gap might be a silenced voice, an under-explored archive, or a context no one has applied the framework to.</p>
+    </div>
+    <div class="card crit">
+      <h3><span class="tag tag-crit">Disruptor</span> Critical Track</h3>
+      <p>Your schools may vary by <strong>whose power structures they foreground</strong>: School A focuses on class, School B on race, School C on gender. Emphasise the <em>normative stakes</em> and <em>silences</em> in each camp's analysis. Your gap might be an intersection of oppressions, a geographic blind spot, or a discourse that hasn't been deconstructed.</p>
+    </div>
+  </div>
+  <div class="highlight" style="margin-top:12px;">
+    <p><strong>Golden rule:</strong> No matter your track, you must present at least one rival school fairly and seriously. The literature review is where you prove you understand the debate — not just your side of it.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 10 – Exemplary Lit Review (Part 1) ============ -->
+<div class="slide" id="s10">
+  <div class="scrollable">
+  <h2>Exemplary Mini–Literature Review</h2>
+  <p class="subtitle">Topic: Why do some states comply with international human-rights treaties while others do not?<br>
+  Paradigm: Interpretivist · Storyteller &nbsp;|&nbsp; ~1,100 words</p>
+
+  <div class="full-example">
+    <p class="section-label">Section 1 — The Landscape</p>
+    <p>The gap between the formal ratification of international human-rights treaties and their actual implementation remains one of the most persistent puzzles in international relations. More than 170 states have ratified the International Covenant on Civil and Political Rights, yet systematic violations continue in many signatory countries (Hathaway 2002). This paradox has generated a rich scholarly debate spanning rationalist, constructivist, and critical perspectives — each offering a distinct account of why the gap exists and what might close it. Understanding this debate is essential not only for theory but for the practical design of international monitoring mechanisms.</p>
+
+    <p class="section-label">Section 2 — The Schools of Thought</p>
+    <p>A prominent strand of the literature explains treaty compliance through a <strong>rationalist lens</strong>, treating states as strategic actors responding to material costs and benefits. Simmons (2009) demonstrates that treaties are most effective in states with independent domestic courts, because citizens can use treaty provisions as a legal resource to hold governments accountable. Hafner-Burton (2005) focuses on a different mechanism — preferential trade agreements that include human-rights clauses — arguing that economic incentives compel compliance where reputational pressure alone would not. Despite their shared materialist assumptions, these scholars disagree about the precise pathway: Simmons privileges domestic-level litigation, while Hafner-Burton emphasises inter-state conditionality. What unites the rationalist camp, however, is the conviction that compliance is ultimately driven by incentive structures rather than by changes in state identity or belief.</p>
+
+    <p>A second body of scholarship rejects this incentive-based logic and instead explains compliance through <strong>norm socialisation</strong>. Risse, Ropp, and Sikkink (1999) propose a five-phase "spiral model" in which states move from denial to tactical concessions to genuine norm internalisation through sustained pressure from transnational advocacy networks. Finnemore and Sikkink (1998) complement this account with their concept of a "norm cascade," arguing that once a critical mass of states adopts a norm, peer conformity accelerates adoption by holdouts. The constructivist camp thus locates the causal engine not in material costs but in social learning and identity transformation — states comply because they come to see human-rights adherence as constitutive of what it means to be a "legitimate" member of international society. Within this school, however, there is debate about how deep internalisation must be; Risse et al. (1999) acknowledge that some states stall at the "tactical concession" stage, suggesting that socialisation is not always complete.</p>
+
+    <p><strong>Critical scholars</strong> challenge both of the preceding accounts by questioning the very categories through which compliance is defined and measured. Mutua (2001) argues that the international human-rights regime reflects a Western "savages–victims–saviours" narrative that positions Global South states as inherently deficient. From this perspective, "non-compliance" may in part be an artefact of standards designed without meaningful participation from the communities they claim to protect. Doty (1996) extends this critique through discourse analysis, showing how representational practices in policy documents construct certain states as "failed" or "rogue," thereby justifying interventionist compliance mechanisms. The critical camp does not necessarily deny that material incentives or socialisation processes exist, but insists that these operate within power-laden discursive structures that mainstream scholarship takes for granted.</p>
+
+    <p class="section-label">Section 3 — The Gap</p>
+    <p>Despite the richness of this three-cornered debate, a notable gap persists regarding the role of <strong>regional organisations</strong> as mediators of compliance. Rationalists focus on bilateral conditionality or domestic courts; constructivists emphasise global-level norms and transnational networks; critical scholars interrogate the universalist framing of the global regime. Yet in practice, compliance pressure is often channelled through regional bodies — the European Court of Human Rights, the African Commission on Human and Peoples' Rights, the Inter-American system — whose institutional logics, membership norms, and power dynamics differ markedly from both global institutions and bilateral relationships. Simmons (2009) briefly notes regional variation but does not theorise it; Risse et al. (1999) mention the European case as "most likely" for socialisation but do not systematically compare across regional contexts. No study has yet examined how the <em>design</em> of regional human-rights mechanisms interacts with both material incentives and norm diffusion to produce divergent compliance outcomes.</p>
+
+    <p class="section-label">Section 4 — Your Contribution</p>
+    <p>This study proposes to fill this gap by conducting an interpretivist comparative analysis of compliance processes in three regional human-rights systems — the European, Inter-American, and African — focusing on how each institution's discourse of "legitimate statehood" shapes the socialisation pathway that Risse et al. (1999) describe. By examining treaty-body reports, state submissions, and NGO shadow reports as primary texts, the study will trace how compliance is <em>narrated and negotiated</em> at the regional level, rather than simply measured as a binary outcome. This approach speaks directly to the upcoming research design, which will specify case-selection criteria and the interpretive method in detail.</p>
+  </div>
+  <p class="meta">Note: This is a model — your topic and paradigm will differ, but the structure (landscape → schools → gap → contribution) and writing moves (umbrella statements, internal nuance, pivots, gap sentences) should be the same.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 11 – Anatomy of the Example ============ -->
+<div class="slide" id="s11">
+  <h2>Anatomy of the Example</h2>
+  <p class="subtitle">Let's label the writing moves in the mini–review.</p>
+  <table>
+    <tr><th>Section</th><th>Writing Move</th><th>What It Does</th></tr>
+    <tr><td>Landscape</td><td>Puzzle + statistic (Hathaway 2002)</td><td>Hooks the reader with a concrete paradox</td></tr>
+    <tr><td>Landscape</td><td>"spanning rationalist, constructivist, and critical perspectives"</td><td>Foreshadows the three schools — the reader knows what's coming</td></tr>
+    <tr><td>Schools (rationalist)</td><td>Umbrella statement → Simmons + Hafner-Burton</td><td>Groups two authors under shared logic, then shows internal disagreement</td></tr>
+    <tr><td>Schools (constructivist)</td><td>Bridge: "rejects this incentive-based logic"</td><td>Explicit pivot signals a rival explanation</td></tr>
+    <tr><td>Schools (constructivist)</td><td>Internal nuance: "Risse et al. acknowledge…"</td><td>Shows the school's own uncertainty</td></tr>
+    <tr><td>Schools (critical)</td><td>Bridge: "challenge both of the preceding accounts"</td><td>Positions the critical camp against <em>both</em> rivals</td></tr>
+    <tr><td>Schools (critical)</td><td>"does not necessarily deny… but insists"</td><td>Charitable interpretation — avoids strawmanning</td></tr>
+    <tr><td>Gap</td><td>"a notable gap persists regarding…"</td><td>Gap sentence — directly names what's missing</td></tr>
+    <tr><td>Gap</td><td>"Simmons (2009) briefly notes… but does not theorise"</td><td>Shows the gap is grounded in the review, not invented</td></tr>
+    <tr><td>Contribution</td><td>"proposes to fill this gap by…"</td><td>Bridges to the research design</td></tr>
+  </table>
+</div>
+
+<!-- ============ SLIDE 12 – Quality Checklist ============ -->
+<div class="slide" id="s12">
+  <h2>Self-Check Before Submitting</h2>
+  <p class="subtitle">Run through this checklist before you export your draft.</p>
+  <table>
+    <tr><th>Criterion</th><th>Check</th><th>Points</th></tr>
+    <tr><td>Landscape frames the puzzle clearly and concisely</td><td>100–200 words?</td><td>1.5</td></tr>
+    <tr><td>Schools section groups sources by argument, not author-by-author</td><td>2–3 schools? Internal nuance?</td><td rowspan="3">4.0</td></tr>
+    <tr><td>Rival explanations are presented charitably and specifically</td><td>Bridge / pivot sentences?</td></tr>
+    <tr><td>Own paradigm is developed in greatest depth</td><td>Strongest paragraph?</td></tr>
+    <tr><td>Gap emerges logically from the schools' debate</td><td>Grounded in the review?</td><td>2.0</td></tr>
+    <tr><td>Contribution states how your project fills the gap</td><td>Links to research design?</td><td>1.5</td></tr>
+    <tr><td>Writing is clear, citations consistent (APA or Chicago), ≥8 sources</td><td>Reference list present?</td><td>1.0</td></tr>
+    <tr><td colspan="2" style="text-align:right; font-weight:700;">Total</td><td><strong>10</strong></td></tr>
+  </table>
+  <div class="highlight" style="margin-top:16px;">
+    <p><strong>AI tool disclosure:</strong> If you used AI for grammar/organisation, state it in one sentence at the end. AI may not write the review for you.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 13 – The Literature Review Builder App ============ -->
+<div class="slide" id="s13">
+  <h2>Your Tool: The Literature Review Builder</h2>
+  <p class="subtitle">Available on Teams — download and open in your browser.</p>
+  <div class="cols">
+    <div class="card">
+      <h3>Setup Tab</h3>
+      <p>Import your name, research question, paradigm track, and citations from the Annotated Bibliography or Literature Map apps.</p>
+    </div>
+    <div class="card">
+      <h3>Write Tab</h3>
+      <p>Four cards — one per section. Each has a live word counter, target range, and turns green when you hit the minimum.</p>
+    </div>
+    <div class="card">
+      <h3>Quality Check Tab</h3>
+      <p>Automated scan: detects book-report patterns, missing transitions, school-of-thought language, and gap terminology. Shows rubric alignment.</p>
+    </div>
+    <div class="card">
+      <h3>Export Tab</h3>
+      <p>Download as formatted HTML or plain text. Includes word count, AI disclosure field, and references. Print to PDF for Teams submission.</p>
+    </div>
+  </div>
+  <div class="highlight" style="margin-top:16px;">
+    <p><strong>Remember:</strong> If the app doesn't work inside Teams/SharePoint, download the HTML file and open it in Chrome, Firefox, or Edge.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 14 – Timeline ============ -->
+<div class="slide" id="s14">
+  <h2>Timeline to Submission</h2>
+  <p class="subtitle">You have roughly four weeks. Here's a suggested pace.</p>
+  <table>
+    <tr><th>Week</th><th>Task</th><th>Output</th></tr>
+    <tr><td>Week 5–6 (now)</td><td>Review your Literature Map; identify schools and gaps</td><td>Rough outline of 3–4 sections</td></tr>
+    <tr><td>Week 6</td><td>Draft Sections 1 (Landscape) and 2 (Schools)</td><td>~800 words</td></tr>
+    <tr><td>Week 7</td><td>Draft Sections 3 (Gap) and 4 (Contribution); midterm workshop</td><td>Full draft ~1,200 words</td></tr>
+    <tr><td>Midterm period<br>(Apr 10–25)</td><td>Revise: check for book-report patterns, add transitions, verify citations</td><td>Polished draft</td></tr>
+    <tr><td><strong>Apr 25, 11:59 PM</strong></td><td><strong>Submit via Teams</strong></td><td><strong>Final Literature Review + References</strong></td></tr>
+  </table>
+</div>
+
+<!-- ============ SLIDE 15 – Knopf & McMenamin's Three Categories ============ -->
+<div class="slide" id="s15">
+  <h2>Finding the Gap: Three Categories</h2>
+  <p class="subtitle">Knopf & McMenamin (2008) suggest summarising the literature in terms of:</p>
+  <div class="cols">
+    <div class="card pos">
+      <h3>1. Consensus</h3>
+      <p>What do most scholars agree on? This is the "conventional wisdom." Don't accept it uncritically — probe for potential weaknesses.</p>
+    </div>
+    <div class="card int">
+      <h3>2. Debate</h3>
+      <p>Where do scholars disagree, and <em>why</em>? Different assumptions? Different data? Different methods? Pinpointing the source of disagreement helps you target your research.</p>
+    </div>
+    <div class="card crit">
+      <h3>3. Gaps</h3>
+      <p>What has nobody examined? Unstudied cases, overlooked perspectives, missing theoretical connections, or untried methods. This is where your contribution lives.</p>
+    </div>
+  </div>
+  <div class="highlight" style="margin-top:16px;">
+    <p>Your literature review should touch all three. The Landscape can note consensus; the Schools section maps the debate; the Gap section names what's missing; and the Contribution section claims that territory.</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 16 – Quick Dos & Don'ts ============ -->
+<div class="slide" id="s16">
+  <h2>Quick Reference: Dos & Don'ts</h2>
+  <div class="cols">
+    <div class="card good">
+      <h3>DO</h3>
+      <ul>
+        <li>Group 2–4 sources in one paragraph under a shared claim</li>
+        <li>Use pivot phrases between schools ("However," "In contrast," "Building on…")</li>
+        <li>Present rivals charitably — steelman, then critique</li>
+        <li>Ground the gap in the actual debate you just described</li>
+        <li>Write in your own voice — paraphrase, don't quote-dump</li>
+        <li>Cite consistently (APA or Chicago Author–Date)</li>
+        <li>Re-read Baglione Ch. 4 before starting</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>DON'T</h3>
+      <ul>
+        <li>Write one paragraph per source (book-report parade)</li>
+        <li>Dismiss rival schools in a single sentence</li>
+        <li>Invent a gap that doesn't follow from the review</li>
+        <li>Include sources that don't connect to your question</li>
+        <li>Use long block quotes as filler</li>
+        <li>Forget the reference list</li>
+        <li>Let AI write it — use it only for grammar/structure checks</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLIDE 17 – Summary ============ -->
+<div class="slide" id="s17">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+    <h1 style="font-size:2.6rem;">Summary</h1>
+    <div style="max-width:700px; margin-top:24px; text-align:left;">
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>1.</strong> A literature review is an <em>argument about a debate</em> — not a list of summaries.</p>
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>2.</strong> Organise by <em>schools of thought</em>, not by individual authors.</p>
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>3.</strong> Follow the four-section arc: <strong>Landscape → Schools → Gap → Contribution</strong>.</p>
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>4.</strong> Present rivals charitably; the strongest critique is one that takes the other side seriously.</p>
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>5.</strong> The gap must emerge from the debate — it's not something you invent; it's something the debate reveals.</p>
+      <p style="font-size:1.2rem; margin-bottom:16px;"><strong>6.</strong> Use the Literature Review Builder app to draft, check quality, and export.</p>
+    </div>
+    <p class="meta" style="margin-top:40px;">Core Quest 2 · 10 points · Due April 25, 2026 11:59 PM<br>Reading: Baglione Ch. 4 · Knopf & McMenamin (2008)</p>
+  </div>
+</div>
+
+<!-- ============ SLIDE 18 – Questions ============ -->
+<div class="slide" id="s18">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+    <h1 style="font-size:3rem; color:#0f3460;">Questions?</h1>
+    <p class="subtitle" style="margin-top:16px; max-width:500px;">Next session: <strong>Paradigm Crisis</strong> — Confirm or re-spec your track before the deadline closes.</p>
+    <p class="meta" style="margin-top:40px;">PSIR220 · The Research Quest · Spring 2025–26<br>Lecturer: Erol Kaymak · erol.kaymak@emu.edu.tr</p>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="btn-prev" onclick="go(-1)">← Previous</button>
+  <span class="counter" id="counter">1 / 18</span>
+  <button class="btn-next" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let cur = 0;
+
+function show(n) {
+  slides[cur].classList.remove('active');
+  cur = Math.max(0, Math.min(n, slides.length - 1));
+  slides[cur].classList.add('active');
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + slides.length;
+}
+
+function go(d) { show(cur + d); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+});
+
+// Touch/swipe support
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].screenX - tx;
+  if (dx < -50) go(1);
+  if (dx > 50) go(-1);
+});
+</script>
+
+</body>
+</html>
