@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Annotated Bibliography Builder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
+
+.js-warn{background:#fef3c7;color:#92400e;text-align:center;padding:14px;font-weight:600;display:none}
+noscript .js-warn{display:block}
+
+header{background:#fff;border-bottom:1px solid #e5e7eb;padding:18px 28px}
+header h1{font-size:1.4rem;color:#0f3460}
+header p{font-size:.85rem;color:#666;margin-top:4px}
+
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 20px;overflow-x:auto}
+.tab{padding:11px 18px;font-size:.9rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:#0f3460}
+.tab.active{color:#0f3460;border-bottom-color:#0f3460}
+
+main{max-width:900px;margin:0 auto;padding:20px 16px 100px}
+
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:#fff;border-radius:10px;padding:20px 24px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05);border-left:4px solid #0f3460}
+.card h3{font-size:1.05rem;margin-bottom:6px;color:#0f3460}
+.card p{font-size:.95rem;line-height:1.65}
+
+label{display:block;font-weight:600;margin:12px 0 5px;font-size:.9rem;color:#16213e}
+input[type=text],textarea,select{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:7px;font-size:.95rem;font-family:inherit;transition:.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+textarea{resize:vertical;min-height:80px;line-height:1.55}
+
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.75rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
+.badge-peer{background:#d1fae5;color:#065f46}
+.badge-non{background:#fee2e2;color:#991b1b}
+.badge-data{background:#e0e7ff;color:#3730a3}
+.badge-primary{background:#fef3c7;color:#92400e}
+.badge-foundational{background:#fce7f3;color:#9d174d}
+
+button{padding:9px 20px;border:none;border-radius:7px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-1px)}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#d1fae5;color:#065f46}
+.btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+.source-entry{background:#fff;border-radius:10px;padding:18px 20px;margin:12px 0;box-shadow:0 2px 6px rgba(0,0,0,.05);border-left:4px solid #6366f1;position:relative}
+.source-entry h4{font-size:.95rem;color:#0f3460;margin-bottom:4px}
+.source-entry p{font-size:.88rem;line-height:1.6;margin-bottom:4px}
+.source-entry .badges{margin:6px 0}
+.source-entry .actions{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+.source-entry .actions button{padding:4px 10px;font-size:.78rem}
+
+.tracker{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.tracker-item{background:#fff;border-radius:8px;padding:10px 16px;flex:1;min-width:140px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.tracker-item .num{font-size:1.5rem;font-weight:800;color:#0f3460}
+.tracker-item .lbl{font-size:.75rem;color:#888;font-weight:600}
+.tracker-item.ok .num{color:#065f46}
+.tracker-item.warn .num{color:#d97706}
+.tracker-item.fail .num{color:#991b1b}
+
+.example-box{background:#fafaf5;border:1px solid #e5e5d0;border-radius:8px;padding:14px 18px;margin:10px 0;font-size:.9rem;line-height:1.65}
+.example-box summary{font-weight:700;color:#0f3460;cursor:pointer;font-size:.95rem}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:11px 24px;border-radius:9px;font-weight:600;font-size:.9rem;opacity:0;transition:.4s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:600px){
+  main{padding:12px 10px 80px}
+  .tracker{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<noscript><div class="js-warn">This app requires JavaScript. Download the .htm file and open it in Chrome, Firefox, or Edge.</div></noscript>
+
+<header>
+  <h1>Annotated Bibliography Builder</h1>
+  <p>PSIR220 · Core Quest 1 · Due March 25, 2026 11:59 PM · 10 points</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('setup')">Setup</div>
+  <div class="tab" onclick="showTab('add')">Add Source</div>
+  <div class="tab" onclick="showTab('sources')">My Sources</div>
+  <div class="tab" onclick="showTab('tracker')">Requirements</div>
+  <div class="tab" onclick="showTab('examples')">Examples</div>
+  <div class="tab" onclick="showTab('export')">Export</div>
+</div>
+
+<main>
+
+<!-- ===== SETUP ===== -->
+<div class="panel active" id="panel-setup">
+  <div class="card">
+    <h3>Your Information</h3>
+    <p>This data appears at the top of your exported bibliography.</p>
+  </div>
+  <label for="sName">Full Name</label>
+  <input type="text" id="sName" placeholder="e.g. Aysel Rahmanova">
+  <label for="sID">Student ID</label>
+  <input type="text" id="sID" placeholder="e.g. 23700762">
+  <label for="sRQ">Research Question</label>
+  <textarea id="sRQ" rows="2" placeholder="Your refined research question from Assignment 1…"></textarea>
+  <label for="sParadigm">Paradigm Track</label>
+  <select id="sParadigm">
+    <option value="">— Select —</option>
+    <option value="Positivist">Positivist / Strategist</option>
+    <option value="Interpretivist">Interpretivist / Storyteller</option>
+    <option value="Critical">Critical / Postmodern / Disruptor</option>
+  </select>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="saveSetup()">Save & Continue</button>
+  </div>
+</div>
+
+<!-- ===== ADD SOURCE ===== -->
+<div class="panel" id="panel-add">
+  <div class="card">
+    <h3>Add a New Source</h3>
+    <p>Complete all four fields for each source. These follow Baglione's evaluation template.</p>
+  </div>
+
+  <label for="aCitation">Full Citation (APA or Chicago Author-Date)</label>
+  <textarea id="aCitation" rows="2" placeholder="e.g. Simmons, B. A. (2009). Mobilizing for Human Rights. Cambridge University Press."></textarea>
+
+  <label for="aSchool">School of Thought</label>
+  <select id="aSchool">
+    <option value="">— Select —</option>
+    <option value="Positivist">Positivist / Rationalist</option>
+    <option value="Interpretivist">Interpretivist / Constructivist</option>
+    <option value="Critical">Critical / Postcolonial / Feminist</option>
+  </select>
+
+  <label>Source Type (select all that apply)</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+    <label style="font-weight:400;display:flex;align-items:center;gap:4px;font-size:.9rem;">
+      <input type="checkbox" id="tPeer" checked> Peer-reviewed
+    </label>
+    <label style="font-weight:400;display:flex;align-items:center;gap:4px;font-size:.9rem;">
+      <input type="checkbox" id="tNon"> Non-academic
+    </label>
+    <label style="font-weight:400;display:flex;align-items:center;gap:4px;font-size:.9rem;">
+      <input type="checkbox" id="tData"> Dataset
+    </label>
+    <label style="font-weight:400;display:flex;align-items:center;gap:4px;font-size:.9rem;">
+      <input type="checkbox" id="tPrimary"> Primary source
+    </label>
+    <label style="font-weight:400;display:flex;align-items:center;gap:4px;font-size:.9rem;">
+      <input type="checkbox" id="tFoundational"> Foundational text
+    </label>
+  </div>
+
+  <label for="aSays">What It Says (summary of argument, evidence, and findings)</label>
+  <textarea id="aSays" rows="3" placeholder="In 2–3 sentences, summarise the source's main argument and the evidence it uses."></textarea>
+
+  <label for="aEval">My Evaluation (strengths, weaknesses, methodology critique)</label>
+  <textarea id="aEval" rows="3" placeholder="Is the argument convincing? What are its strengths and limitations? What method does it use?"></textarea>
+
+  <label for="aConnect">How It Connects (relevance to YOUR research question)</label>
+  <textarea id="aConnect" rows="3" placeholder="How does this source relate to your question? Does it support, challenge, or provide context for your argument?"></textarea>
+
+  <label for="aNonJustify">If non-academic: why include it?</label>
+  <textarea id="aNonJustify" rows="2" placeholder="Only fill this in if you checked 'Non-academic' above." style="background:#fefce8;"></textarea>
+
+  <div class="btn-row">
+    <button class="btn-primary" onclick="addSource()">Add Source</button>
+    <button class="btn-secondary" onclick="clearForm()">Clear Form</button>
+  </div>
+</div>
+
+<!-- ===== MY SOURCES ===== -->
+<div class="panel" id="panel-sources">
+  <div class="card">
+    <h3>Your Sources</h3>
+    <p id="sourceCount">No sources added yet.</p>
+  </div>
+  <div style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn-secondary" onclick="filterSources('all')" style="font-size:.8rem;">All</button>
+    <button class="btn-secondary" onclick="filterSources('Positivist')" style="font-size:.8rem;">Positivist</button>
+    <button class="btn-secondary" onclick="filterSources('Interpretivist')" style="font-size:.8rem;">Interpretivist</button>
+    <button class="btn-secondary" onclick="filterSources('Critical')" style="font-size:.8rem;">Critical</button>
+  </div>
+  <div id="sourceList"></div>
+</div>
+
+<!-- ===== REQUIREMENTS TRACKER ===== -->
+<div class="panel" id="panel-tracker">
+  <div class="card">
+    <h3>Requirements Tracker</h3>
+    <p>This checks your bibliography against the assignment requirements in real time.</p>
+  </div>
+  <div id="trackerDisplay"></div>
+</div>
+
+<!-- ===== EXAMPLES ===== -->
+<div class="panel" id="panel-examples">
+  <div class="card">
+    <h3>Example Entries</h3>
+    <p>Use these as models for style and depth — do not copy them into your bibliography.</p>
+  </div>
+
+  <details class="example-box">
+    <summary><span class="badge badge-pos">Positivist</span> Inglehart & Norris (2003)</summary>
+    <p style="margin-top:8px;"><strong>Citation:</strong> Inglehart, R. & Norris, P. (2003). <em>Rising Tide: Gender Equality and Cultural Change around the World.</em> Cambridge University Press.</p>
+    <p><strong>What It Says:</strong> Inglehart and Norris argue that economic development drives cultural shifts toward gender equality through a process of value change. Using World Values Survey data across 70+ societies, they find that post-industrial societies show significantly higher support for gender equality than agrarian or industrial ones.</p>
+    <p><strong>My Evaluation:</strong> The large-N cross-national design provides strong generalisability, and the use of longitudinal survey data adds a temporal dimension often missing in single-wave studies. However, the operationalisation of "gender equality" through attitudinal survey items may not capture structural inequalities. The causal direction is also debatable — does development cause value change, or do changing values enable development?</p>
+    <p><strong>How It Connects:</strong> This source provides a foundational positivist explanation for my research question on gender policy adoption. It represents the modernisation school that I will contrast with constructivist accounts of norm diffusion.</p>
+  </details>
+
+  <details class="example-box">
+    <summary><span class="badge badge-int">Interpretivist</span> Enloe (2014)</summary>
+    <p style="margin-top:8px;"><strong>Citation:</strong> Enloe, C. (2014). <em>Bananas, Beaches and Bases: Making Feminist Sense of International Politics.</em> 2nd ed. University of California Press.</p>
+    <p><strong>What It Says:</strong> Enloe argues that international politics is sustained by gendered structures that are rendered invisible by mainstream IR theory. Through detailed case studies of military bases, diplomatic wives, and garment workers, she shows how women's labour and experiences are systematically excluded from conventional analyses of power.</p>
+    <p><strong>My Evaluation:</strong> Enloe's interpretive method — close reading of everyday practices — reveals dynamics that large-N studies miss entirely. Her work is persuasive in demonstrating the gendered foundations of international political economy. The limitation is that her case selection is illustrative rather than systematic, making it difficult to assess how generalisable her claims are.</p>
+    <p><strong>How It Connects:</strong> Enloe provides the interpretivist counterpoint to Inglehart and Norris. Where they measure attitudes, she uncovers structures of meaning. This contrast is central to my literature review's debate between modernisation and feminist accounts.</p>
+  </details>
+
+  <details class="example-box">
+    <summary><span class="badge badge-crit">Critical</span> Spivak (1988)</summary>
+    <p style="margin-top:8px;"><strong>Citation:</strong> Spivak, G. C. (1988). Can the Subaltern Speak? In C. Nelson & L. Grossberg (Eds.), <em>Marxism and the Interpretation of Culture</em> (pp. 271–313). University of Illinois Press.</p>
+    <p><strong>What It Says:</strong> Spivak argues that Western intellectual frameworks — including those that claim to "give voice" to marginalised populations — often reproduce the very power structures they intend to critique. Using the historical case of sati (widow self-immolation) in colonial India, she demonstrates how both colonial and nationalist discourses silenced the actual agency of subaltern women.</p>
+    <p><strong>My Evaluation:</strong> This is a foundational text in postcolonial theory whose central argument about epistemic violence remains highly influential. The dense theoretical language can obscure the argument, but the core claim — that representation is itself a form of power — is essential for any critical research design. The piece is more theoretical than empirical, which means it needs to be paired with applied studies.</p>
+    <p><strong>How It Connects:</strong> Spivak's framework underpins my critical approach to analysing how development discourse constructs "Third World women" as objects of intervention. It provides the theoretical foundation that my discourse analysis will apply to contemporary policy texts.</p>
+  </details>
+</div>
+
+<!-- ===== EXPORT ===== -->
+<div class="panel" id="panel-export">
+  <div class="card">
+    <h3>Export Your Bibliography</h3>
+    <p>Download a formatted file ready for Teams submission.</p>
+  </div>
+
+  <label for="eAI">AI Tool Disclosure (required)</label>
+  <textarea id="eAI" rows="2" placeholder="e.g. 'I used ChatGPT to check grammar in two entries.' or 'No AI tools were used.'"></textarea>
+
+  <div class="btn-row" style="margin-top:16px;">
+    <button class="btn-primary" onclick="exportTxt()">Download .txt</button>
+    <button class="btn-secondary" onclick="exportHTM()">Download .htm</button>
+    <button class="btn-secondary" onclick="window.print()">Print / PDF</button>
+  </div>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── State ── */
+let sources = [];
+let setup = {name:'',id:'',rq:'',paradigm:''};
+let editIndex = -1;
+
+/* ── Tabs ── */
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='sources') renderSources('all');
+  if(id==='tracker') renderTracker();
+}
+
+/* ── Setup ── */
+function saveSetup(){
+  setup.name = val('sName');
+  setup.id = val('sID');
+  setup.rq = val('sRQ');
+  setup.paradigm = val('sParadigm');
+  if(!setup.name || !setup.rq || !setup.paradigm){
+    toast('Please fill in all fields.'); return;
+  }
+  saveDraft();
+  toast('Setup saved.');
+  showTabDirect('add');
+}
+
+/* ── Add / Edit Source ── */
+function addSource(){
+  var citation = val('aCitation');
+  var school = val('aSchool');
+  var says = val('aSays');
+  var evaluation = val('aEval');
+  var connect = val('aConnect');
+
+  if(!citation || !school || !says || !evaluation || !connect){
+    toast('Please complete all five required fields.'); return;
+  }
+
+  var types = [];
+  if(document.getElementById('tPeer').checked) types.push('peer-reviewed');
+  if(document.getElementById('tNon').checked) types.push('non-academic');
+  if(document.getElementById('tData').checked) types.push('dataset');
+  if(document.getElementById('tPrimary').checked) types.push('primary');
+  if(document.getElementById('tFoundational').checked) types.push('foundational');
+
+  if(types.length === 0) types.push('peer-reviewed');
+
+  var nonJustify = val('aNonJustify');
+
+  var entry = {
+    citation: citation,
+    school: school,
+    types: types,
+    says: says,
+    evaluation: evaluation,
+    connect: connect,
+    nonJustify: nonJustify
+  };
+
+  if(editIndex >= 0){
+    sources[editIndex] = entry;
+    editIndex = -1;
+    toast('Source updated.');
+  } else {
+    sources.push(entry);
+    toast('Source added (' + sources.length + ' total).');
+  }
+
+  clearForm();
+  saveDraft();
+}
+
+function clearForm(){
+  document.getElementById('aCitation').value = '';
+  document.getElementById('aSchool').value = '';
+  document.getElementById('aSays').value = '';
+  document.getElementById('aEval').value = '';
+  document.getElementById('aConnect').value = '';
+  document.getElementById('aNonJustify').value = '';
+  document.getElementById('tPeer').checked = true;
+  document.getElementById('tNon').checked = false;
+  document.getElementById('tData').checked = false;
+  document.getElementById('tPrimary').checked = false;
+  document.getElementById('tFoundational').checked = false;
+  editIndex = -1;
+}
+
+function editSource(i){
+  var s = sources[i];
+  document.getElementById('aCitation').value = s.citation;
+  document.getElementById('aSchool').value = s.school;
+  document.getElementById('aSays').value = s.says;
+  document.getElementById('aEval').value = s.evaluation;
+  document.getElementById('aConnect').value = s.connect;
+  document.getElementById('aNonJustify').value = s.nonJustify || '';
+  document.getElementById('tPeer').checked = s.types.indexOf('peer-reviewed') >= 0;
+  document.getElementById('tNon').checked = s.types.indexOf('non-academic') >= 0;
+  document.getElementById('tData').checked = s.types.indexOf('dataset') >= 0;
+  document.getElementById('tPrimary').checked = s.types.indexOf('primary') >= 0;
+  document.getElementById('tFoundational').checked = s.types.indexOf('foundational') >= 0;
+  editIndex = i;
+  showTabDirect('add');
+  toast('Editing source ' + (i + 1) + '. Click "Add Source" to save changes.');
+}
+
+function deleteSource(i){
+  if(confirm('Delete source ' + (i + 1) + '?')){
+    sources.splice(i, 1);
+    saveDraft();
+    renderSources('all');
+    toast('Source deleted.');
+  }
+}
+
+/* ── Render Sources ── */
+function renderSources(filter){
+  var container = document.getElementById('sourceList');
+  container.innerHTML = '';
+  var count = 0;
+
+  for(var i = 0; i < sources.length; i++){
+    var s = sources[i];
+    if(filter !== 'all' && s.school !== filter) continue;
+    count++;
+
+    var borderColor = s.school === 'Positivist' ? '#2563eb' : s.school === 'Interpretivist' ? '#d97706' : '#db2777';
+
+    var badgesHTML = '';
+    for(var t = 0; t < s.types.length; t++){
+      var typ = s.types[t];
+      var cls = 'badge-peer';
+      if(typ === 'non-academic') cls = 'badge-non';
+      if(typ === 'dataset') cls = 'badge-data';
+      if(typ === 'primary') cls = 'badge-primary';
+      if(typ === 'foundational') cls = 'badge-foundational';
+      badgesHTML += '<span class="badge ' + cls + '">' + typ + '</span> ';
+    }
+
+    var schoolBadge = s.school === 'Positivist' ? 'badge-pos' : s.school === 'Interpretivist' ? 'badge-int' : 'badge-crit';
+
+    var html = '<div class="source-entry" style="border-left-color:' + borderColor + ';">';
+    html += '<div class="actions"><button class="btn-secondary" onclick="editSource(' + i + ')">Edit</button><button class="btn-danger" onclick="deleteSource(' + i + ')">Del</button></div>';
+    html += '<h4>' + (i + 1) + '. ' + escapeHTML(s.citation) + '</h4>';
+    html += '<div class="badges"><span class="badge ' + schoolBadge + '">' + s.school + '</span> ' + badgesHTML + '</div>';
+    html += '<p><strong>What It Says:</strong> ' + escapeHTML(s.says) + '</p>';
+    html += '<p><strong>My Evaluation:</strong> ' + escapeHTML(s.evaluation) + '</p>';
+    html += '<p><strong>How It Connects:</strong> ' + escapeHTML(s.connect) + '</p>';
+    if(s.types.indexOf('non-academic') >= 0 && s.nonJustify){
+      html += '<p><strong>Non-Academic Justification:</strong> ' + escapeHTML(s.nonJustify) + '</p>';
+    }
+    html += '</div>';
+
+    container.innerHTML += html;
+  }
+
+  document.getElementById('sourceCount').textContent = sources.length + ' source' + (sources.length !== 1 ? 's' : '') + ' total' + (filter !== 'all' ? ' (' + count + ' ' + filter + ')' : '') + '.';
+}
+
+/* ── Requirements Tracker ── */
+function renderTracker(){
+  var total = sources.length;
+  var peer = 0;
+  var non = 0;
+  var dataset = 0;
+  var primary = 0;
+  var foundational = 0;
+  var posCount = 0;
+  var intCount = 0;
+  var critCount = 0;
+
+  for(var i = 0; i < sources.length; i++){
+    var s = sources[i];
+    if(s.types.indexOf('peer-reviewed') >= 0) peer++;
+    if(s.types.indexOf('non-academic') >= 0) non++;
+    if(s.types.indexOf('dataset') >= 0) dataset++;
+    if(s.types.indexOf('primary') >= 0) primary++;
+    if(s.types.indexOf('foundational') >= 0) foundational++;
+    if(s.school === 'Positivist') posCount++;
+    if(s.school === 'Interpretivist') intCount++;
+    if(s.school === 'Critical') critCount++;
+  }
+
+  var paradigm = setup.paradigm;
+
+  var html = '<h3 style="color:#0f3460;margin:16px 0 10px;">Overall Requirements</h3>';
+  html += '<div class="tracker">';
+  html += trackerItem(total, 10, 'Total Sources', 'min 10');
+  html += trackerItem(peer, 8, 'Peer-Reviewed', 'min 8');
+  html += trackerItemMax(non, 2, 'Non-Academic', 'max 2');
+  html += '</div>';
+
+  html += '<h3 style="color:#0f3460;margin:16px 0 10px;">By School of Thought</h3>';
+  html += '<div class="tracker">';
+  html += trackerSimple(posCount, 'Positivist');
+  html += trackerSimple(intCount, 'Interpretivist');
+  html += trackerSimple(critCount, 'Critical');
+  html += '</div>';
+
+  html += '<h3 style="color:#0f3460;margin:16px 0 10px;">Track-Specific Requirements</h3>';
+
+  if(paradigm === 'Positivist'){
+    html += '<div class="tracker">';
+    html += trackerItem(dataset, 1, 'Dataset', 'min 1 required');
+    html += '</div>';
+    html += '<p style="font-size:.85rem;color:#666;margin:6px 0;">Positivist track: need at least 1 dataset source (World Bank, SIPRI, UN Statistics, V-Dem, etc.) plus theoretical literature.</p>';
+  } else if(paradigm === 'Interpretivist'){
+    html += '<div class="tracker">';
+    html += trackerItem(primary, 1, 'Primary Source', 'min 1 required');
+    html += '</div>';
+    html += '<p style="font-size:.85rem;color:#666;margin:6px 0;">Interpretivist track: need at least 1 primary source (speech, treaty, interview, archival document) plus theoretical literature.</p>';
+  } else if(paradigm === 'Critical'){
+    html += '<div class="tracker">';
+    html += trackerItem(foundational, 1, 'Foundational Text', 'min 1 required');
+    html += '</div>';
+    html += '<p style="font-size:.85rem;color:#666;margin:6px 0;">Critical track: need at least 1 foundational critical theory text plus empirical material for analysis.</p>';
+  } else {
+    html += '<p style="font-size:.85rem;color:#d97706;margin:6px 0;">Select your paradigm in the Setup tab to see track-specific requirements.</p>';
+  }
+
+  // Overall verdict
+  var allGood = total >= 10 && peer >= 8 && non <= 2;
+  if(paradigm === 'Positivist') allGood = allGood && dataset >= 1;
+  if(paradigm === 'Interpretivist') allGood = allGood && primary >= 1;
+  if(paradigm === 'Critical') allGood = allGood && foundational >= 1;
+
+  html += '<div class="card" style="border-left-color:' + (allGood ? '#16a34a' : '#d97706') + ';margin-top:16px;">';
+  html += '<h3>' + (allGood ? 'All requirements met!' : 'Some requirements still unmet') + '</h3>';
+  html += '<p>' + (allGood ? 'Your bibliography meets all minimum requirements. Review the quality of each entry before exporting.' : 'Check the items above and add sources as needed.') + '</p>';
+  html += '</div>';
+
+  document.getElementById('trackerDisplay').innerHTML = html;
+}
+
+function trackerItem(current, target, label, note){
+  var status = current >= target ? 'ok' : current >= target / 2 ? 'warn' : 'fail';
+  return '<div class="tracker-item ' + status + '"><div class="num">' + current + '/' + target + '</div><div class="lbl">' + label + '<br>' + note + '</div></div>';
+}
+
+function trackerItemMax(current, max, label, note){
+  var status = current <= max ? 'ok' : 'fail';
+  return '<div class="tracker-item ' + status + '"><div class="num">' + current + '/' + max + '</div><div class="lbl">' + label + '<br>' + note + '</div></div>';
+}
+
+function trackerSimple(current, label){
+  return '<div class="tracker-item"><div class="num">' + current + '</div><div class="lbl">' + label + '</div></div>';
+}
+
+/* ── Export TXT ── */
+function exportTxt(){
+  if(sources.length === 0){ toast('No sources to export.'); return; }
+
+  var t = '';
+  t += 'ANNOTATED BIBLIOGRAPHY — PSIR220\n';
+  t += '========================================\n\n';
+  t += 'Name: ' + setup.name + '\n';
+  t += 'Student ID: ' + setup.id + '\n';
+  t += 'Date: ' + new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) + '\n\n';
+  t += 'Research Question:\n' + setup.rq + '\n\n';
+  t += 'Paradigm Track: ' + setup.paradigm + '\n\n';
+  t += '========================================\n\n';
+
+  var schools = ['Positivist', 'Interpretivist', 'Critical'];
+  var num = 1;
+
+  for(var si = 0; si < schools.length; si++){
+    var school = schools[si];
+    var schoolSources = [];
+    for(var i = 0; i < sources.length; i++){
+      if(sources[i].school === school) schoolSources.push(sources[i]);
+    }
+    if(schoolSources.length === 0) continue;
+
+    t += school.toUpperCase() + ' SOURCES\n';
+    t += '----------------------------------------\n\n';
+
+    for(var j = 0; j < schoolSources.length; j++){
+      var s = schoolSources[j];
+      t += num + '. ' + s.citation + '\n';
+      t += '   Type: ' + s.types.join(', ') + '\n\n';
+      t += '   What It Says:\n   ' + s.says + '\n\n';
+      t += '   My Evaluation:\n   ' + s.evaluation + '\n\n';
+      t += '   How It Connects:\n   ' + s.connect + '\n\n';
+      if(s.types.indexOf('non-academic') >= 0 && s.nonJustify){
+        t += '   Non-Academic Justification:\n   ' + s.nonJustify + '\n\n';
+      }
+      t += '\n';
+      num++;
+    }
+  }
+
+  t += '========================================\n';
+  t += 'Total sources: ' + sources.length + '\n';
+  t += 'AI Tool Disclosure: ' + (val('eAI') || 'None stated') + '\n';
+
+  download(t, 'AnnotatedBibliography_' + setup.name.replace(/\s/g, '_') + '.txt', 'text/plain');
+}
+
+/* ── Export HTM ── */
+function exportHTM(){
+  if(sources.length === 0){ toast('No sources to export.'); return; }
+
+  var h = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">';
+  h += '<title>Annotated Bibliography - ' + escapeHTML(setup.name) + '</title>';
+  h += '<style>';
+  h += 'body{font-family:"Segoe UI",sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e;background:#fff;line-height:1.7}';
+  h += 'h1{font-size:1.5rem;color:#0f3460;margin-bottom:4px}';
+  h += 'h2{font-size:1.2rem;color:#0f3460;margin-top:28px;margin-bottom:12px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}';
+  h += '.meta{font-size:.9rem;color:#666;margin-bottom:4px}';
+  h += '.entry{margin:18px 0;padding:16px;border-left:4px solid #6366f1;background:#f9fafb;border-radius:0 8px 8px 0}';
+  h += '.entry.pos{border-left-color:#2563eb}.entry.int{border-left-color:#d97706}.entry.crit{border-left-color:#db2777}';
+  h += '.entry h3{font-size:1rem;color:#0f3460;margin-bottom:6px}';
+  h += '.entry p{margin-bottom:6px;font-size:.95rem}';
+  h += '.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;margin-right:4px}';
+  h += '.badge-pos{background:#dbeafe;color:#1e40af}.badge-int{background:#fef3c7;color:#92400e}.badge-crit{background:#fce7f3;color:#9d174d}';
+  h += '.footer{margin-top:30px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:.85rem;color:#888}';
+  h += '</style></head><body>';
+
+  h += '<h1>Annotated Bibliography</h1>';
+  h += '<p class="meta">PSIR220 — Core Quest 1</p>';
+  h += '<p class="meta"><strong>' + escapeHTML(setup.name) + '</strong> · ' + escapeHTML(setup.id) + '</p>';
+  h += '<p class="meta">' + new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) + '</p>';
+  h += '<p style="margin-top:12px;"><strong>Research Question:</strong> ' + escapeHTML(setup.rq) + '</p>';
+  h += '<p><strong>Paradigm Track:</strong> ' + escapeHTML(setup.paradigm) + '</p>';
+
+  var schools = ['Positivist', 'Interpretivist', 'Critical'];
+  var num = 1;
+
+  for(var si = 0; si < schools.length; si++){
+    var school = schools[si];
+    var schoolSources = [];
+    for(var i = 0; i < sources.length; i++){
+      if(sources[i].school === school) schoolSources.push(sources[i]);
+    }
+    if(schoolSources.length === 0) continue;
+
+    var badgeCls = school === 'Positivist' ? 'badge-pos' : school === 'Interpretivist' ? 'badge-int' : 'badge-crit';
+    var entryCls = school === 'Positivist' ? 'pos' : school === 'Interpretivist' ? 'int' : 'crit';
+
+    h += '<h2><span class="badge ' + badgeCls + '">' + school + '</span> Sources</h2>';
+
+    for(var j = 0; j < schoolSources.length; j++){
+      var s = schoolSources[j];
+      h += '<div class="entry ' + entryCls + '">';
+      h += '<h3>' + num + '. ' + escapeHTML(s.citation) + '</h3>';
+      h += '<p><strong>What It Says:</strong> ' + escapeHTML(s.says) + '</p>';
+      h += '<p><strong>My Evaluation:</strong> ' + escapeHTML(s.evaluation) + '</p>';
+      h += '<p><strong>How It Connects:</strong> ' + escapeHTML(s.connect) + '</p>';
+      if(s.types.indexOf('non-academic') >= 0 && s.nonJustify){
+        h += '<p><strong>Non-Academic Justification:</strong> ' + escapeHTML(s.nonJustify) + '</p>';
+      }
+      h += '</div>';
+      num++;
+    }
+  }
+
+  h += '<div class="footer">';
+  h += '<p><strong>Total sources:</strong> ' + sources.length + '</p>';
+  h += '<p><strong>AI Tool Disclosure:</strong> ' + escapeHTML(val('eAI') || 'None stated') + '</p>';
+  h += '</div>';
+  h += '</body></html>';
+
+  download(h, 'AnnotatedBibliography_' + setup.name.replace(/\s/g, '_') + '.htm', 'text/html');
+}
+
+/* ── Utilities ── */
+function val(id){
+  var el = document.getElementById(id);
+  if(!el) return '';
+  return (el.value || '').trim();
+}
+
+function escapeHTML(str){
+  if(!str) return '';
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+function download(content, filename, type){
+  var blob = new Blob([content], {type: type + ';charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function showTabDirect(id){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('panel-' + id).classList.add('active');
+  var tabs = document.querySelectorAll('.tab');
+  var tabMap = {setup:0, add:1, sources:2, tracker:3, examples:4, export:5};
+  if(tabMap[id] !== undefined) tabs[tabMap[id]].classList.add('active');
+}
+
+/* ── Local Storage ── */
+function saveDraft(){
+  try{
+    var data = {
+      setup: {
+        name: val('sName'),
+        id: val('sID'),
+        rq: val('sRQ'),
+        paradigm: val('sParadigm')
+      },
+      sources: sources,
+      ai: val('eAI')
+    };
+    localStorage.setItem('psir220_ab', JSON.stringify(data));
+  } catch(e){}
+}
+
+function loadDraft(){
+  try{
+    var raw = localStorage.getItem('psir220_ab');
+    if(!raw) return;
+    var data = JSON.parse(raw);
+    if(data.setup){
+      setup = data.setup;
+      document.getElementById('sName').value = setup.name || '';
+      document.getElementById('sID').value = setup.id || '';
+      document.getElementById('sRQ').value = setup.rq || '';
+      document.getElementById('sParadigm').value = setup.paradigm || '';
+    }
+    if(data.sources && data.sources.length > 0){
+      sources = data.sources;
+      // Ensure all sources have types array
+      for(var i = 0; i < sources.length; i++){
+        if(!sources[i].types || !Array.isArray(sources[i].types)){
+          sources[i].types = ['peer-reviewed'];
+        }
+      }
+    }
+    if(data.ai){
+      document.getElementById('eAI').value = data.ai;
+    }
+    toast('Draft loaded (' + sources.length + ' sources).');
+  } catch(e){}
+}
+
+loadDraft();
+setInterval(saveDraft, 30000);
+</script>
+
+</body>
+</html>
