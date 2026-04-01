@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Lit Review Workshop</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh;padding:20px}
+.container{max-width:800px;margin:0 auto}
+h1{font-size:1.5rem;color:#0f3460;margin-bottom:4px}
+.subtitle{font-size:.85rem;color:#888;margin-bottom:20px}
+.card{background:#fff;border-radius:10px;padding:20px 24px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05);border-left:4px solid #0f3460}
+.card h2{font-size:1.1rem;color:#0f3460;margin-bottom:8px}
+.card h3{font-size:.95rem;color:#3730a3;margin:12px 0 6px}
+.card p,.card li{font-size:.92rem;line-height:1.65;color:#444}
+.card ul{margin-left:18px;margin-bottom:8px}
+.source-card{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px;margin:8px 0}
+.source-card .author{font-weight:700;color:#0f3460;font-size:.9rem}
+.source-card .claim{font-size:.88rem;color:#444;margin-top:4px;line-height:1.55}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
+.badge-hidden{background:#f3f4f6;color:#999}
+.task{background:#eff6ff;border:2px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin:14px 0}
+.task h3{font-size:1rem;color:#1e40af;margin-bottom:6px}
+.task p{font-size:.9rem;color:#1e40af;line-height:1.6}
+.task .time{font-size:.8rem;color:#6b7280;margin-top:4px;font-style:italic}
+textarea{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:.9rem;font-family:inherit;resize:vertical;min-height:80px;line-height:1.55;margin-top:6px}
+textarea:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+label{display:block;font-weight:600;font-size:.88rem;color:#16213e;margin-top:12px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#0f3460;color:#fff;font-weight:700;font-size:.85rem;margin-right:8px}
+.divider{border:none;border-top:2px dashed #e5e7eb;margin:24px 0}
+button{padding:9px 20px;border:none;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:10px}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.reveal-btn{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-size:.82rem;padding:6px 14px;margin-top:8px}
+.hidden{display:none}
+.answer-key .source-card{border-left:4px solid #6366f1}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:10px 22px;border-radius:8px;font-weight:600;font-size:.88rem;opacity:0;transition:.4s;z-index:100;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Literature Review Workshop</h1>
+<p class="subtitle">PSIR220 · In-Class Activity · Week 8 Session 1</p>
+
+<!-- INTRO -->
+<div class="card">
+<h2>What We're Doing Today</h2>
+<p>A literature review is <strong>not</strong> a list of summaries. It's a conversation organised by <strong>schools of thought</strong>. Today you'll practise the three hardest skills:</p>
+<ul>
+<li><strong>Sorting</strong> sources into schools of thought</li>
+<li><strong>Writing umbrella sentences</strong> that introduce each school</li>
+<li><strong>Finding the gap</strong> that justifies your research</li>
+</ul>
+<p style="margin-top:8px">Then you'll apply these skills to your own annotated bibliography.</p>
+</div>
+
+<!-- PART 1: THE SORT -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">1</span>The Sort</h2>
+<p>Below are 10 source summaries on the topic: <strong>"Why do some peace agreements hold while others collapse?"</strong></p>
+<p style="margin-top:6px">Your job: read each one and decide which <strong>school of thought</strong> it belongs to. Don't overthink it — go with your instinct, then we'll discuss.</p>
+</div>
+
+<div id="sourceCards">
+
+<div class="source-card" data-school="pos">
+<div class="author">Fortna (2004)</div>
+<div class="claim">Using a dataset of 48 ceasefires (1989–1999), Fortna finds that peace agreements with strong enforcement mechanisms — peacekeeping troops, demilitarised zones, third-party guarantees — are statistically more durable. The key variable is credible commitment: when parties can't cheat without detection, peace holds.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="int">
+<div class="author">Autesserre (2010)</div>
+<div class="claim">Based on two years of ethnographic fieldwork in the DRC, Autesserre argues that international peacebuilders consistently misread local conflicts as extensions of the national war. They impose top-down frameworks that ignore village-level land disputes, ethnic rivalries, and everyday violence — which is why peace "holds" nationally but collapses locally.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="pos">
+<div class="author">Walter (2002)</div>
+<div class="claim">Walter analyses 41 civil wars and argues that the core obstacle to peace is the security dilemma during demobilisation. Without third-party security guarantees, combatants rationally refuse to disarm. Her statistical model shows that third-party enforcement is the single strongest predictor of successful implementation.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="crit">
+<div class="author">Paris (2004)</div>
+<div class="claim">Paris argues that the liberal peacebuilding model — rapid democratisation and market liberalisation — has repeatedly destabilised post-conflict societies. The international community imposes a template that serves Western institutional interests rather than addressing the structural inequalities that caused the war.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="int">
+<div class="author">Mac Ginty (2011)</div>
+<div class="claim">Drawing on cases from Bosnia, Sri Lanka, and Lebanon, Mac Ginty argues that peace is not simply "implemented" — it is negotiated daily by local communities who blend international frameworks with indigenous conflict-resolution practices. What outsiders call "spoiling" is often local agency resisting an imported model.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="pos">
+<div class="author">Doyle & Sambanis (2006)</div>
+<div class="claim">Analysing 124 post-conflict cases with a mixed-methods design, Doyle and Sambanis find that peacebuilding success depends on the interaction of local capacities (economic development, prior democracy) and international capacities (UN missions, aid). Neither alone is sufficient; the combination is what matters for statistical prediction.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="crit">
+<div class="author">Richmond (2011)</div>
+<div class="claim">Richmond argues that mainstream peacebuilding scholarship reproduces a colonial logic: Western actors define what "peace" means, design the institutions, and evaluate success on their own terms. Local populations are treated as recipients, not agents. A truly emancipatory peace must start from below.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="int">
+<div class="author">Björkdahl & Höglund (2013)</div>
+<div class="claim">Through comparative case studies of Bosnia and Cambodia, they argue that "peace" means fundamentally different things to different actors in a post-conflict setting. International monitors define peace as absence of violence; local women define it as freedom from domestic abuse and economic survival. These competing meanings shape whether peace is experienced as real.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="crit">
+<div class="author">Chandler (2010)</div>
+<div class="claim">Chandler contends that international statebuilding in places like Bosnia and Kosovo has created "phantom states" — formally sovereign entities that are actually governed by external actors. This arrangement serves the geopolitical interests of Western powers while denying genuine self-determination to local populations.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+<div class="source-card" data-school="pos">
+<div class="author">Hegre & Nygård (2015)</div>
+<div class="claim">Using a global statistical model covering 1970–2009, Hegre and Nygård forecast conflict recurrence based on structural variables: GDP per capita, population size, regime type, and neighbourhood effects. They find that economic development is the strongest long-term predictor of sustained peace, independent of agreement design.</div>
+<label>School: <select class="school-select" onchange="checkSort()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select></label>
+</div>
+
+</div>
+
+<div class="task">
+<h3>Check Your Answers</h3>
+<p>Once you've classified all 10, click below to see the answer key and discuss with your neighbour where you disagreed.</p>
+<button class="reveal-btn" onclick="revealAnswers()">Reveal Answer Key</button>
+<p class="time">⏱ Allow 12–15 minutes for sorting + discussion</p>
+</div>
+
+<div id="answerKey" class="hidden">
+<div class="card answer-key">
+<h2>Answer Key</h2>
+<h3><span class="badge badge-pos">Positivist / Rationalist</span></h3>
+<p><strong>Fortna, Walter, Doyle & Sambanis, Hegre & Nygård</strong> — These share a commitment to measurable variables, large-N datasets, statistical models, and testable hypotheses about what causes peace to hold or fail.</p>
+<h3 style="margin-top:14px"><span class="badge badge-int">Interpretivist / Constructivist</span></h3>
+<p><strong>Autesserre, Mac Ginty, Björkdahl & Höglund</strong> — These emphasise meaning, local perspectives, ethnographic methods, and how "peace" is understood differently by different actors. They resist reducing peace to variables.</p>
+<h3 style="margin-top:14px"><span class="badge badge-crit">Critical / Postcolonial</span></h3>
+<p><strong>Paris, Richmond, Chandler</strong> — These expose power dynamics in peacebuilding itself: who designs peace, whose model gets imposed, and how liberal peacebuilding can reproduce colonial hierarchies.</p>
+<p style="margin-top:12px;color:#666;font-size:.85rem"><strong>Note:</strong> Paris is debatable — some classify him as a liberal critic within the positivist tradition. Mac Ginty also has critical elements. That ambiguity is the point: schools of thought have fuzzy boundaries, and your job is to justify your classification.</p>
+</div>
+</div>
+
+<!-- PART 2: UMBRELLA SENTENCES -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">2</span>Write Umbrella Sentences</h2>
+<p>An <strong>umbrella sentence</strong> introduces a school of thought in your literature review. It tells the reader: "Here is a group of scholars who share an approach, and this is what they collectively argue."</p>
+<p style="margin-top:8px"><strong>Bad example:</strong> "Fortna (2004) argues that enforcement mechanisms matter. Walter (2002) also looks at security guarantees."</p>
+<p style="margin-top:4px"><strong>Good example:</strong> "The dominant explanation in the rationalist literature attributes peace agreement durability to the design of credible commitment mechanisms — particularly third-party enforcement, demilitarised zones, and power-sharing provisions (Fortna 2004; Walter 2002; Doyle & Sambanis 2006)."</p>
+</div>
+
+<div class="task">
+<h3>Your Turn</h3>
+<p>Write an umbrella sentence for each of the three schools. Use the sources from the sort exercise.</p>
+<p class="time">⏱ 10 minutes</p>
+</div>
+
+<label>Umbrella sentence — Positivist / Rationalist school:</label>
+<textarea id="umbrella-pos" placeholder="The dominant explanation in the [X] literature argues that..."></textarea>
+
+<label>Umbrella sentence — Interpretivist / Constructivist school:</label>
+<textarea id="umbrella-int" placeholder="A second body of scholarship challenges this by..."></textarea>
+
+<label>Umbrella sentence — Critical / Postcolonial school:</label>
+<textarea id="umbrella-crit" placeholder="A third strand of the literature goes further, arguing that..."></textarea>
+
+<!-- PART 3: FIND THE GAP -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">3</span>Find the Gap</h2>
+<p>You've now mapped three schools of thought on peace agreement durability. Each school explains something the others miss — but <strong>all three together</strong> still leave questions unanswered.</p>
+<p style="margin-top:8px">A gap can be:</p>
+<ul>
+<li><strong>Empirical:</strong> a case, region, or time period nobody has studied</li>
+<li><strong>Theoretical:</strong> a mechanism or interaction the frameworks don't capture</li>
+<li><strong>Methodological:</strong> a question never studied with a particular approach</li>
+</ul>
+</div>
+
+<div class="task">
+<h3>Your Turn</h3>
+<p>Write 2–3 sentences identifying a gap in this literature. What has the debate missed?</p>
+<p class="time">⏱ 8 minutes</p>
+</div>
+
+<label>The Gap:</label>
+<textarea id="gap" placeholder="Despite the richness of this literature, a significant gap remains..."></textarea>
+
+<button class="reveal-btn" onclick="toggleElement('gapExamples')">See Example Gaps</button>
+<div id="gapExamples" class="hidden">
+<div class="card" style="border-left-color:#d97706">
+<h3>Example Gaps</h3>
+<p><strong>Empirical:</strong> "While the rationalist literature has extensively studied UN-mediated agreements, it has largely ignored peace processes led by regional organisations such as the African Union or ASEAN, which operate under different institutional logics."</p>
+<p style="margin-top:8px"><strong>Theoretical:</strong> "The constructivist emphasis on local meaning-making and the critical focus on power hierarchies have developed in parallel but rarely engage each other. How local actors navigate — and sometimes exploit — the power asymmetries that critical scholars describe remains undertheorised."</p>
+<p style="margin-top:8px"><strong>Methodological:</strong> "The quantitative literature can identify which variables correlate with peace durability but cannot trace the mechanisms through which agreement provisions actually change combatant behaviour on the ground. The interpretivist literature provides this depth but for single cases. A structured comparison applying process tracing across a small-N set of cases would bridge this divide."</p>
+</div>
+</div>
+
+<!-- PART 4: YOUR OWN PROJECT -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">4</span>Apply to Your Own Project</h2>
+<p>Now do the same thing with <strong>your own sources</strong> from Core Quest 1 (Annotated Bibliography). Open your bibliography — either in the app or your submitted file.</p>
+</div>
+
+<div class="task">
+<h3>Tasks</h3>
+<p><strong>4a.</strong> List your sources grouped by school of thought (just author names and years, not full citations).</p>
+<p><strong>4b.</strong> Write an umbrella sentence for your two strongest schools.</p>
+<p><strong>4c.</strong> Draft your gap statement — this becomes the Gap section of Core Quest 2.</p>
+<p class="time">⏱ 20 minutes · This is homework if you don't finish</p>
+</div>
+
+<label>4a. My sources by school:</label>
+<textarea id="my-schools" placeholder="Positivist: Author1 (year), Author2 (year)...&#10;Interpretivist: Author3 (year)...&#10;Critical: Author4 (year)..." style="min-height:100px"></textarea>
+
+<label>4b. My umbrella sentences:</label>
+<textarea id="my-umbrellas" placeholder="School 1: ...&#10;&#10;School 2: ..." style="min-height:100px"></textarea>
+
+<label>4c. My gap statement (2–3 sentences):</label>
+<textarea id="my-gap" placeholder="Despite the richness of this literature..."></textarea>
+
+<!-- EXPORT -->
+<hr class="divider">
+<div style="margin:16px 0">
+<button class="btn-primary" onclick="exportWork()">Download My Work</button>
+<button class="btn-secondary" onclick="saveDraft()" style="margin-left:8px">Save Draft</button>
+<button class="btn-secondary" onclick="loadDraft()" style="margin-left:8px">Load Draft</button>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function checkSort(){
+  var selects=document.querySelectorAll('.school-select');
+  var correct=0;var total=selects.length;
+  for(var i=0;i<selects.length;i++){
+    var card=selects[i].closest('.source-card');
+    var expected=card.getAttribute('data-school');
+    if(selects[i].value===expected){correct++;card.style.borderLeftColor='#16a34a';}
+    else if(selects[i].value){card.style.borderLeftColor='#f59e0b';}
+    else{card.style.borderLeftColor='#e5e7eb';}
+  }
+}
+
+function revealAnswers(){
+  document.getElementById('answerKey').classList.toggle('hidden');
+  var selects=document.querySelectorAll('.school-select');
+  for(var i=0;i<selects.length;i++){
+    var card=selects[i].closest('.source-card');
+    var expected=card.getAttribute('data-school');
+    if(selects[i].value===expected){card.style.borderLeftColor='#16a34a';}
+    else{card.style.borderLeftColor='#dc2626';}
+  }
+}
+
+function toggleElement(id){
+  document.getElementById(id).classList.toggle('hidden');
+}
+
+function exportWork(){
+  var t='PSIR220 — Lit Review Workshop\n';
+  t+='================================\n\n';
+  t+='UMBRELLA SENTENCES\n';
+  t+='Positivist: '+(document.getElementById('umbrella-pos').value||'(not completed)')+'\n\n';
+  t+='Interpretivist: '+(document.getElementById('umbrella-int').value||'(not completed)')+'\n\n';
+  t+='Critical: '+(document.getElementById('umbrella-crit').value||'(not completed)')+'\n\n';
+  t+='GAP STATEMENT\n';
+  t+=(document.getElementById('gap').value||'(not completed)')+'\n\n';
+  t+='================================\n';
+  t+='MY PROJECT\n\n';
+  t+='My sources by school:\n'+(document.getElementById('my-schools').value||'(not completed)')+'\n\n';
+  t+='My umbrella sentences:\n'+(document.getElementById('my-umbrellas').value||'(not completed)')+'\n\n';
+  t+='My gap statement:\n'+(document.getElementById('my-gap').value||'(not completed)')+'\n';
+  var blob=new Blob([t],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='LitReviewWorkshop.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Downloaded!');
+}
+
+function saveDraft(){
+  var data={};
+  var ids=['umbrella-pos','umbrella-int','umbrella-crit','gap','my-schools','my-umbrellas','my-gap'];
+  for(var i=0;i<ids.length;i++){data[ids[i]]=document.getElementById(ids[i]).value;}
+  localStorage.setItem('psir220_litws',JSON.stringify(data));
+  showToast('Draft saved');
+}
+
+function loadDraft(){
+  var raw=localStorage.getItem('psir220_litws');
+  if(!raw){showToast('No draft found');return;}
+  var data=JSON.parse(raw);
+  for(var k in data){if(document.getElementById(k))document.getElementById(k).value=data[k];}
+  showToast('Draft loaded');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+</script>
+</body>
+</html>
