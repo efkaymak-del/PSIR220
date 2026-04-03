@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – N-Size Design Sketch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh;padding:20px}
+.container{max-width:800px;margin:0 auto}
+h1{font-size:1.5rem;color:#0f3460;margin-bottom:4px}
+.subtitle{font-size:.85rem;color:#888;margin-bottom:20px}
+.card{background:#fff;border-radius:10px;padding:20px 24px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05);border-left:4px solid #0f3460}
+.card h2{font-size:1.1rem;color:#0f3460;margin-bottom:8px}
+.card p,.card li{font-size:.92rem;line-height:1.65;color:#444}
+.card ul{margin-left:18px;margin-bottom:8px}
+.task{background:#eff6ff;border:2px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin:14px 0}
+.task h3{font-size:1rem;color:#1e40af;margin-bottom:6px}
+.task p{font-size:.9rem;color:#1e40af;line-height:1.6}
+.task .time{font-size:.8rem;color:#6b7280;margin-top:4px;font-style:italic}
+label{display:block;font-weight:600;font-size:.88rem;color:#16213e;margin-top:14px}
+.hint{font-size:.8rem;color:#888;margin-top:2px;font-style:italic}
+textarea,input[type=text],select{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:.9rem;font-family:inherit;margin-top:6px}
+textarea{resize:vertical;min-height:80px;line-height:1.55}
+textarea:focus,input:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.divider{border:none;border-top:2px dashed #e5e7eb;margin:24px 0}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#0f3460;color:#fff;font-weight:700;font-size:.85rem;margin-right:8px}
+.scenario{background:#f8f9fa;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px;margin:8px 0}
+.scenario .label{font-weight:700;color:#0f3460;font-size:.88rem}
+.scenario p{font-size:.88rem;color:#444;margin-top:4px;line-height:1.55}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.match-item{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px}
+.match-item .q{font-size:.88rem;font-weight:600;color:#0f3460;margin-bottom:6px}
+.match-item select{margin-top:4px}
+.feedback{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.9rem;line-height:1.6}
+.feedback.green{background:#d1fae5;border:1px solid #6ee7b7;color:#065f46}
+.feedback.amber{background:#fef3c7;border:1px solid #fcd34d;color:#92400e}
+.feedback.red{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b}
+.peer-box{background:#fdf4ff;border:2px solid #e9d5ff;border-radius:10px;padding:16px 20px;margin:14px 0}
+.peer-box h3{color:#7c3aed;font-size:1rem;margin-bottom:6px}
+.peer-box p{font-size:.9rem;color:#6b21a8;line-height:1.6}
+button{padding:9px 20px;border:none;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:10px}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:10px 22px;border-radius:8px;font-weight:600;font-size:.88rem;opacity:0;transition:.4s;z-index:100;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>N-Size Design Sketch</h1>
+<p class="subtitle">PSIR220 · In-Class Activity · Week 8 Session 2</p>
+
+<!-- INTRO -->
+<div class="card">
+<h2>What We're Doing Today</h2>
+<p>You've seen how N-size shapes method and what kinds of claims you can make. Today you'll:</p>
+<ul>
+<li><strong>Match</strong> research questions to appropriate N-sizes and methods (warm-up)</li>
+<li><strong>Sketch</strong> your own research design using the N-Size framework</li>
+<li><strong>Stress-test</strong> a partner's design as a "devil's advocate"</li>
+</ul>
+</div>
+
+<!-- PART 1: MATCHING WARM-UP -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">1</span>Matching Warm-Up</h2>
+<p>For each research question below, choose the most appropriate N-size range and primary method. There may be more than one defensible answer — be ready to justify yours.</p>
+</div>
+
+<div class="match-grid">
+
+<div class="match-item">
+<div class="q">Does UN peacekeeping reduce civilian casualties? (150 missions, 1990–2020)</div>
+<label style="font-size:.82rem">N-size:
+<select class="match-n" data-correct="large">
+<option value="">choose</option>
+<option value="single">N = 1</option>
+<option value="small">N = 2–5</option>
+<option value="medium">N = 15–50</option>
+<option value="large">N = 50+</option>
+</select></label>
+<label style="font-size:.82rem">Method:
+<select class="match-m" data-correct="regression">
+<option value="">choose</option>
+<option value="process">Process tracing</option>
+<option value="comparative">MSS / MDS comparison</option>
+<option value="regression">Statistical regression</option>
+<option value="discourse">Discourse analysis</option>
+<option value="qca">QCA</option>
+</select></label>
+</div>
+
+<div class="match-item">
+<div class="q">How did Mandela's rhetoric reshape South African national identity during the transition?</div>
+<label style="font-size:.82rem">N-size:
+<select class="match-n" data-correct="single">
+<option value="">choose</option>
+<option value="single">N = 1</option>
+<option value="small">N = 2–5</option>
+<option value="medium">N = 15–50</option>
+<option value="large">N = 50+</option>
+</select></label>
+<label style="font-size:.82rem">Method:
+<select class="match-m" data-correct="discourse">
+<option value="">choose</option>
+<option value="process">Process tracing</option>
+<option value="comparative">MSS / MDS comparison</option>
+<option value="regression">Statistical regression</option>
+<option value="discourse">Discourse analysis</option>
+<option value="qca">QCA</option>
+</select></label>
+</div>
+
+<div class="match-item">
+<div class="q">Why did Tunisia democratise after the Arab Spring while Egypt did not?</div>
+<label style="font-size:.82rem">N-size:
+<select class="match-n" data-correct="small">
+<option value="">choose</option>
+<option value="single">N = 1</option>
+<option value="small">N = 2–5</option>
+<option value="medium">N = 15–50</option>
+<option value="large">N = 50+</option>
+</select></label>
+<label style="font-size:.82rem">Method:
+<select class="match-m" data-correct="comparative">
+<option value="">choose</option>
+<option value="process">Process tracing</option>
+<option value="comparative">MSS / MDS comparison</option>
+<option value="regression">Statistical regression</option>
+<option value="discourse">Discourse analysis</option>
+<option value="qca">QCA</option>
+</select></label>
+</div>
+
+<div class="match-item">
+<div class="q">Which combination of conditions produces successful power-sharing in post-conflict states? (28 cases)</div>
+<label style="font-size:.82rem">N-size:
+<select class="match-n" data-correct="medium">
+<option value="">choose</option>
+<option value="single">N = 1</option>
+<option value="small">N = 2–5</option>
+<option value="medium">N = 15–50</option>
+<option value="large">N = 50+</option>
+</select></label>
+<label style="font-size:.82rem">Method:
+<select class="match-m" data-correct="qca">
+<option value="">choose</option>
+<option value="process">Process tracing</option>
+<option value="comparative">MSS / MDS comparison</option>
+<option value="regression">Statistical regression</option>
+<option value="discourse">Discourse analysis</option>
+<option value="qca">QCA</option>
+</select></label>
+</div>
+
+</div>
+
+<button class="btn-secondary" onclick="checkMatches()">Check My Answers</button>
+<div id="matchFeedback"></div>
+
+<!-- PART 2: MY DESIGN -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">2</span>Sketch Your Design</h2>
+<p>Now apply this to <strong>your own research project</strong>. Fill in every field — even if you're uncertain. Uncertainty is fine; leaving it blank is not.</p>
+</div>
+
+<div class="task">
+<p>If you haven't already, open the <strong>N-Size Slider</strong> tool on the course site and use the Paradigm → Method tab to check which methods align with your track.</p>
+<p class="time">⏱ 15 minutes for the sketch</p>
+</div>
+
+<label>Your Name</label>
+<input type="text" id="d-name" placeholder="e.g. Elif İmeci">
+
+<label>Your Research Question</label>
+<textarea id="d-rq" style="min-height:50px" placeholder="e.g. Why did Tunisia democratise after the Arab Spring while Egypt reverted to authoritarianism?"></textarea>
+
+<label>Your Paradigm Track</label>
+<select id="d-paradigm">
+<option value="">— select —</option>
+<option value="Positivist">Positivist / Strategist</option>
+<option value="Interpretivist">Interpretivist / Storyteller</option>
+<option value="Critical">Critical / Disruptor</option>
+</select>
+
+<label>How many cases are you studying?</label>
+<input type="text" id="d-n" placeholder="e.g. 2 (Tunisia and Egypt)">
+<div class="hint">Be specific: name the cases or describe the dataset</div>
+
+<label>Your Primary Method</label>
+<select id="d-method">
+<option value="">— select —</option>
+<option value="process-tracing">Process tracing</option>
+<option value="mss-mds">MSS / MDS comparative</option>
+<option value="regression">Statistical regression</option>
+<option value="qca">QCA / fuzzy-set</option>
+<option value="discourse">Discourse analysis</option>
+<option value="ethnography">Ethnography / interviews</option>
+<option value="content">Content analysis</option>
+<option value="mixed">Mixed methods</option>
+</select>
+
+<label>Why this N-size? (2–3 sentences)</label>
+<textarea id="d-justify-n" placeholder="Explain why this number of cases is appropriate for your question and paradigm. Why not more? Why not fewer?"></textarea>
+
+<label>What data or sources will you use?</label>
+<textarea id="d-data" placeholder="e.g. Parliamentary debates 2011–2015, UNDP Human Development Index data, semi-structured interviews with 8 civil society leaders..."></textarea>
+
+<label>What is the biggest trade-off you're making?</label>
+<textarea id="d-tradeoff" placeholder="e.g. By studying only 2 cases I gain causal depth but lose generalisability — I cannot claim my findings apply beyond the MENA region." style="min-height:60px"></textarea>
+
+<!-- PART 3: DEVIL'S ADVOCATE -->
+<hr class="divider">
+<div class="card">
+<h2><span class="step-num">3</span>Devil's Advocate</h2>
+<p>Swap your screen with a partner. Read their design sketch and answer the questions below <strong>about their project, not yours</strong>. Be constructively critical — the goal is to strengthen their design before the Research Design assignment.</p>
+</div>
+
+<div class="peer-box">
+<h3>Peer Review</h3>
+<p>You are reviewing: <input type="text" id="p-name" placeholder="Partner's name" style="display:inline;width:200px;margin:0 4px"></p>
+</div>
+
+<label>Does their N-size match their research question? If not, what would you change?</label>
+<textarea id="p-n" placeholder="e.g. They want to explain a general pattern but only have 2 cases — they either need more cases or need to reframe as a comparative question about those specific cases."></textarea>
+
+<label>Does their method match their paradigm? Flag any misalignment.</label>
+<textarea id="p-method" placeholder="e.g. They're a Storyteller but planning regression analysis — this is a paradigm-method mismatch. Suggest process tracing or structured comparison instead."></textarea>
+
+<label>What is the strongest objection a reviewer could make about their case selection?</label>
+<textarea id="p-cases" placeholder="e.g. Both cases are from the same region — a critic could say the findings are driven by regional factors rather than the variables they're studying."></textarea>
+
+<label>One concrete suggestion to improve their design:</label>
+<textarea id="p-suggestion" placeholder="e.g. Add a third 'shadow case' where the outcome differs to strengthen the comparative logic." style="min-height:60px"></textarea>
+
+<!-- EXPORT -->
+<hr class="divider">
+<div style="margin:16px 0">
+<button class="btn-primary" onclick="exportDesign()">Download My Design + Review</button>
+<button class="btn-secondary" onclick="saveDraft()" style="margin-left:8px">Save Draft</button>
+<button class="btn-secondary" onclick="loadDraft()" style="margin-left:8px">Load Draft</button>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function checkMatches(){
+  var ns=document.querySelectorAll('.match-n');
+  var ms=document.querySelectorAll('.match-m');
+  var html='';var correct=0;var total=ns.length*2;
+  for(var i=0;i<ns.length;i++){
+    var nOk=ns[i].value===ns[i].getAttribute('data-correct');
+    var mOk=ms[i].value===ms[i].getAttribute('data-correct');
+    if(nOk)correct++;
+    if(mOk)correct++;
+    var item=ns[i].closest('.match-item');
+    if(nOk&&mOk){item.style.borderColor='#16a34a';}
+    else if(ns[i].value&&ms[i].value){item.style.borderColor='#f59e0b';}
+  }
+  var pct=Math.round((correct/total)*100);
+  var cls=pct>=75?'green':pct>=50?'amber':'red';
+  html='<div class="feedback '+cls+'"><strong>'+correct+'/'+total+'</strong> correct ('+pct+'%). ';
+  if(pct>=75)html+='Strong instincts — discuss any amber items with your neighbour.';
+  else if(pct>=50)html+='Decent start — review the N-Size Slider matrix to check the ones you missed.';
+  else html+='Worth revisiting the lecture notes and the N-Size Slider tool before sketching your own design.';
+  html+='</div>';
+  document.getElementById('matchFeedback').innerHTML=html;
+}
+
+function exportDesign(){
+  var t='PSIR220 — N-Size Design Sketch\n';
+  t+='================================\n\n';
+  t+='MY DESIGN\n';
+  t+='Name: '+(document.getElementById('d-name').value||'—')+'\n';
+  t+='Research Question: '+(document.getElementById('d-rq').value||'—')+'\n';
+  t+='Paradigm: '+(document.getElementById('d-paradigm').value||'—')+'\n';
+  t+='N-Size: '+(document.getElementById('d-n').value||'—')+'\n';
+  t+='Method: '+(document.getElementById('d-method').value||'—')+'\n';
+  t+='N-Size Justification: '+(document.getElementById('d-justify-n').value||'—')+'\n';
+  t+='Data/Sources: '+(document.getElementById('d-data').value||'—')+'\n';
+  t+='Trade-off: '+(document.getElementById('d-tradeoff').value||'—')+'\n\n';
+  t+='================================\n';
+  t+='PEER REVIEW\n';
+  t+='Reviewing: '+(document.getElementById('p-name').value||'—')+'\n';
+  t+='N-size fit: '+(document.getElementById('p-n').value||'—')+'\n';
+  t+='Method-paradigm fit: '+(document.getElementById('p-method').value||'—')+'\n';
+  t+='Case selection objection: '+(document.getElementById('p-cases').value||'—')+'\n';
+  t+='Suggestion: '+(document.getElementById('p-suggestion').value||'—')+'\n';
+  var blob=new Blob([t],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='DesignSketch_'+(document.getElementById('d-name').value||'draft').replace(/\s+/g,'_')+'.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Downloaded!');
+}
+
+function saveDraft(){
+  var ids=['d-name','d-rq','d-paradigm','d-n','d-method','d-justify-n','d-data','d-tradeoff','p-name','p-n','p-method','p-cases','p-suggestion'];
+  var data={};
+  for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);data[ids[i]]=el.value;}
+  localStorage.setItem('psir220_ndesign',JSON.stringify(data));
+  showToast('Draft saved');
+}
+
+function loadDraft(){
+  var raw=localStorage.getItem('psir220_ndesign');
+  if(!raw){showToast('No draft found');return;}
+  var data=JSON.parse(raw);
+  for(var k in data){var el=document.getElementById(k);if(el)el.value=data[k];}
+  showToast('Draft loaded');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+</script>
+</body>
+</html>
