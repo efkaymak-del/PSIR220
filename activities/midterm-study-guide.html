@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Midterm Study Guide</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh;padding:20px}
+.container{max-width:820px;margin:0 auto}
+h1{font-size:1.5rem;color:#0f3460;margin-bottom:4px}
+.subtitle{font-size:.85rem;color:#888;margin-bottom:20px}
+.tabs{display:flex;background:#fff;border-radius:10px 10px 0 0;border:1px solid #e5e7eb;border-bottom:none;overflow-x:auto}
+.tab{padding:12px 18px;font-size:.88rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:#0f3460}
+.tab.active{color:#0f3460;border-bottom-color:#0f3460}
+.panel{display:none;background:#fff;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 10px 10px;padding:24px}
+.panel.active{display:block}
+.card{background:#f8f9fa;border-radius:10px;padding:18px 22px;margin:14px 0;border-left:4px solid #0f3460}
+.card h2{font-size:1.1rem;color:#0f3460;margin-bottom:8px}
+.card h3{font-size:.95rem;color:#3730a3;margin:12px 0 6px}
+.card p,.card li{font-size:.92rem;line-height:1.65;color:#444}
+.card ul{margin-left:18px;margin-bottom:8px}
+.info-grid{display:grid;grid-template-columns:140px 1fr;gap:4px 16px;font-size:.92rem;margin:10px 0}
+.info-grid .label{font-weight:700;color:#0f3460;padding:4px 0}
+.info-grid .value{color:#444;padding:4px 0}
+.topic-list{list-style:none;margin:10px 0}
+.topic-list li{padding:6px 0;font-size:.9rem;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:8px}
+.topic-list li:last-child{border:none}
+.topic-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.topic-icon.yes{background:#d1fae5;color:#065f46}
+.topic-icon.no{background:#fee2e2;color:#991b1b}
+.warning{background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:.88rem;color:#92400e;line-height:1.6}
+.extract{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px 22px;margin:16px 0;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.extract-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.extract-num{width:32px;height:32px;border-radius:50%;background:#0f3460;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.extract-title{font-weight:700;color:#0f3460;font-size:1rem}
+.extract-cite{font-size:.82rem;color:#888;font-style:italic}
+.extract-text{background:#f8f9fa;border-left:3px solid #6366f1;padding:14px 18px;margin:10px 0;font-size:.9rem;line-height:1.7;color:#333;border-radius:0 8px 8px 0}
+.q-block{margin:12px 0}
+.q-block label{display:block;font-weight:600;font-size:.86rem;color:#16213e;margin-bottom:4px}
+.q-block select,.q-block textarea{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:7px;font-size:.9rem;font-family:inherit;margin-top:2px}
+.q-block textarea{resize:vertical;min-height:60px;line-height:1.5}
+.q-block select:focus,.q-block textarea:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.reveal-btn{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;padding:7px 16px;border-radius:7px;font-size:.84rem;font-weight:600;cursor:pointer;margin-top:8px}
+.reveal-btn:hover{background:#fde68a}
+.model-answer{display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:14px 18px;margin:10px 0;font-size:.88rem;line-height:1.65;color:#065f46}
+.model-answer.visible{display:block}
+.model-answer strong{color:#047857}
+.scenario{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px 22px;margin:16px 0;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.scenario-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.scenario-badge{padding:3px 12px;border-radius:12px;font-size:.75rem;font-weight:700}
+.scenario-badge.easy{background:#d1fae5;color:#065f46}
+.scenario-badge.medium{background:#fef3c7;color:#92400e}
+.scenario-badge.hard{background:#fee2e2;color:#991b1b}
+.scenario-profile{background:#f8f9fa;border-radius:8px;padding:14px 18px;margin:10px 0;font-size:.88rem;line-height:1.65}
+.scenario-profile strong{color:#0f3460}
+.flaw-check{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:.88rem}
+.flaw-check input[type=checkbox]{margin-top:4px;flex-shrink:0}
+.score-display{background:#e0e7ff;border-radius:8px;padding:14px 18px;margin:12px 0;text-align:center}
+.score-display .num{font-size:2rem;font-weight:800;color:#0f3460}
+.score-display .lbl{font-size:.82rem;color:#666}
+.quiz-q{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:14px 18px;margin:10px 0}
+.quiz-q .q-text{font-size:.9rem;font-weight:600;color:#1a1a2e;margin-bottom:8px}
+.quiz-opts label{display:block;padding:5px 0;font-size:.88rem;cursor:pointer;color:#444}
+.quiz-opts input{margin-right:8px}
+.quiz-feedback{font-size:.85rem;padding:6px 10px;border-radius:6px;margin-top:6px;display:none}
+.quiz-feedback.correct{display:block;background:#d1fae5;color:#065f46}
+.quiz-feedback.wrong{display:block;background:#fee2e2;color:#991b1b}
+.divider{border:none;border-top:2px dashed #e5e7eb;margin:20px 0}
+.progress-bar-bg{background:#e5e7eb;border-radius:8px;height:10px;margin:10px 0;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#0f3460,#6366f1);transition:width .4s}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+.badge-pos{background:#dbeafe;color:#1e40af}
+.badge-int{background:#fef3c7;color:#92400e}
+.badge-crit{background:#fce7f3;color:#9d174d}
+button{padding:9px 20px;border:none;border-radius:7px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#16213e}
+.btn-secondary{background:#e0e7ff;color:#3730a3}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f3460;color:#fff;padding:10px 22px;border-radius:8px;font-weight:600;font-size:.88rem;opacity:0;transition:.4s;z-index:100;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:600px){
+.container{padding:0 4px}
+.panel{padding:14px}
+.info-grid{grid-template-columns:1fr;gap:2px}
+.extract-text{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Midterm Study Guide</h1>
+<p class="subtitle">PSIR220 · The Research Quest · Spring 2025–26</p>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">Exam Info</div>
+<div class="tab" onclick="showTab(1)">Reverse-Engineer</div>
+<div class="tab" onclick="showTab(2)">Concept Quiz</div>
+<div class="tab" onclick="showTab(3)">Diagnose Designs</div>
+<div class="tab" onclick="showTab(4)">My Score</div>
+</div>
+
+<!-- ============ TAB 0: EXAM INFO ============ -->
+<div class="panel active" id="panel-0">
+
+<div class="card">
+<h2>Midterm Examination</h2>
+<p>Everything you need to know about the format, content, and expectations.</p>
+</div>
+
+<div class="info-grid">
+<div class="label">Window</div><div class="value">April 10–25, 2026</div>
+<div class="label">Duration</div><div class="value">90 minutes</div>
+<div class="label">Format</div><div class="value">Closed-book, paper-based, no devices</div>
+<div class="label">Weight</div><div class="value">10% of final grade (10 points)</div>
+<div class="label">What to bring</div><div class="value">Pen (blue or black ink). Nothing else.</div>
+</div>
+
+<div class="card">
+<h2>Structure</h2>
+<h3>Part I — Foundations (5 points)</h3>
+<p><strong>Fill-in-the-blank (2 pts):</strong> 8 items testing key concepts — paradigm names, literature review structure, methodological terms, causal engine components, case-selection logic.</p>
+<p style="margin-top:6px"><strong>Matching (3 pts):</strong> Three sets — match scholars to ideas, match methods to N-size ranges, match paradigms to their goals.</p>
+
+<h3>Part II — Applied Diagnosis (5 points)</h3>
+<p>You will be given a <strong>fictional student's research design</strong> containing multiple embedded problems. You must:</p>
+<ul>
+<li>Identify problems with the research question and suggest fixes</li>
+<li>Reorganise a poorly structured literature review by schools of thought</li>
+<li>Diagnose paradigm-method mismatches and recommend an alternative design</li>
+</ul>
+<p style="margin-top:6px">This is not about memorising definitions. It is about <strong>applying</strong> what you know to diagnose and fix a broken design.</p>
+</div>
+
+<div class="card">
+<h2>Topics Covered</h2>
+<ul class="topic-list">
+<li><span class="topic-icon yes">✓</span> Three paradigms: Positivist, Interpretivist, Critical — and what each values</li>
+<li><span class="topic-icon yes">✓</span> Research question design: what makes a good RQ, common flaws</li>
+<li><span class="topic-icon yes">✓</span> Causal engines: X → mechanism → Y, how to spot tautology and missing mechanisms</li>
+<li><span class="topic-icon yes">✓</span> Literature review structure: schools of thought vs. author-by-author, umbrella sentences, gap statements</li>
+<li><span class="topic-icon yes">✓</span> N-size and method: which methods match which N-sizes, depth vs. breadth trade-off</li>
+<li><span class="topic-icon yes">✓</span> Paradigm-method alignment: why a Critical scholar doing large-N regression is a problem</li>
+<li><span class="topic-icon yes">✓</span> Case selection logic: crucial, deviant, typical cases; MSS/MDS</li>
+<li><span class="topic-icon yes">✓</span> Key scholars and their contributions (from the Scholar Selector and lectures)</li>
+<li><span class="topic-icon no">✗</span> Specific dates, page numbers, or memorised quotations</li>
+<li><span class="topic-icon no">✗</span> Content from after Week 7</li>
+</ul>
+</div>
+
+<div class="warning">
+<strong>How to prepare:</strong> This study guide is not just exam prep. Every time you read a scholarly article — for your literature review, your research design, your final paper — you should be asking the same questions practised here: What paradigm? What causal engine? How is the lit review organised? Why this method and this many cases? If you can answer these questions for any article you read, you can write a strong literature review, design a coherent research project, and pass this midterm.
+</div>
+
+<div class="card">
+<h2>Recommended Preparation</h2>
+<p><strong>1.</strong> Work through all tabs of this study guide.</p>
+<p><strong>2.</strong> Re-read your own annotated bibliography entries and ask: could I identify each source's paradigm, method, and causal logic?</p>
+<p><strong>3.</strong> Open the Paradigm Crisis tool and confirm you understand the three tracks.</p>
+<p><strong>4.</strong> Open the N-Size Slider and make sure you can explain why N=1 requires different methods than N=100.</p>
+<p><strong>5.</strong> Practise writing umbrella sentences and gap statements — these skills transfer directly to your literature review (due April 25).</p>
+</div>
+
+</div>
+
+<!-- ============ TAB 1: REVERSE-ENGINEER ============ -->
+<div class="panel" id="panel-1">
+
+<div class="card">
+<h2>Reverse-Engineer Real Scholarship</h2>
+<p>Below are extracts from five influential IR texts. For each one, identify the paradigm, extract the causal engine, and note the method. These are the same analytical moves the exam requires — practised on professional work.</p>
+<p style="margin-top:8px"><strong>You should be doing this with every source you read for the rest of this course.</strong> Your annotated bibliography, your literature review, your research design — all require you to read sources this way. The five extracts below are worked examples of the skill.</p>
+</div>
+
+<!-- EXTRACT 1: WALTZ -->
+<div class="extract" id="ext1">
+<div class="extract-header">
+<div class="extract-num">1</div>
+<div>
+<div class="extract-title">Kenneth Waltz</div>
+<div class="extract-cite">Theory of International Politics (1979)</div>
+</div>
+<span class="badge badge-pos">Positivist</span>
+</div>
+<div class="extract-text">
+"The structure of international politics is defined by the ordering principle of anarchy — the absence of a central authority — and by the distribution of capabilities among units. States, regardless of their domestic characteristics, are functionalised by the system: they must attend to their security or risk elimination. Balances of power recurrently form not because states consciously pursue them, but because the structure of the system compels self-help behaviour. A theory of international politics must abstract from unit-level variation and focus on systemic constraints that shape state behaviour across time and space."
+</div>
+
+<div class="q-block">
+<label>What paradigm is Waltz working in?</label>
+<select id="e1-paradigm" onchange="trackProgress()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select>
+</div>
+<div class="q-block">
+<label>What is the causal engine? (X → mechanism → Y)</label>
+<textarea id="e1-causal" placeholder="e.g. Anarchy → self-help behaviour → balance of power formation" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What method or evidence type does this suggest?</label>
+<textarea id="e1-method" placeholder="e.g. Systemic-level analysis, historical cases of great-power balancing, possibly large-N..." style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>How could you use this source in a literature review?</label>
+<textarea id="e1-litrev" placeholder="e.g. Waltz would anchor the realist/positivist school in a lit review on alliance formation or great-power competition..." style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('m1')">Reveal Model Answer</button>
+<div class="model-answer" id="m1">
+<strong>Paradigm:</strong> Positivist. Waltz seeks law-like generalisations about state behaviour driven by systemic structure. He explicitly abstracts from unit-level (domestic) variation — a hallmark of positivist parsimony.<br><br>
+<strong>Causal engine:</strong> Anarchic structure (X) → self-help imperative / security competition (mechanism) → recurrent balance of power (Y).<br><br>
+<strong>Method:</strong> Waltz uses deductive theory-building supported by historical illustration (great-power balancing across centuries). Later scholars test his claims with large-N statistical studies of alliance formation and arms races.<br><br>
+<strong>Lit review use:</strong> Waltz is the foundational source for any realist/positivist school of thought section. If your topic involves security, alliances, or great-power behaviour, Waltz defines one pole of the debate. You would contrast him with constructivists (Wendt) who argue that anarchy doesn't automatically produce self-help.
+</div>
+</div>
+
+<!-- EXTRACT 2: WENDT -->
+<div class="extract" id="ext2">
+<div class="extract-header">
+<div class="extract-num">2</div>
+<div>
+<div class="extract-title">Alexander Wendt</div>
+<div class="extract-cite">Social Theory of International Politics (1999)</div>
+</div>
+<span class="badge badge-int">Interpretivist</span>
+</div>
+<div class="extract-text">
+"Anarchy is what states make of it. The character of international politics is not determined by the material structure of the system but by the shared ideas, norms, and identities that states bring to their interactions. A world of enemies (Hobbesian anarchy), a world of rivals (Lockean anarchy), and a world of friends (Kantian anarchy) are all possible under conditions of formal anarchy — which one obtains depends on processes of social construction. States do not have fixed interests given by the structure; their interests are constituted by their identities, which are themselves produced through interaction."
+</div>
+
+<div class="q-block">
+<label>What paradigm is Wendt working in?</label>
+<select id="e2-paradigm" onchange="trackProgress()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select>
+</div>
+<div class="q-block">
+<label>What is the causal engine? (X → mechanism → Y)</label>
+<textarea id="e2-causal" placeholder="" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What method or evidence type does this suggest?</label>
+<textarea id="e2-method" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>How does this challenge or complement Waltz (Extract 1)?</label>
+<textarea id="e2-litrev" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('m2')">Reveal Model Answer</button>
+<div class="model-answer" id="m2">
+<strong>Paradigm:</strong> Interpretivist / Constructivist. Wendt argues that the meaning of anarchy is socially constructed through shared ideas and interaction, not given by material structure. Knowledge is intersubjective.<br><br>
+<strong>Causal engine:</strong> Repeated state interaction (X) → social construction of shared identities and norms (mechanism) → type of anarchic culture — Hobbesian, Lockean, or Kantian (Y).<br><br>
+<strong>Method:</strong> Wendt uses theoretical argument and historical interpretation (e.g., how US-Soviet enmity was constructed and could be reconstructed). Empirical applications typically use process tracing, discourse analysis, or case studies of norm change.<br><br>
+<strong>Lit review use:</strong> Wendt is the direct rival to Waltz. In a lit review, placing them in opposing schools creates the core debate: does structure determine behaviour (Waltz) or do ideas and identity constitute structure (Wendt)? This is the paradigm-level disagreement your review should capture.
+</div>
+</div>
+
+<!-- EXTRACT 3: SAID -->
+<div class="extract" id="ext3">
+<div class="extract-header">
+<div class="extract-num">3</div>
+<div>
+<div class="extract-title">Edward Said</div>
+<div class="extract-cite">Orientalism (1978)</div>
+</div>
+<span class="badge badge-crit">Critical</span>
+</div>
+<div class="extract-text">
+"Orientalism is a style of thought based upon an ontological and epistemological distinction made between 'the Orient' and 'the Occident.' The Orient is not an inert fact of nature — it is an idea that has a history and a tradition of thought, imagery, and vocabulary that have given it reality and presence for the West. The relationship between Occident and Orient is a relationship of power, of domination, of varying degrees of a complex hegemony. The scholar who studies the Orient, the imaginative writer who takes it as a topic, the institution that regulates statements about it — all operate within the frameworks of Orientalist discourse."
+</div>
+
+<div class="q-block">
+<label>What paradigm is Said working in?</label>
+<select id="e3-paradigm" onchange="trackProgress()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select>
+</div>
+<div class="q-block">
+<label>What is the causal engine? (X → mechanism → Y)</label>
+<textarea id="e3-causal" placeholder="" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What method or evidence type does this suggest?</label>
+<textarea id="e3-method" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>How would a positivist critique this approach?</label>
+<textarea id="e3-litrev" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('m3')">Reveal Model Answer</button>
+<div class="model-answer" id="m3">
+<strong>Paradigm:</strong> Critical / Postcolonial. Said's project is to expose how knowledge itself is a form of power. He is not trying to explain or predict — he is deconstructing the discourse through which the West constitutes and dominates "the Orient."<br><br>
+<strong>Causal engine:</strong> Western knowledge institutions (X) → produce Orientalist discourse that constructs the Orient as inferior/exotic (mechanism) → legitimise and sustain colonial and neo-colonial domination (Y). Note: critical scholars may resist the language of "causal engine" since they see power as constitutive, not merely causal.<br><br>
+<strong>Method:</strong> Discourse analysis, literary criticism, genealogy — close reading of texts (novels, travel writing, diplomatic reports, academic scholarship) to trace how representations of the Orient are produced and reproduced.<br><br>
+<strong>Positivist critique:</strong> A positivist would argue that Said's claims are unfalsifiable — if all Western scholarship on the Middle East is Orientalist by definition, no evidence could disprove the theory. They would also note the lack of systematic comparative method: Said selects texts that confirm his argument without testing against cases where Western scholars produced non-Orientalist knowledge.
+</div>
+</div>
+
+<!-- EXTRACT 4: DOYLE -->
+<div class="extract" id="ext4">
+<div class="extract-header">
+<div class="extract-num">4</div>
+<div>
+<div class="extract-title">Michael Doyle</div>
+<div class="extract-cite">"Kant, Liberal Legacies, and Foreign Affairs" (1983)</div>
+</div>
+<span class="badge badge-pos">Positivist</span>
+</div>
+<div class="extract-text">
+"Liberal states have maintained peace among themselves for over two hundred years, even as they have engaged in wars with non-liberal states at rates no different from the historical average. This 'separate peace' among liberal democracies cannot be explained by realist variables alone — shared borders, alliance patterns, and relative power do not account for the pattern. The explanation lies in the combination of republican institutions (which make war costly for leaders accountable to citizens), an ideology of mutual respect among fellow liberal states, and economic interdependence that raises the cost of conflict. Together, these three Kantian pillars create a zone of peace."
+</div>
+
+<div class="q-block">
+<label>What paradigm is Doyle working in?</label>
+<select id="e4-paradigm" onchange="trackProgress()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Postcolonial</option>
+</select>
+</div>
+<div class="q-block">
+<label>What is the causal engine? (X → mechanism → Y)</label>
+<textarea id="e4-causal" placeholder="" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What N-size and method would you expect in this research programme?</label>
+<textarea id="e4-method" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What rival explanation might an interpretivist or critical scholar offer?</label>
+<textarea id="e4-litrev" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('m4')">Reveal Model Answer</button>
+<div class="model-answer" id="m4">
+<strong>Paradigm:</strong> Positivist / Liberal. Doyle identifies an observable empirical pattern (liberal states don't fight each other), proposes measurable causal variables, and invites large-N testing.<br><br>
+<strong>Causal engine:</strong> Liberal democracy (X) → republican accountability + mutual respect + economic interdependence (triple mechanism) → peace between liberal states (Y).<br><br>
+<strong>N-size and method:</strong> Large-N. The democratic peace research programme has generated hundreds of statistical studies analysing all interstate dyads (pairs of states) from 1816 to the present, coding regime type, trade flows, and conflict events. Classic dataset: Correlates of War.<br><br>
+<strong>Rival explanations:</strong> An interpretivist (e.g., Risse-Kappen) might argue that it is not institutions but shared liberal identity and trust that produces peace — the mechanism is social, not institutional. A critical scholar might argue that "democratic peace" is an ideological construct that legitimises Western military intervention against "non-democracies" and ignores the violence liberal states inflict on the Global South through structural economic power.
+</div>
+</div>
+
+<!-- EXTRACT 5: ENLOE -->
+<div class="extract" id="ext5">
+<div class="extract-header">
+<div class="extract-num">5</div>
+<div>
+<div class="extract-title">Cynthia Enloe</div>
+<div class="extract-cite">Bananas, Beaches and Bases (2014, 2nd ed.)</div>
+</div>
+<span class="badge badge-crit">Critical</span>
+</div>
+<div class="extract-text">
+"International politics has relied on women being in certain places — as diplomatic wives, as military base camp followers, as cheap garment workers, as sex workers near military installations. To make feminist sense of international politics requires taking seriously the experiences of these women and asking how their roles sustain the international political system. Conventional IR theory renders these women invisible because it defines 'politics' as what states do. But the state could not do what it does without the unacknowledged labour and compliance of women. Paying attention to where the women are reveals how much power it takes to maintain the international system as we know it."
+</div>
+
+<div class="q-block">
+<label>What paradigm is Enloe working in?</label>
+<select id="e5-paradigm" onchange="trackProgress()">
+<option value="">— choose —</option>
+<option value="pos">Positivist / Rationalist</option>
+<option value="int">Interpretivist / Constructivist</option>
+<option value="crit">Critical / Feminist</option>
+</select>
+</div>
+<div class="q-block">
+<label>What is the causal engine — or does "causal engine" even apply here?</label>
+<textarea id="e5-causal" placeholder="" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>What method and N-size does this approach suggest?</label>
+<textarea id="e5-method" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<div class="q-block">
+<label>If you were writing a lit review on gender and security, where would Enloe fit — and who would you put in the rival school?</label>
+<textarea id="e5-litrev" placeholder="" style="min-height:50px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('m5')">Reveal Model Answer</button>
+<div class="model-answer" id="m5">
+<strong>Paradigm:</strong> Critical / Feminist. Enloe's goal is to make visible what mainstream IR deliberately or unconsciously hides — the gendered structures that sustain international politics. She is exposing power, not testing hypotheses.<br><br>
+<strong>Causal engine:</strong> The concept doesn't apply cleanly. Enloe is not arguing "X causes Y" — she is arguing that the international system is constituted by gendered power relations that are rendered invisible. If forced into the framework: Patriarchal structures in global politics (X) → render women's labour invisible while depending on it (mechanism) → reproduce and sustain the international order (Y).<br><br>
+<strong>Method and N-size:</strong> Qualitative, interpretive, critical. Enloe uses illustrative case studies (military bases in the Philippines, banana plantations in Central America), ethnographic observation, and feminist analysis. N-size is small — a handful of richly described sites, not a cross-national dataset.<br><br>
+<strong>Lit review placement:</strong> Enloe anchors the feminist/critical school. Rivals would include positivists like Caprioli (2000), who uses large-N regression to test whether gender equality correlates with state peacefulness — same topic, entirely different paradigm and method. An interpretivist like Tickner (1992) would sit between them, sharing Enloe's feminist lens but engaging more with mainstream IR theory.
+</div>
+</div>
+
+<div class="card">
+<h2>Now Apply This to Your Own Sources</h2>
+<p>Take any three sources from your annotated bibliography and ask the same four questions: What paradigm? What causal engine? What method? How does it fit in my lit review? If you can answer these for your own sources, you are ready for both the midterm and your literature review.</p>
+</div>
+
+</div>
+
+<!-- ============ TAB 2: CONCEPT QUIZ ============ -->
+<div class="panel" id="panel-2">
+
+<div class="card">
+<h2>Concept Quick-Fire</h2>
+<p>20 questions covering the key concepts from Weeks 1–7. These mirror the format of Part I of the exam (fill-in-the-blank and matching). Answer all of them, then check your score.</p>
+</div>
+
+<div id="quizArea"></div>
+
+<div style="margin:16px 0">
+<button class="btn-primary" onclick="scoreQuiz()">Check All Answers</button>
+<button class="btn-secondary" onclick="resetQuiz()" style="margin-left:8px">Reset</button>
+</div>
+<div id="quizScore"></div>
+
+</div>
+
+<!-- ============ TAB 3: DIAGNOSE DESIGNS ============ -->
+<div class="panel" id="panel-3">
+
+<div class="card">
+<h2>Diagnose Fictional Designs</h2>
+<p>Each scenario below presents a fictional student's research design with embedded problems. Your job: identify as many flaws as you can, then check against the model answer. This is exactly what Part II of the exam asks you to do.</p>
+</div>
+
+<!-- SCENARIO A -->
+<div class="scenario">
+<div class="scenario-header">
+<div class="extract-num">A</div>
+<div class="extract-title">Elif — The Mismatched Positivist</div>
+<span class="scenario-badge easy">Easier</span>
+</div>
+<div class="scenario-profile">
+<strong>Research Question:</strong> "How does Western media construct the image of refugees in Europe?"<br>
+<strong>Paradigm:</strong> Positivist / Strategist<br>
+<strong>Causal Engine:</strong> Media framing → public opinion → restrictive immigration policy<br>
+<strong>Method:</strong> Discourse analysis of BBC and Al Jazeera coverage, 2015–2020<br>
+<strong>N-size:</strong> N = 1 (media discourse as a single site)<br>
+<strong>Literature Review:</strong> "Entman (1993) defines framing theory. Then Chong and Druckman (2007) discuss framing effects. Then Boomgaarden and Vliegenthart (2009) study media and immigration attitudes. Then Said (1978) critiques Orientalism."
+</div>
+
+<div class="q-block">
+<label>List every problem you can identify:</label>
+<textarea id="sa-answer" placeholder="e.g. 1. Paradigm-method mismatch: discourse analysis is a critical/interpretivist method, not positivist... 2. ..." style="min-height:120px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('ma')">Reveal Model Answer</button>
+<div class="model-answer" id="ma">
+<strong>1. Paradigm-method mismatch:</strong> Elif claims to be a Positivist but is using discourse analysis — a method aligned with Critical or Interpretivist paradigms. A positivist studying media framing would use quantitative content analysis (coding frames across hundreds of articles) or survey experiments testing framing effects.<br><br>
+<strong>2. RQ-paradigm tension:</strong> The question "How does media construct..." uses constitutive language (construct) that belongs to the interpretivist/critical tradition, not positivism. A positivist RQ would be: "Does negative media framing of refugees predict support for restrictive immigration policies?"<br><br>
+<strong>3. N-size problem:</strong> N=1 is defensible for discourse analysis but not for a positivist design. If she stays positivist, she needs a larger N (many articles, or multiple countries' media).<br><br>
+<strong>4. Causal engine is reasonable</strong> but doesn't match the chosen method. Discourse analysis won't test whether framing causes opinion change — she would need survey data or an experiment for that.<br><br>
+<strong>5. Literature review is author-by-author:</strong> "Entman says... then Chong and Druckman say... then Said says..." — this is an annotated bibliography, not a literature review. Sources should be grouped by school: framing theorists vs. critical/postcolonial scholars.
+</div>
+</div>
+
+<!-- SCENARIO B -->
+<div class="scenario">
+<div class="scenario-header">
+<div class="extract-num">B</div>
+<div class="extract-title">Kemal — The Vague Storyteller</div>
+<span class="scenario-badge medium">Medium</span>
+</div>
+<div class="scenario-profile">
+<strong>Research Question:</strong> "What about Cyprus?"<br>
+<strong>Paradigm:</strong> Interpretivist / Storyteller<br>
+<strong>Causal Engine:</strong> History → conflict → division<br>
+<strong>Method:</strong> Interviews with 5 community leaders on both sides<br>
+<strong>N-size:</strong> N = 1 (Cyprus)<br>
+<strong>Literature Review:</strong> Organised into three sections: "Pre-1974 history," "1974 to Annan Plan," "Post-2004 to present."
+</div>
+
+<div class="q-block">
+<label>List every problem you can identify:</label>
+<textarea id="sb-answer" placeholder="" style="min-height:120px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('mb')">Reveal Model Answer</button>
+<div class="model-answer" id="mb">
+<strong>1. Research question is not a question:</strong> "What about Cyprus?" is a topic, not a research question. It has no puzzle, no dependent variable, no analytical focus. A better RQ: "How do Greek Cypriot and Turkish Cypriot community leaders construct competing narratives of sovereignty that obstruct federal negotiations?"<br><br>
+<strong>2. Causal engine is empty:</strong> "History → conflict → division" says nothing specific. What aspect of history? What mechanism transforms historical events into ongoing division? A better engine: Colonial-era institutional separation (X) → divergent identity narratives reinforced through separate education systems (mechanism) → incompatible sovereignty claims that block reunification (Y).<br><br>
+<strong>3. Literature review is chronological, not thematic:</strong> Organising by time period is a historical narrative, not a literature review. He should organise by schools of thought: rationalist/institutional accounts of partition vs. constructivist identity-based accounts vs. critical analyses of external power interference.<br><br>
+<strong>4. Method is appropriate for the paradigm</strong> (interviews + interpretivist = good fit), but 5 interviews is thin. He should justify why these 5 leaders, how they were selected, and supplement with documentary sources.<br><br>
+<strong>5. N=1 is fine for an interpretivist</strong> single-case study, but he needs to justify the case selection — is Cyprus a crucial case, a typical case, or a deviant case for his theory?
+</div>
+</div>
+
+<!-- SCENARIO C -->
+<div class="scenario">
+<div class="scenario-header">
+<div class="extract-num">C</div>
+<div class="extract-title">Amira — The Over-Ambitious Disruptor</div>
+<span class="scenario-badge medium">Medium</span>
+</div>
+<div class="scenario-profile">
+<strong>Research Question:</strong> "Why does the international community fail to protect women in conflict zones?"<br>
+<strong>Paradigm:</strong> Critical / Disruptor<br>
+<strong>Causal Engine:</strong> Patriarchy → gender blindness in institutions → women suffer<br>
+<strong>Method:</strong> Large-N statistical analysis of UNSC resolutions mentioning women (N = 2,400 resolutions, 1990–2023), coded for gender-sensitive language<br>
+<strong>N-size:</strong> N = 2,400<br>
+<strong>Literature Review:</strong> Two schools: "Feminist scholars who say institutions are patriarchal" and "Everyone else who ignores gender." Gap: "No one has counted how many resolutions mention women."
+</div>
+
+<div class="q-block">
+<label>List every problem you can identify:</label>
+<textarea id="sc-answer" placeholder="" style="min-height:120px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('mc')">Reveal Model Answer</button>
+<div class="model-answer" id="mc">
+<strong>1. Paradigm-method mismatch:</strong> Amira is a Critical/Disruptor but plans large-N statistical coding. A critical scholar would more naturally do discourse analysis of selected resolutions to expose how language constructs gender roles — not count keywords. Large-N content analysis can work but needs strong critical justification.<br><br>
+<strong>2. Causal engine is tautological:</strong> "Patriarchy → gender blindness → women suffer" — "patriarchy" and "gender blindness" are essentially the same concept restated. What is the specific mechanism? Better: International security discourse constituted around state sovereignty (X) → defines "security threats" as military and excludes gendered violence from the agenda (mechanism) → systematic exclusion of women's protection from peace operations (Y).<br><br>
+<strong>3. RQ is normatively loaded but analytically weak:</strong> "Why does the international community fail" presupposes failure and assigns blame. Better: "How does the UNSC's discursive framing of 'security' marginalise gender-based violence in conflict-zone mandates?"<br><br>
+<strong>4. Literature review is a strawman:</strong> Dividing the literature into "feminists who agree with me" and "everyone else who ignores gender" is not a serious engagement with rival explanations. She needs to engage with institutionalist accounts (why UNSC structure constrains gender mainstreaming), liberal accounts (the Women, Peace and Security agenda as progress), and then her critical perspective as a challenge to both.<br><br>
+<strong>5. The gap is empirical but trivial:</strong> "No one has counted resolutions mentioning women" may be technically true but it's not a meaningful scholarly gap. The interesting gap would be: why does the presence of gender-sensitive language not translate into operational protection on the ground?
+</div>
+</div>
+
+<!-- SCENARIO D -->
+<div class="scenario">
+<div class="scenario-header">
+<div class="extract-num">D</div>
+<div class="extract-title">Tomás — The Almost-Right Design</div>
+<span class="scenario-badge hard">Harder</span>
+</div>
+<div class="scenario-profile">
+<strong>Research Question:</strong> "Why did Rwanda's post-genocide reconciliation programme produce higher levels of social trust than Burundi's, despite similar ethnic demographics?"<br>
+<strong>Paradigm:</strong> Positivist / Strategist<br>
+<strong>Causal Engine:</strong> Institutional design of transitional justice (X) → transforms intergroup contact from threatening to cooperative (mechanism) → social trust between former adversaries (Y)<br>
+<strong>Method:</strong> Most Similar Systems comparison (N = 2), using Afrobarometer survey data + process tracing of gacaca courts (Rwanda) vs. Arusha accords (Burundi)<br>
+<strong>N-size:</strong> N = 2<br>
+<strong>Literature Review:</strong> Three schools — transitional justice institutionalists (Sikkink, Olsen et al.), contact theory psychologists (Allport, Pettigrew), and critical scholars who question whether "reconciliation" is a Western import (Madlingozi). Gap: "No comparative study applies contact theory to explain why transitional justice mechanisms produce different trust outcomes in matched African cases."
+</div>
+
+<div class="q-block">
+<label>This design is much stronger. Can you still find problems or risks?</label>
+<textarea id="sd-answer" placeholder="" style="min-height:120px" oninput="trackProgress()"></textarea>
+</div>
+<button class="reveal-btn" onclick="toggleModel('md')">Reveal Model Answer</button>
+<div class="model-answer" id="md">
+<strong>This design is well-constructed.</strong> The RQ is specific and comparative, the paradigm-method alignment is reasonable, the causal engine has a clear mechanism, and the lit review is organised by schools with a genuine gap. But there are still risks:<br><br>
+<strong>1. N=2 for a positivist is thin:</strong> MSS comparison is defensible, but a strict positivist reviewer would worry about degrees of freedom — with only two cases and many potential confounding variables (genocide severity, international intervention, economic trajectories), it's hard to isolate the institutional design variable. Tomás should acknowledge this limitation and explain why process tracing compensates.<br><br>
+<strong>2. "Social trust" is hard to measure:</strong> He plans to use Afrobarometer data, which is good, but trust survey questions may not capture what gacaca actually changed. He needs to operationalise trust carefully and address measurement validity.<br><br>
+<strong>3. The cases may not be as "similar" as claimed:</strong> Rwanda experienced full-scale genocide; Burundi experienced recurring civil war but not genocide at the same scale. A critic could argue the cases are too different on the key background condition (severity of violence) for MSS logic to hold.<br><br>
+<strong>4. The critical school in the lit review is acknowledged but not engaged:</strong> Madlingozi's critique that "reconciliation" is a Western concept imported into African contexts is mentioned but not addressed in the research design. If Tomás takes this seriously, it could challenge his entire dependent variable.<br><br>
+<strong>5. Mixed methods need justification:</strong> Combining survey data with process tracing is smart but requires explicit explanation of how the two forms of evidence interact — does the survey establish the outcome and the process tracing explain the mechanism? This should be stated clearly.
+</div>
+</div>
+
+</div>
+
+<!-- ============ TAB 4: MY SCORE ============ -->
+<div class="panel" id="panel-4">
+
+<div class="card">
+<h2>Your Progress</h2>
+<p>This tracks how much of the study guide you've completed. Aim for 100% before the exam.</p>
+</div>
+
+<div class="score-display">
+<div class="num" id="totalScore">0%</div>
+<div class="lbl">Overall Completion</div>
+</div>
+
+<div class="progress-bar-bg"><div class="progress-bar-fill" id="totalBar" style="width:0%"></div></div>
+
+<div id="scoreBreakdown" style="margin-top:16px"></div>
+
+<div style="margin:20px 0">
+<button class="btn-primary" onclick="saveDraft()">Save Progress</button>
+<button class="btn-secondary" onclick="loadDraft()" style="margin-left:8px">Load Saved Progress</button>
+</div>
+
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Tabs ── */
+function showTab(n){
+  var panels=document.querySelectorAll('.panel');
+  var tabs=document.querySelectorAll('.tab');
+  for(var i=0;i<panels.length;i++){panels[i].classList.remove('active');tabs[i].classList.remove('active');}
+  document.getElementById('panel-'+n).classList.add('active');
+  tabs[n].classList.add('active');
+  if(n===4)updateScore();
+}
+
+function toggleModel(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('visible');
+}
+
+/* ── Quiz Data ── */
+var quizData=[
+{q:"The three paradigm tracks in this course are Positivist, ________, and Critical.",a:"Interpretivist",type:"fill"},
+{q:"A literature review should be organised by ________, not author by author.",a:"schools of thought",type:"fill"},
+{q:"In a causal engine, X leads to Y through a ________.",a:"mechanism",type:"fill"},
+{q:"The trade-off between studying 1 case vs. 100 cases is ________ vs. generalisability.",a:"depth",type:"fill"},
+{q:"MSS stands for Most ________ Systems design.",a:"Similar",type:"fill"},
+{q:"A case selected because it should most likely confirm a theory is called a ________ case.",a:"crucial",type:"fill"},
+{q:"King, Keohane, and Verba argued that qualitative and quantitative research share the same logic of ________.",a:"inference",type:"fill"},
+{q:"An umbrella sentence introduces a ________ in a literature review.",a:"school of thought",type:"fill"},
+{q:"Which paradigm seeks to explain and predict through testable hypotheses?",opts:["Positivist","Interpretivist","Critical"],a:0,type:"mc"},
+{q:"Which paradigm seeks to understand meaning and context?",opts:["Positivist","Interpretivist","Critical"],a:1,type:"mc"},
+{q:"Which paradigm seeks to expose power structures?",opts:["Positivist","Interpretivist","Critical"],a:2,type:"mc"},
+{q:"Process tracing is most naturally associated with which N-size?",opts:["N = 1","N = 50","N = 200+"],a:0,type:"mc"},
+{q:"Statistical regression requires at minimum roughly which N-size?",opts:["N = 2–5","N = 15–30","N = 50+"],a:2,type:"mc"},
+{q:"QCA (Qualitative Comparative Analysis) typically operates at which N-size?",opts:["N = 1","N = 10–50","N = 200+"],a:1,type:"mc"},
+{q:"Waltz is associated with which theory?",opts:["Liberal institutionalism","Structural realism","Constructivism"],a:1,type:"mc"},
+{q:"Wendt is famous for the claim that 'Anarchy is what states ________ of it.'",a:"make",type:"fill"},
+{q:"A research question that contains its own answer is guilty of ________.",a:"tautology",type:"fill"},
+{q:"Said's Orientalism is an example of which paradigm?",opts:["Positivist","Interpretivist","Critical / Postcolonial"],a:2,type:"mc"},
+{q:"When a Critical scholar uses large-N regression without justification, this is a paradigm-________ mismatch.",a:"method",type:"fill"},
+{q:"The section of a literature review that identifies what scholars have missed is called the ________.",a:"gap",type:"fill"}
+];
+
+function buildQuiz(){
+  var html='';
+  for(var i=0;i<quizData.length;i++){
+    var q=quizData[i];
+    html+='<div class="quiz-q" id="qq-'+i+'">';
+    html+='<div class="q-text">'+(i+1)+'. '+q.q+'</div>';
+    if(q.type==='fill'){
+      html+='<input type="text" class="quiz-input" data-qi="'+i+'" placeholder="Type your answer..." style="max-width:400px" oninput="trackProgress()">';
+    }else{
+      html+='<div class="quiz-opts">';
+      for(var j=0;j<q.opts.length;j++){
+        html+='<label><input type="radio" name="q'+i+'" value="'+j+'" onchange="trackProgress()"> '+q.opts[j]+'</label>';
+      }
+      html+='</div>';
+    }
+    html+='<div class="quiz-feedback" id="qf-'+i+'"></div>';
+    html+='</div>';
+  }
+  document.getElementById('quizArea').innerHTML=html;
+}
+
+function scoreQuiz(){
+  var correct=0;
+  for(var i=0;i<quizData.length;i++){
+    var q=quizData[i];
+    var fb=document.getElementById('qf-'+i);
+    var isCorrect=false;
+    if(q.type==='fill'){
+      var input=document.querySelector('[data-qi="'+i+'"]');
+      var val=input.value.trim().toLowerCase();
+      var ans=q.a.toLowerCase();
+      isCorrect=(val===ans||val.indexOf(ans)>=0||ans.indexOf(val)>=0) && val.length>2;
+      if(isCorrect){
+        fb.className='quiz-feedback correct';
+        fb.textContent='Correct: '+q.a;
+      }else{
+        fb.className='quiz-feedback wrong';
+        fb.textContent='Answer: '+q.a;
+      }
+    }else{
+      var selected=document.querySelector('input[name="q'+i+'"]:checked');
+      if(selected&&parseInt(selected.value)===q.a){
+        isCorrect=true;
+        fb.className='quiz-feedback correct';
+        fb.textContent='Correct!';
+      }else{
+        fb.className='quiz-feedback wrong';
+        fb.textContent='Answer: '+q.opts[q.a];
+      }
+    }
+    if(isCorrect)correct++;
+  }
+  var pct=Math.round((correct/quizData.length)*100);
+  var html='<div class="score-display"><div class="num">'+correct+'/'+quizData.length+'</div><div class="lbl">'+pct+'% — ';
+  if(pct>=80)html+='Strong. Focus on the ones you missed.';
+  else if(pct>=60)html+='Decent foundation. Review the concepts you got wrong.';
+  else html+='Needs work. Re-read the lecture notes and use the course tools.';
+  html+='</div></div>';
+  document.getElementById('quizScore').innerHTML=html;
+}
+
+function resetQuiz(){
+  var inputs=document.querySelectorAll('.quiz-input');
+  for(var i=0;i<inputs.length;i++)inputs[i].value='';
+  var radios=document.querySelectorAll('.quiz-opts input');
+  for(var i=0;i<radios.length;i++)radios[i].checked=false;
+  var fbs=document.querySelectorAll('.quiz-feedback');
+  for(var i=0;i<fbs.length;i++){fbs[i].className='quiz-feedback';fbs[i].textContent='';}
+  document.getElementById('quizScore').innerHTML='';
+}
+
+/* ── Progress Tracking ── */
+function trackProgress(){
+  updateScore();
+}
+
+function updateScore(){
+  var total=0;var done=0;
+
+  // Extracts: 5 paradigm selects + 15 textareas = 20 items
+  var eSelects=document.querySelectorAll('[id^="e"][id$="-paradigm"]');
+  for(var i=0;i<eSelects.length;i++){total++;if(eSelects[i].value)done++;}
+  var eTexts=document.querySelectorAll('[id^="e"][id$="-causal"],[id^="e"][id$="-method"],[id^="e"][id$="-litrev"]');
+  for(var i=0;i<eTexts.length;i++){total++;if(eTexts[i].value.trim().length>10)done++;}
+
+  // Quiz: 20 items
+  for(var i=0;i<quizData.length;i++){
+    total++;
+    if(quizData[i].type==='fill'){
+      var inp=document.querySelector('[data-qi="'+i+'"]');
+      if(inp&&inp.value.trim().length>1)done++;
+    }else{
+      var sel=document.querySelector('input[name="q'+i+'"]:checked');
+      if(sel)done++;
+    }
+  }
+
+  // Scenarios: 4 textareas
+  var sTa=document.querySelectorAll('[id^="s"][id$="-answer"]');
+  for(var i=0;i<sTa.length;i++){total++;if(sTa[i].value.trim().length>20)done++;}
+
+  var pct=total>0?Math.round((done/total)*100):0;
+  document.getElementById('totalScore').textContent=pct+'%';
+  document.getElementById('totalBar').style.width=pct+'%';
+
+  var bd='<div class="card"><h3>Breakdown</h3>';
+  bd+='<p>Reverse-Engineer extracts: '+countDone(eSelects,eTexts)+' / '+(eSelects.length+eTexts.length)+'</p>';
+  bd+='<p>Concept Quiz: attempted '+countQuizDone()+' / '+quizData.length+'</p>';
+  bd+='<p>Scenario Diagnoses: '+countScenarios()+' / '+sTa.length+'</p>';
+  bd+='</div>';
+  document.getElementById('scoreBreakdown').innerHTML=bd;
+}
+
+function countDone(sels,texts){
+  var c=0;
+  for(var i=0;i<sels.length;i++)if(sels[i].value)c++;
+  for(var i=0;i<texts.length;i++)if(texts[i].value.trim().length>10)c++;
+  return c;
+}
+
+function countQuizDone(){
+  var c=0;
+  for(var i=0;i<quizData.length;i++){
+    if(quizData[i].type==='fill'){
+      var inp=document.querySelector('[data-qi="'+i+'"]');
+      if(inp&&inp.value.trim().length>1)c++;
+    }else{
+      if(document.querySelector('input[name="q'+i+'"]:checked'))c++;
+    }
+  }
+  return c;
+}
+
+function countScenarios(){
+  var c=0;
+  var ta=document.querySelectorAll('[id^="s"][id$="-answer"]');
+  for(var i=0;i<ta.length;i++)if(ta[i].value.trim().length>20)c++;
+  return c;
+}
+
+/* ── Save/Load ── */
+function saveDraft(){
+  var data={};
+  var all=document.querySelectorAll('textarea,select.school-select,[id^="e"][id$="-paradigm"],.quiz-input');
+  for(var i=0;i<all.length;i++){
+    if(all[i].id)data[all[i].id]=all[i].value;
+    else if(all[i].getAttribute('data-qi'))data['qi-'+all[i].getAttribute('data-qi')]=all[i].value;
+  }
+  // Save radio selections
+  for(var i=0;i<quizData.length;i++){
+    var sel=document.querySelector('input[name="q'+i+'"]:checked');
+    if(sel)data['radio-q'+i]=sel.value;
+  }
+  localStorage.setItem('psir220_studyguide',JSON.stringify(data));
+  showToast('Progress saved');
+}
+
+function loadDraft(){
+  var raw=localStorage.getItem('psir220_studyguide');
+  if(!raw){showToast('No saved progress');return;}
+  var data=JSON.parse(raw);
+  for(var k in data){
+    if(k.indexOf('qi-')===0){
+      var qi=k.replace('qi-','');
+      var el=document.querySelector('[data-qi="'+qi+'"]');
+      if(el)el.value=data[k];
+    }else if(k.indexOf('radio-q')===0){
+      var qn=k.replace('radio-','');
+      var radio=document.querySelector('input[name="'+qn+'"][value="'+data[k]+'"]');
+      if(radio)radio.checked=true;
+    }else{
+      var el=document.getElementById(k);
+      if(el)el.value=data[k];
+    }
+  }
+  updateScore();
+  showToast('Progress loaded');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+/* ── Init ── */
+buildQuiz();
+</script>
+</body>
+</html>
