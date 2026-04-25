@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – The Alignment Checker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#e0e0e0;min-height:100vh}
+header{text-align:center;padding:28px 16px 12px}
+header h1{font-size:1.6rem;color:#f0c040;margin-bottom:4px}
+header p{font-size:.85rem;color:#aaa}
+main{max-width:760px;margin:0 auto;padding:0 16px 40px}
+
+.card{background:rgba(255,255,255,.07);border-radius:12px;padding:22px;margin-bottom:16px;border:1px solid rgba(255,255,255,.1)}
+.card h2{font-size:1.1rem;color:#f0c040;margin-bottom:12px}
+.card h3{font-size:.95rem;color:#ccc;margin:14px 0 8px}
+.card p.desc{font-size:.85rem;color:#999;margin-bottom:12px;line-height:1.5}
+
+label{display:block;font-size:.85rem;color:#bbb;margin-bottom:4px;margin-top:12px}
+input[type="text"],textarea,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#e0e0e0;font-size:.9rem;font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+select option{background:#1a1a2e;color:#e0e0e0}
+
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.input-row{grid-template-columns:1fr}}
+
+.btn{display:inline-block;padding:12px 28px;border-radius:8px;border:none;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,#f0c040,#e6a520);color:#1a1a2e}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(240,192,64,.3)}
+.btn-secondary{background:rgba(255,255,255,.1);color:#e0e0e0;margin-left:8px}
+.btn-secondary:hover{background:rgba(255,255,255,.15)}
+.btn-export{background:rgba(99,102,241,.3);color:#c7d2fe;margin-left:8px}
+.btn-export:hover{background:rgba(99,102,241,.4)}
+.btn-center{text-align:center;margin-top:20px}
+
+/* Results */
+.results{display:none}
+.results.show{display:block}
+
+.check-item{padding:14px 16px;border-radius:10px;margin-bottom:10px;border-left:4px solid #555}
+.check-item.green{border-left-color:#22c55e;background:rgba(34,197,94,.08)}
+.check-item.amber{border-left-color:#f59e0b;background:rgba(245,158,11,.08)}
+.check-item.red{border-left-color:#ef4444;background:rgba(239,68,68,.08)}
+
+.check-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.check-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.green .check-icon{background:#22c55e;color:#fff}
+.amber .check-icon{background:#f59e0b;color:#fff}
+.red .check-icon{background:#ef4444;color:#fff}
+.check-title{font-size:.9rem;font-weight:600;color:#e0e0e0}
+.check-body{font-size:.85rem;color:#bbb;line-height:1.5;margin-left:30px}
+.check-fix{font-size:.82rem;color:#f0c040;margin-top:6px;margin-left:30px;font-style:italic}
+
+.flight-status{text-align:center;padding:24px;border-radius:12px;margin-top:20px}
+.flight-status.ready{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+.flight-status.warning{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3)}
+.flight-status.grounded{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
+.flight-status h2{font-size:1.3rem;margin-bottom:6px}
+.flight-status.ready h2{color:#22c55e}
+.flight-status.warning h2{color:#f59e0b}
+.flight-status.grounded h2{color:#ef4444}
+.flight-status p{font-size:.88rem;color:#bbb}
+.flight-counts{display:flex;justify-content:center;gap:20px;margin-top:10px;font-size:.85rem}
+.flight-counts span{padding:4px 12px;border-radius:20px}
+.fc-green{background:rgba(34,197,94,.15);color:#22c55e}
+.fc-amber{background:rgba(245,158,11,.15);color:#f59e0b}
+.fc-red{background:rgba(239,68,68,.15);color:#ef4444}
+
+.summary-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px;margin-top:16px;font-size:.85rem;line-height:1.6;color:#ccc;white-space:pre-wrap;display:none}
+
+.traps{margin-top:20px}
+.trap-item{padding:10px 14px;border-radius:8px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);margin-bottom:8px;font-size:.84rem;color:#ddd;line-height:1.5}
+.trap-item strong{color:#f59e0b}
+
+.step-nav{display:flex;justify-content:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;border:2px solid rgba(255,255,255,.15);color:#888;cursor:pointer;transition:all .2s}
+.step-dot.active{border-color:#f0c040;color:#f0c040;background:rgba(240,192,64,.1)}
+.step-dot.complete{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.1)}
+
+footer{text-align:center;padding:20px;font-size:.75rem;color:#666}
+</style>
+</head>
+<body>
+
+<header>
+<h1>&#9992; The Alignment Checker</h1>
+<p>PSIR220 — Pre-Flight Safety Check for Your Research Design</p>
+</header>
+
+<main>
+
+<div class="card">
+<p class="desc">Before a pilot takes off, they run a pre-flight checklist — fuel, instruments, flaps, radio. Before you submit your research design, you run this. Enter your project details below and the checker will test whether your research question, paradigm, causal pathway, method, N-size, and case selection are aligned. Green means go. Amber means explain yourself. Red means fix it before you fly.</p>
+</div>
+
+<div class="step-nav" id="stepNav">
+<div class="step-dot active" onclick="goStep(1)">1</div>
+<div class="step-dot" onclick="goStep(2)">2</div>
+<div class="step-dot" onclick="goStep(3)">3</div>
+<div class="step-dot" onclick="goStep(4)">4</div>
+<div class="step-dot" onclick="goStep(5)">5</div>
+<div class="step-dot" onclick="goStep(6)">6</div>
+</div>
+
+<!-- STEP 1: Research Question -->
+<div class="card step" id="step1">
+<h2>Step 1 — Research Question</h2>
+<label for="rq">Your research question:</label>
+<textarea id="rq" placeholder="e.g., Why did populist parties gain more electoral support in Italy than Germany after the 2008 financial crisis?"></textarea>
+<label for="rqType">What kind of question is this?</label>
+<select id="rqType">
+<option value="">— Select —</option>
+<option value="why-vary">Why does X vary across cases? (comparative)</option>
+<option value="why-case">Why did X happen in this case? (single-case)</option>
+<option value="how-process">How did X lead to Y? (process/mechanism)</option>
+<option value="how-discourse">How is X constructed through discourse/power? (critical)</option>
+<option value="what-extent">To what extent does X cause Y? (hypothesis-testing)</option>
+</select>
+<div class="btn-center">
+<button class="btn btn-primary" onclick="goStep(2)">Next &#8594;</button>
+</div>
+</div>
+
+<!-- STEP 2: Paradigm -->
+<div class="card step" id="step2" style="display:none">
+<h2>Step 2 — Paradigm Track</h2>
+<label for="paradigm">Your paradigm:</label>
+<select id="paradigm">
+<option value="">— Select —</option>
+<option value="pos">Positivist — The Strategist</option>
+<option value="int">Interpretivist — The Storyteller</option>
+<option value="crit">Critical / Post-modern — The Disruptor</option>
+</select>
+<label for="paradigmWhy">In one sentence, why did you choose this paradigm?</label>
+<textarea id="paradigmWhy" placeholder="e.g., I want to test measurable hypotheses about economic variables using comparative data."></textarea>
+<div class="btn-center">
+<button class="btn btn-secondary" onclick="goStep(1)">&#8592; Back</button>
+<button class="btn btn-primary" onclick="goStep(3)">Next &#8594;</button>
+</div>
+</div>
+
+<!-- STEP 3: Causal Pathway -->
+<div class="card step" id="step3" style="display:none">
+<h2>Step 3 — Causal Pathway</h2>
+<p class="desc">Map the logic of your argument: X causes Y through a specific mechanism.</p>
+<div class="input-row">
+<div>
+<label for="cpX">X (independent variable / cause):</label>
+<input type="text" id="cpX" placeholder="e.g., Economic crisis severity">
+</div>
+<div>
+<label for="cpY">Y (dependent variable / outcome):</label>
+<input type="text" id="cpY" placeholder="e.g., Populist electoral support">
+</div>
+</div>
+<label for="cpM">Mechanism (how X leads to Y):</label>
+<textarea id="cpM" placeholder="e.g., Economic crisis → institutional distrust → demand for anti-establishment parties → populist vote share increases"></textarea>
+<div class="btn-center">
+<button class="btn btn-secondary" onclick="goStep(2)">&#8592; Back</button>
+<button class="btn btn-primary" onclick="goStep(4)">Next &#8594;</button>
+</div>
+</div>
+
+<!-- STEP 4: Method -->
+<div class="card step" id="step4" style="display:none">
+<h2>Step 4 — Method</h2>
+<label for="method">Your primary method:</label>
+<select id="method">
+<option value="">— Select —</option>
+<option value="stat-reg">Statistical regression / quantitative analysis</option>
+<option value="qca">QCA (Qualitative Comparative Analysis)</option>
+<option value="mss-mds">Most Similar / Most Different Systems</option>
+<option value="process">Process tracing</option>
+<option value="case-study">In-depth case study (interpretive)</option>
+<option value="ethnography">Ethnography / participant observation</option>
+<option value="discourse">Discourse analysis</option>
+<option value="genealogy">Genealogy / Foucauldian analysis</option>
+<option value="content">Content analysis</option>
+<option value="interviews">Semi-structured interviews</option>
+<option value="other">Other (explain below)</option>
+</select>
+<label for="methodExplain">Briefly explain your method and what data you will analyse:</label>
+<textarea id="methodExplain" placeholder="e.g., I will compare unemployment, GDP decline, and voter survey data in Italy and Germany using Eurostat and Eurobarometer datasets."></textarea>
+<div class="btn-center">
+<button class="btn btn-secondary" onclick="goStep(3)">&#8592; Back</button>
+<button class="btn btn-primary" onclick="goStep(5)">Next &#8594;</button>
+</div>
+</div>
+
+<!-- STEP 5: N-Size and Cases -->
+<div class="card step" id="step5" style="display:none">
+<h2>Step 5 — N-Size and Case Selection</h2>
+<div class="input-row">
+<div>
+<label for="nsize">How many cases?</label>
+<select id="nsize">
+<option value="">— Select —</option>
+<option value="1">N = 1</option>
+<option value="2-5">N = 2–5</option>
+<option value="10-50">N = 10–50</option>
+<option value="50+">N = 50+</option>
+</select>
+</div>
+<div>
+<label for="caseLogic">Case selection logic:</label>
+<select id="caseLogic">
+<option value="">— Select —</option>
+<option value="mss">Most Similar Systems</option>
+<option value="mds">Most Different Systems</option>
+<option value="crucial">Crucial / critical case</option>
+<option value="deviant">Deviant / anomalous case</option>
+<option value="typical">Typical / representative case</option>
+<option value="random">Random / statistical sampling</option>
+<option value="purposive">Purposive (text/discourse selection)</option>
+<option value="na">N/A (large-N dataset)</option>
+</select>
+</div>
+</div>
+<label for="cases">Which cases and why?</label>
+<textarea id="cases" placeholder="e.g., Italy and Germany — both are established EU democracies affected by the 2008 crisis, but populist outcomes diverged sharply (Most Similar Systems design)."></textarea>
+<div class="btn-center">
+<button class="btn btn-secondary" onclick="goStep(4)">&#8592; Back</button>
+<button class="btn btn-primary" onclick="goStep(6)">Next &#8594;</button>
+</div>
+</div>
+
+<!-- STEP 6: Literature Review Gap -->
+<div class="card step" id="step6" style="display:none">
+<h2>Step 6 — Literature Review Gap</h2>
+<label for="schools">What schools of thought did you identify in your literature review?</label>
+<textarea id="schools" placeholder="e.g., School 1: Economic/structural explanations (Hall, Kriesi). School 2: Institutional/political trust explanations (Bobba & McDonnell, Caiani & Graziano). School 3: EU-dimension/Euroskepticism (Hobolt & de Vries)."></textarea>
+<label for="gap">What gap did you identify?</label>
+<textarea id="gap" placeholder="e.g., Existing literature explains populism through either economic or cultural variables but rarely integrates both in a single comparative framework applied to Italy and Germany specifically."></textarea>
+<label for="gapConnect">How does your research question address this gap?</label>
+<textarea id="gapConnect" placeholder="e.g., My comparative design tests whether economic or institutional factors better explain the divergence, combining both variables in a single analysis."></textarea>
+<div class="btn-center">
+<button class="btn btn-secondary" onclick="goStep(5)">&#8592; Back</button>
+<button class="btn btn-primary" onclick="runCheck()">&#9992; Run Pre-Flight Check</button>
+</div>
+</div>
+
+<!-- RESULTS -->
+<div class="results" id="results">
+<div class="card">
+<h2>&#9992; Pre-Flight Diagnostic Report</h2>
+<div id="checkList"></div>
+<div id="flightStatus"></div>
+</div>
+
+<div class="card traps" id="trapsCard" style="display:none">
+<h2>&#9888; Common Traps Detected</h2>
+<div id="trapsList"></div>
+</div>
+
+<div class="card">
+<h2>&#128196; My Design Summary</h2>
+<p class="desc">Use this summary for the Saboteurs Workshop — your partner will read it and try to break your design.</p>
+<div class="summary-box" id="summaryBox"></div>
+<div class="btn-center">
+<button class="btn btn-primary" onclick="downloadSummary()">&#11015; Download Summary</button>
+<button class="btn btn-secondary" onclick="resetAll()">&#8634; Start Over</button>
+<button class="btn btn-export" onclick="saveDraft()">&#128190; Save Draft</button>
+</div>
+</div>
+</div>
+
+</main>
+
+<footer>PSIR220 — Research Design — The Research Quest — Erol Kaymak — EMU</footer>
+
+<script>
+// Step navigation
+var currentStep=1;
+function goStep(n){
+  currentStep=n;
+  document.querySelectorAll('.step').forEach(function(s){s.style.display='none'});
+  var el=document.getElementById('step'+n);
+  if(el)el.style.display='block';
+  document.querySelectorAll('.step-dot').forEach(function(d,i){
+    d.classList.remove('active');
+    if(i<n-1)d.classList.add('complete');
+    if(i===n-1){d.classList.add('active');d.classList.remove('complete')}
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Collect inputs
+function getInputs(){
+  return {
+    rq:document.getElementById('rq').value.trim(),
+    rqType:document.getElementById('rqType').value,
+    paradigm:document.getElementById('paradigm').value,
+    paradigmWhy:document.getElementById('paradigmWhy').value.trim(),
+    cpX:document.getElementById('cpX').value.trim(),
+    cpY:document.getElementById('cpY').value.trim(),
+    cpM:document.getElementById('cpM').value.trim(),
+    method:document.getElementById('method').value,
+    methodExplain:document.getElementById('methodExplain').value.trim(),
+    nsize:document.getElementById('nsize').value,
+    caseLogic:document.getElementById('caseLogic').value,
+    cases:document.getElementById('cases').value.trim(),
+    schools:document.getElementById('schools').value.trim(),
+    gap:document.getElementById('gap').value.trim(),
+    gapConnect:document.getElementById('gapConnect').value.trim()
+  };
+}
+
+// Diagnostic engine
+function runCheck(){
+  var d=getInputs();
+  var checks=[];
+  var traps=[];
+
+  // CHECK 1: Paradigm-Method alignment
+  var pmStatus='green',pmMsg='',pmFix='';
+  var posMethods=['stat-reg','qca','mss-mds'];
+  var intMethods=['process','case-study','ethnography','interviews'];
+  var critMethods=['discourse','genealogy','content'];
+  var mixMethods=['mss-mds','process','case-study','interviews','content'];
+
+  if(d.paradigm&&d.method){
+    if(d.paradigm==='pos'){
+      if(critMethods.indexOf(d.method)!==-1&&mixMethods.indexOf(d.method)===-1){
+        pmStatus='red';
+        pmMsg='You declared a Positivist paradigm but selected '+methodName(d.method)+'. Positivist research seeks to explain and predict through testable hypotheses and measurable variables. '+methodName(d.method)+' is designed to deconstruct discourse and power, which belongs to the Critical track.';
+        pmFix='Switch to a quantitative or comparative method (regression, QCA, MSS/MDS), or reconsider whether your paradigm is actually Critical.';
+      } else if(intMethods.indexOf(d.method)!==-1&&d.method!=='process'&&d.method!=='case-study'){
+        pmStatus='amber';
+        pmMsg='You declared a Positivist paradigm but selected '+methodName(d.method)+'. This can work if you are collecting data to identify measurable patterns, but it is more commonly associated with Interpretivist research.';
+        pmFix='Make sure your analysis focuses on identifying causal patterns and testable claims, not on meaning-making or thick description.';
+      } else {
+        pmStatus='green';
+        pmMsg=methodName(d.method)+' is well-suited to a Positivist paradigm.';
+      }
+    } else if(d.paradigm==='int'){
+      if(d.method==='stat-reg'){
+        pmStatus='red';
+        pmMsg='You declared an Interpretivist paradigm but selected statistical regression. Interpretivist research seeks to understand meaning and context, not to identify generalisable statistical relationships across large datasets.';
+        pmFix='Switch to process tracing, case study, ethnography, or interviews — methods that let you examine how actors make sense of events. Or reconsider whether your paradigm is actually Positivist.';
+      } else if(d.method==='qca'){
+        pmStatus='amber';
+        pmMsg='QCA can work with an Interpretivist paradigm if you treat it as a tool for structured comparison rather than statistical generalisation. But make sure your analysis goes beyond the truth table to interpret the cases qualitatively.';
+        pmFix='Supplement QCA with within-case analysis (process tracing) to maintain interpretive depth.';
+      } else if(critMethods.indexOf(d.method)!==-1&&d.method!=='content'){
+        pmStatus='amber';
+        pmMsg='You declared an Interpretivist paradigm but selected '+methodName(d.method)+'. Discourse analysis and genealogy are more commonly associated with Critical scholarship. This can work if your focus is on how actors interpret and narrate events, but be clear about the distinction.';
+        pmFix='Clarify whether you are analysing discourse to understand meaning (Interpretivist) or to expose power structures (Critical). If the latter, consider switching to the Critical track.';
+      } else {
+        pmStatus='green';
+        pmMsg=methodName(d.method)+' is well-suited to an Interpretivist paradigm.';
+      }
+    } else if(d.paradigm==='crit'){
+      if(d.method==='stat-reg'){
+        pmStatus='red';
+        pmMsg='You declared a Critical paradigm but selected statistical regression. Critical scholarship seeks to expose power structures, deconstruct dominant narratives, and challenge existing knowledge — none of which can be achieved through statistical analysis of large datasets. This is a paradigm-method mismatch.';
+        pmFix='Switch to discourse analysis, genealogy, or critical narrative analysis. Select specific texts or documents to deconstruct rather than a large-N dataset.';
+      } else if(d.method==='qca'||d.method==='mss-mds'){
+        pmStatus='red';
+        pmMsg='You declared a Critical paradigm but selected '+methodName(d.method)+'. Comparative case-selection methods are designed to isolate variables and test causal claims — this is Positivist logic. Critical scholarship works with texts, discourses, and power structures, not controlled comparisons.';
+        pmFix='Switch to discourse analysis or genealogy, or reconsider whether your paradigm is actually Positivist or Interpretivist.';
+      } else if(posMethods.indexOf(d.method)!==-1){
+        pmStatus='red';
+        pmMsg=methodName(d.method)+' is a Positivist method that contradicts your Critical paradigm.';
+        pmFix='Switch to a Critical method (discourse analysis, genealogy) or reconsider your paradigm.';
+      } else if(d.method==='process'||d.method==='case-study'){
+        pmStatus='amber';
+        pmMsg=methodName(d.method)+' can work within a Critical paradigm if you use it to trace how power structures operate within a specific case. But make sure your analysis is explicitly about power and discourse, not just a neutral reconstruction of events.';
+        pmFix='Frame your case study as a critical analysis — what power dynamics does this case reveal? Whose voices are privileged and whose are silenced?';
+      } else {
+        pmStatus='green';
+        pmMsg=methodName(d.method)+' is well-suited to a Critical paradigm.';
+      }
+    }
+  } else {
+    pmStatus='amber';
+    pmMsg='Paradigm or method not selected — cannot check alignment.';
+    pmFix='Go back and complete both fields.';
+  }
+  checks.push({title:'Paradigm ↔ Method',status:pmStatus,msg:pmMsg,fix:pmFix});
+
+  // CHECK 2: Method-N-Size alignment
+  var mnStatus='green',mnMsg='',mnFix='';
+  if(d.method&&d.nsize){
+    if(d.method==='stat-reg'&&(d.nsize==='1'||d.nsize==='2-5')){
+      mnStatus='red';
+      mnMsg='Statistical regression requires a large number of cases to produce meaningful results. With N='+d.nsize.replace('-','–')+', you don\'t have enough observations for statistical inference.';
+      mnFix='Either increase your N to 50+ or switch to a small-N method (process tracing, case study, MSS/MDS).';
+    } else if(d.method==='stat-reg'&&d.nsize==='10-50'){
+      mnStatus='amber';
+      mnMsg='Statistical regression with N=10–50 is possible but limits the number of variables you can test. You may face degrees-of-freedom problems.';
+      mnFix='Consider QCA (designed for medium-N) or reduce the number of independent variables in your model.';
+    } else if(d.method==='process'&&(d.nsize==='50+'||d.nsize==='10-50')){
+      mnStatus='red';
+      mnMsg='Process tracing is an intensive within-case method designed for N=1 (or occasionally N=2–3). You cannot trace causal mechanisms in detail across '+d.nsize+' cases.';
+      mnFix='Reduce your N to 1 or switch to a method designed for larger N (QCA, MSS/MDS, or regression).';
+    } else if((d.method==='discourse'||d.method==='genealogy')&&(d.nsize==='50+'||d.nsize==='10-50')){
+      mnStatus='red';
+      mnMsg='Discourse analysis and genealogy require deep, close reading of texts. You cannot perform rigorous discourse analysis across '+d.nsize+' cases.';
+      mnFix='Focus on a single case or a small set of texts (N=1 or N=2–5). Quality of analysis matters more than quantity.';
+    } else if(d.method==='mss-mds'&&d.nsize==='1'){
+      mnStatus='red';
+      mnMsg='Most Similar / Most Different Systems design requires at least 2 cases to compare. You cannot do a comparative design with N=1.';
+      mnFix='Add at least one comparison case, or switch to process tracing or a single case study.';
+    } else if(d.method==='mss-mds'&&d.nsize==='50+'){
+      mnStatus='amber';
+      mnMsg='MSS/MDS is designed for small-N structured comparison (typically 2–5 cases). With 50+ cases, you\'re closer to large-N quantitative territory.';
+      mnFix='Either narrow to 2–5 carefully selected cases or switch to regression/QCA for large-N analysis.';
+    } else if(d.method==='qca'&&d.nsize==='1'){
+      mnStatus='red';
+      mnMsg='QCA requires multiple cases to identify necessary and sufficient conditions. N=1 is too few.';
+      mnFix='Increase N to at least 10 or switch to process tracing for a single-case design.';
+    } else if(d.method==='qca'&&d.nsize==='50+'){
+      mnStatus='amber';
+      mnMsg='QCA can handle 50+ cases but works best in the 10–50 range. Very large datasets may be better served by statistical regression.';
+      mnFix='Consider whether regression might be more appropriate, or use crisp-set QCA with careful calibration.';
+    } else if(d.method==='ethnography'&&(d.nsize==='50+'||d.nsize==='10-50')){
+      mnStatus='red';
+      mnMsg='Ethnography requires prolonged, immersive engagement with a research site. You cannot do ethnographic work across '+d.nsize+' cases in one semester.';
+      mnFix='Focus on 1–2 sites maximum.';
+    } else {
+      mnStatus='green';
+      mnMsg='Your method and N-size are compatible.';
+    }
+  } else {
+    mnStatus='amber';
+    mnMsg='Method or N-size not selected — cannot check alignment.';
+    mnFix='Go back and complete both fields.';
+  }
+  checks.push({title:'Method ↔ N-Size',status:mnStatus,msg:mnMsg,fix:mnFix});
+
+  // CHECK 3: Paradigm-RQ alignment
+  var prStatus='green',prMsg='',prFix='';
+  if(d.paradigm&&d.rqType){
+    if(d.paradigm==='pos'&&d.rqType==='how-discourse'){
+      prStatus='red';
+      prMsg='You declared a Positivist paradigm but your question type is about discourse and power construction. Positivist research questions ask about measurable causes and effects, not about how meaning is constructed.';
+      prFix='Either reframe your question to focus on measurable variables ("Why does X vary?", "To what extent does X cause Y?") or switch to the Critical track.';
+    } else if(d.paradigm==='crit'&&d.rqType==='what-extent'){
+      prStatus='red';
+      prMsg='You declared a Critical paradigm but your question type is hypothesis-testing ("To what extent does X cause Y?"). Critical research doesn\'t test hypotheses in the positivist sense — it interrogates how power and discourse produce particular realities.';
+      prFix='Reframe your question as "How is X constructed through discourse?" or "How does power operate through X?" or switch to the Positivist track.';
+    } else if(d.paradigm==='crit'&&d.rqType==='why-vary'){
+      prStatus='amber';
+      prMsg='Comparative "why does X vary" questions are possible in Critical scholarship but unusual. Critical research typically asks how something is constructed or whose interests a particular arrangement serves, rather than why outcomes vary across cases.';
+      prFix='Consider reframing as "How is the variation in X constructed through different discursive practices?" or ensure your comparative framework focuses on power rather than variables.';
+    } else if(d.paradigm==='int'&&d.rqType==='what-extent'){
+      prStatus='amber';
+      prMsg='Interpretivist research can address "to what extent" questions, but the typical interpretivist question asks "how" or "why" in a meaning-making sense rather than a hypothesis-testing sense.';
+      prFix='Consider reframing as "How do actors understand/experience X?" or make sure your "to what extent" question focuses on interpretation rather than measurement.';
+    } else if(d.paradigm==='pos'&&(d.rqType==='why-vary'||d.rqType==='what-extent'||d.rqType==='why-case')){
+      prStatus='green';
+      prMsg='Your question type aligns well with a Positivist paradigm.';
+    } else if(d.paradigm==='int'&&(d.rqType==='how-process'||d.rqType==='why-case')){
+      prStatus='green';
+      prMsg='Your question type aligns well with an Interpretivist paradigm.';
+    } else if(d.paradigm==='crit'&&d.rqType==='how-discourse'){
+      prStatus='green';
+      prMsg='Your question type aligns well with a Critical paradigm.';
+    } else {
+      prStatus='green';
+      prMsg='Your question type and paradigm are compatible.';
+    }
+  } else {
+    prStatus='amber';
+    prMsg='Paradigm or question type not selected — cannot check alignment.';
+    prFix='Go back and complete both fields.';
+  }
+  checks.push({title:'Paradigm ↔ Research Question',status:prStatus,msg:prMsg,fix:prFix});
+
+  // CHECK 4: Causal Pathway coherence
+  var cpStatus='green',cpMsg='',cpFix='';
+  if(d.cpX&&d.cpY&&d.cpM){
+    // Check for overlap between X and Y
+    var xWords=d.cpX.toLowerCase().split(/\s+/);
+    var yWords=d.cpY.toLowerCase().split(/\s+/);
+    var stopWords=['the','a','an','of','in','to','and','or','is','are','was','were','for','on','with','as','at','by','it','that','this','from','but','not','be','has','had','have','do','does','did','will','would','could','should','may','might','can','shall','its','their','our','my','your','his','her','we','they','them','us','who','what','where','when','how','why','which','each','every','all','both','few','more','most','other','some','such','no','nor','only','own','same','so','than','too','very','just','because','if','then','also','about','up','out','into','over','after','before','between','under','through','during','above','below','among','level','high','low','much','many','less','more'];
+    var xClean=xWords.filter(function(w){return w.length>3&&stopWords.indexOf(w)===-1});
+    var yClean=yWords.filter(function(w){return w.length>3&&stopWords.indexOf(w)===-1});
+    var overlap=xClean.filter(function(w){return yClean.indexOf(w)!==-1});
+    if(overlap.length>0){
+      cpStatus='amber';
+      cpMsg='Your X ("'+d.cpX+'") and Y ("'+d.cpY+'") share overlapping terms: "'+overlap.join('", "')+'" — this suggests they may not be distinct concepts. A causal pathway requires a clearly different cause and effect.';
+      cpFix='Make sure X and Y are genuinely different phenomena. If conflict is your X, then your Y should be something other than instability, violence, or war (which are near-synonyms).';
+    }
+    // Check for empty mechanism
+    if(d.cpM.length<20){
+      cpStatus='amber';
+      cpMsg='Your mechanism is very brief. A mechanism should explain the process by which X leads to Y — not just state that it does.';
+      cpFix='Expand your mechanism: what specific process connects your cause to your outcome? What intervening steps occur?';
+    }
+    if(cpStatus==='green'){
+      cpMsg='Your causal pathway has distinct X and Y components with a stated mechanism.';
+    }
+  } else {
+    cpStatus='amber';
+    cpMsg='Causal pathway incomplete — one or more fields are empty.';
+    cpFix='Go back and fill in X (cause), Y (outcome), and the mechanism connecting them.';
+  }
+  // Paradigm-pathway check
+  if(d.paradigm==='crit'&&d.cpX&&d.cpY){
+    var critTerms=['discourse','power','narrative','construction','framing','representation','hegemony','knowledge','identity','legitimacy','ideology'];
+    var hasCritTerm=false;
+    var allText=(d.cpX+' '+d.cpY+' '+d.cpM).toLowerCase();
+    for(var i=0;i<critTerms.length;i++){
+      if(allText.indexOf(critTerms[i])!==-1){hasCritTerm=true;break}
+    }
+    if(!hasCritTerm&&cpStatus!=='amber'){
+      cpStatus='amber';
+      cpMsg+='\n\nAdditionally: You declared a Critical paradigm, but your causal pathway doesn\'t reference discourse, power, narrative, or construction. Critical causal pathways should trace how power or discourse produces outcomes, not just how material variables cause effects.';
+      cpFix='Reframe your pathway in terms of how discourse, power, or knowledge production produces your outcome.';
+    }
+  }
+  checks.push({title:'Causal Pathway Coherence',status:cpStatus,msg:cpMsg,fix:cpFix});
+
+  // CHECK 5: Case Selection-Method alignment
+  var csStatus='green',csMsg='',csFix='';
+  if(d.method&&d.caseLogic){
+    if((d.method==='stat-reg')&&d.caseLogic!=='random'&&d.caseLogic!=='na'){
+      csStatus='amber';
+      csMsg='You selected statistical regression but your case selection logic is "'+caseLogicName(d.caseLogic)+'" rather than random sampling or a full dataset. Regression typically requires random or comprehensive sampling to avoid selection bias.';
+      csFix='Either use a complete dataset (all available cases) or justify why your non-random selection doesn\'t introduce bias.';
+    } else if((d.method==='mss-mds')&&d.caseLogic!=='mss'&&d.caseLogic!=='mds'){
+      csStatus='amber';
+      csMsg='You selected MSS/MDS as your method but your case selection logic is "'+caseLogicName(d.caseLogic)+'". MSS/MDS requires cases selected specifically for their similarity or difference on key variables.';
+      csFix='Explain how your cases are similar on control variables (MSS) or different on control variables but similar on outcome (MDS).';
+    } else if((d.method==='discourse'||d.method==='genealogy')&&d.caseLogic==='random'){
+      csStatus='red';
+      csMsg='Random sampling doesn\'t make sense for discourse analysis or genealogy. You select texts purposively — choosing documents that are significant, representative, or revealing of power dynamics.';
+      csFix='Switch to purposive selection and explain why your chosen texts are analytically important.';
+    } else {
+      csStatus='green';
+      csMsg='Your case selection logic is compatible with your method.';
+    }
+  } else {
+    csStatus='amber';
+    csMsg='Method or case selection logic not specified — cannot check alignment.';
+    csFix='Go back and complete both fields.';
+  }
+  checks.push({title:'Case Selection ↔ Method',status:csStatus,msg:csMsg,fix:csFix});
+
+  // CHECK 6: Gap-RQ alignment
+  var grStatus='green',grMsg='',grFix='';
+  if(d.gap&&d.gapConnect&&d.rq){
+    if(d.gapConnect.length<30){
+      grStatus='amber';
+      grMsg='Your explanation of how your research question addresses the gap is very brief. The connection between your gap and your question should be explicit and specific.';
+      grFix='Expand your explanation: what exactly does the literature miss, and how does your question target that specific missing piece?';
+    } else {
+      grStatus='green';
+      grMsg='You have identified a gap and explained how your research question addresses it.';
+    }
+  } else if(!d.gap||!d.gapConnect){
+    grStatus='amber';
+    grMsg='Gap or gap-connection field is empty. Your research question should directly address a gap identified in your literature review.';
+    grFix='Go back to Step 6 and fill in both fields.';
+  }
+  if(!d.schools||d.schools.length<20){
+    if(grStatus==='green')grStatus='amber';
+    grMsg+='\n\nYour schools of thought field is empty or very brief. A literature review must identify at least two rival schools before you can locate a gap.';
+    grFix='Identify at least two schools of thought in your literature and explain what each argues.';
+  }
+  checks.push({title:'Literature Gap ↔ Research Question',status:grStatus,msg:grMsg,fix:grFix});
+
+  // COMMON TRAPS
+  // Trap 1: RQ too broad
+  if(d.rq&&d.rq.length<50&&d.rq.split(' ').length<10){
+    traps.push('<strong>Short research question:</strong> Your question is very brief. Strong research questions are usually specific enough to require at least 15–20 words. If your question can be stated in under 10 words, it may be too broad.');
+  }
+  // Trap 2: RQ has no question mark
+  if(d.rq&&d.rq.indexOf('?')===-1){
+    traps.push('<strong>Missing question mark:</strong> Your research question doesn\'t end with "?". Make sure it\'s framed as an actual question, not a topic statement.');
+  }
+  // Trap 3: RQ starts with "Does" or "Is" (yes/no)
+  if(d.rq){
+    var rqLower=d.rq.toLowerCase().trim();
+    if(rqLower.indexOf('does ')=== 0||rqLower.indexOf('is ')=== 0||rqLower.indexOf('are ')=== 0||rqLower.indexOf('can ')=== 0||rqLower.indexOf('do ')=== 0){
+      traps.push('<strong>Yes/No question:</strong> Your research question appears to start with "'+d.rq.split(' ')[0]+'..." which typically produces a yes/no answer rather than a puzzle. Consider reframing with "Why," "How," or "Under what conditions."');
+    }
+  }
+  // Trap 4: Paradigm declared but not enacted
+  if(d.paradigm==='crit'&&d.method&&(d.method==='stat-reg'||d.method==='qca'||d.method==='mss-mds')){
+    traps.push('<strong>Paradigm declared but not enacted:</strong> You declared the Critical track but selected a Positivist method. This is one of the most common mistakes in the course. Make sure your method matches your paradigm, not just your topic.');
+  }
+  if(d.paradigm==='int'&&d.method==='stat-reg'){
+    traps.push('<strong>Paradigm declared but not enacted:</strong> You declared the Interpretivist track but selected statistical regression. Interpretivists seek meaning and understanding through qualitative methods, not statistical generalisation.');
+  }
+  // Trap 5: Author-by-author lit review hint
+  if(d.schools&&(d.schools.toLowerCase().indexOf('author 1')!==-1||d.schools.toLowerCase().indexOf('source 1')!==-1||d.schools.match(/^\s*\d\./m))){
+    traps.push('<strong>Author-by-author structure:</strong> Your schools of thought description looks like it might be organised by individual sources rather than thematic clusters. Remember: group sources by shared argument, not by author.');
+  }
+
+  // Render results
+  var html='';
+  var greens=0,ambers=0,reds=0;
+  for(var c=0;c<checks.length;c++){
+    var ck=checks[c];
+    if(ck.status==='green')greens++;
+    else if(ck.status==='amber')ambers++;
+    else reds++;
+    var icon=ck.status==='green'?'✓':ck.status==='amber'?'!':'✗';
+    html+='<div class="check-item '+ck.status+'">';
+    html+='<div class="check-header"><div class="check-icon">'+icon+'</div><div class="check-title">'+ck.title+'</div></div>';
+    html+='<div class="check-body">'+ck.msg.replace(/\n/g,'<br>')+'</div>';
+    if(ck.fix)html+='<div class="check-fix">&#128295; '+ck.fix+'</div>';
+    html+='</div>';
+  }
+  document.getElementById('checkList').innerHTML=html;
+
+  // Flight status
+  var fsClass,fsTitle,fsDesc;
+  if(reds>0){
+    fsClass='grounded';
+    fsTitle='&#128721; GROUNDED';
+    fsDesc='Your design has '+reds+' critical mismatch'+(reds>1?'es':'')+' that must be fixed before submission. Address all red flags, then run the check again.';
+  } else if(ambers>0){
+    fsClass='warning';
+    fsTitle='&#9888; PRE-FLIGHT WARNING';
+    fsDesc='No critical mismatches, but '+ambers+' item'+(ambers>1?'s need':' needs')+' attention. Review the amber flags and either fix the issues or prepare a written justification for your choices.';
+  } else {
+    fsClass='ready';
+    fsTitle='&#9992; READY FOR TAKEOFF';
+    fsDesc='All systems aligned. Your research design is internally consistent. Now stress-test it in the Saboteurs Workshop — if your peers can\'t break it, it\'s solid.';
+  }
+  document.getElementById('flightStatus').innerHTML='<div class="flight-status '+fsClass+'"><h2>'+fsTitle+'</h2><p>'+fsDesc+'</p><div class="flight-counts"><span class="fc-green">'+greens+' Green</span><span class="fc-amber">'+ambers+' Amber</span><span class="fc-red">'+reds+' Red</span></div></div>';
+
+  // Traps
+  if(traps.length>0){
+    document.getElementById('trapsCard').style.display='block';
+    var th='';
+    for(var t=0;t<traps.length;t++){
+      th+='<div class="trap-item">'+traps[t]+'</div>';
+    }
+    document.getElementById('trapsList').innerHTML=th;
+  } else {
+    document.getElementById('trapsCard').style.display='none';
+  }
+
+  // Summary
+  var sum='DESIGN SUMMARY — PSIR220\n';
+  sum+='========================\n\n';
+  sum+='RESEARCH QUESTION:\n'+d.rq+'\n\n';
+  sum+='PARADIGM: '+paradigmName(d.paradigm)+'\n';
+  sum+='Justification: '+d.paradigmWhy+'\n\n';
+  sum+='CAUSAL PATHWAY:\n';
+  sum+='X (Cause): '+d.cpX+'\n';
+  sum+='Mechanism: '+d.cpM+'\n';
+  sum+='Y (Outcome): '+d.cpY+'\n\n';
+  sum+='METHOD: '+methodName(d.method)+'\n';
+  sum+='Details: '+d.methodExplain+'\n\n';
+  sum+='N-SIZE: '+d.nsize+'\n';
+  sum+='CASE SELECTION: '+caseLogicName(d.caseLogic)+'\n';
+  sum+='Cases: '+d.cases+'\n\n';
+  sum+='SCHOOLS OF THOUGHT:\n'+d.schools+'\n\n';
+  sum+='GAP:\n'+d.gap+'\n\n';
+  sum+='HOW MY QUESTION ADDRESSES THE GAP:\n'+d.gapConnect+'\n\n';
+  sum+='DIAGNOSTIC RESULT: '+greens+' Green, '+ambers+' Amber, '+reds+' Red\n';
+  sum+='STATUS: '+(reds>0?'GROUNDED':ambers>0?'PRE-FLIGHT WARNING':'READY FOR TAKEOFF');
+  document.getElementById('summaryBox').textContent=sum;
+  document.getElementById('summaryBox').style.display='block';
+
+  // Show results
+  document.querySelectorAll('.step').forEach(function(s){s.style.display='none'});
+  document.getElementById('results').classList.add('show');
+  document.getElementById('stepNav').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function downloadSummary(){
+  var text=document.getElementById('summaryBox').textContent;
+  var blob=new Blob([text],{type:'text/plain'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='my-design-summary.txt';
+  a.click();
+}
+
+function resetAll(){
+  document.querySelectorAll('textarea,input[type="text"]').forEach(function(el){el.value=''});
+  document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0});
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('stepNav').style.display='flex';
+  document.querySelectorAll('.step-dot').forEach(function(d){d.classList.remove('active','complete')});
+  document.querySelector('.step-dot').classList.add('active');
+  goStep(1);
+}
+
+function saveDraft(){
+  var d=getInputs();
+  localStorage.setItem('psir220_alignment',JSON.stringify(d));
+  alert('Draft saved! Your inputs will be here when you return.');
+}
+
+// Load saved draft on page load
+window.addEventListener('load',function(){
+  var saved=localStorage.getItem('psir220_alignment');
+  if(saved){
+    try{
+      var d=JSON.parse(saved);
+      if(d.rq)document.getElementById('rq').value=d.rq;
+      if(d.rqType)document.getElementById('rqType').value=d.rqType;
+      if(d.paradigm)document.getElementById('paradigm').value=d.paradigm;
+      if(d.paradigmWhy)document.getElementById('paradigmWhy').value=d.paradigmWhy;
+      if(d.cpX)document.getElementById('cpX').value=d.cpX;
+      if(d.cpY)document.getElementById('cpY').value=d.cpY;
+      if(d.cpM)document.getElementById('cpM').value=d.cpM;
+      if(d.method)document.getElementById('method').value=d.method;
+      if(d.methodExplain)document.getElementById('methodExplain').value=d.methodExplain;
+      if(d.nsize)document.getElementById('nsize').value=d.nsize;
+      if(d.caseLogic)document.getElementById('caseLogic').value=d.caseLogic;
+      if(d.cases)document.getElementById('cases').value=d.cases;
+      if(d.schools)document.getElementById('schools').value=d.schools;
+      if(d.gap)document.getElementById('gap').value=d.gap;
+      if(d.gapConnect)document.getElementById('gapConnect').value=d.gapConnect;
+    }catch(e){}
+  }
+});
+
+// Helper functions
+function methodName(v){
+  var map={'stat-reg':'Statistical regression','qca':'QCA','mss-mds':'Most Similar / Most Different Systems','process':'Process tracing','case-study':'In-depth case study','ethnography':'Ethnography','discourse':'Discourse analysis','genealogy':'Genealogy / Foucauldian analysis','content':'Content analysis','interviews':'Semi-structured interviews','other':'Other'};
+  return map[v]||v||'(not selected)';
+}
+function paradigmName(v){
+  var map={'pos':'Positivist (The Strategist)','int':'Interpretivist (The Storyteller)','crit':'Critical / Post-modern (The Disruptor)'};
+  return map[v]||v||'(not selected)';
+}
+function caseLogicName(v){
+  var map={'mss':'Most Similar Systems','mds':'Most Different Systems','crucial':'Crucial / critical case','deviant':'Deviant / anomalous case','typical':'Typical / representative case','random':'Random / statistical sampling','purposive':'Purposive (text/discourse selection)','na':'N/A (large-N dataset)'};
+  return map[v]||v||'(not selected)';
+}
+</script>
+</body>
+</html>
