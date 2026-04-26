@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Flight Check — PSIR220 Week 10</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 4rem 6rem;
+    opacity: 0; transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+  .slide.exit { opacity: 0; transform: translateX(-60px); }
+
+  .slide-title { background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 50%, #fdf2f8 100%); }
+  .slide-section { background: #fff; }
+  .slide-dark { background: #0f172a; color: #e2e8f0; }
+  .slide-blue { background: #eff6ff; }
+  .slide-purple { background: #f5f3ff; }
+  .slide-pink { background: #fdf2f8; }
+  .slide-amber { background: #fffbeb; }
+  .slide-green { background: #f0fdf4; }
+  .slide-red { background: #fef2f2; }
+  .slide-slate { background: #f1f5f9; }
+
+  .s-overtitle {
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+  }
+  .s-overtitle.blue { color: #2563eb; }
+  .s-overtitle.purple { color: #7c3aed; }
+  .s-overtitle.pink { color: #db2777; }
+  .s-overtitle.amber { color: #d97706; }
+  .s-overtitle.green { color: #059669; }
+  .s-overtitle.slate { color: #64748b; }
+  .s-overtitle.red { color: #dc2626; }
+
+  .s-title {
+    font-size: 2.8rem; font-weight: 800;
+    line-height: 1.15; text-align: center;
+    max-width: 800px; margin-bottom: 1rem;
+  }
+  .s-title.gradient {
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .s-subtitle {
+    font-size: 1.15rem; color: #64748b;
+    text-align: center; max-width: 650px; line-height: 1.6;
+  }
+
+  .s-h2 {
+    font-size: 2rem; font-weight: 800;
+    line-height: 1.2; margin-bottom: 1.5rem; max-width: 750px;
+  }
+
+  .s-text {
+    font-size: 1.15rem; line-height: 1.7;
+    max-width: 700px; color: #334155;
+  }
+  .s-text + .s-text { margin-top: 1rem; }
+
+  .s-big {
+    font-size: 1.8rem; font-weight: 700;
+    line-height: 1.4; max-width: 750px; text-align: center;
+  }
+
+  .s-quote {
+    font-size: 1.5rem; font-style: italic;
+    line-height: 1.5; max-width: 650px;
+    color: #475569; border-left: 4px solid #2563eb;
+    padding-left: 1.5rem; text-align: left;
+  }
+
+  .s-attribution {
+    font-size: 0.9rem; color: #94a3b8;
+    margin-top: 0.6rem; font-style: normal;
+  }
+
+  /* Causal chain */
+  .causal-chain {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 1.5rem 0; flex-wrap: wrap; justify-content: center;
+  }
+  .chain-box {
+    padding: 1rem 1.5rem; border-radius: 12px;
+    font-weight: 700; font-size: 1.1rem;
+    text-align: center; min-width: 120px;
+  }
+  .chain-box.x { background: #dbeafe; color: #1d4ed8; border: 2px solid #93c5fd; }
+  .chain-box.m { background: #fef3c7; color: #92400e; border: 2px solid #fde68a; }
+  .chain-box.y { background: #d1fae5; color: #065f46; border: 2px solid #6ee7b7; }
+  .chain-box.q { background: #fce7f3; color: #be185d; border: 2px solid #f9a8d4; }
+  .chain-box.rq { background: #e0e7ff; color: #3730a3; border: 2px solid #a5b4fc; }
+  .chain-box.p { background: #f5f3ff; color: #6d28d9; border: 2px solid #c4b5fd; }
+  .chain-box.lr { background: #fef9c3; color: #854d0e; border: 2px solid #fde047; }
+  .chain-box.mt { background: #ccfbf1; color: #115e59; border: 2px solid #5eead4; }
+  .chain-box.ns { background: #fce7f3; color: #9d174d; border: 2px solid #f9a8d4; }
+  .chain-box.cs { background: #fef2f2; color: #991b1b; border: 2px solid #fca5a5; }
+  .chain-arrow { font-size: 1.8rem; color: #94a3b8; font-weight: 300; }
+
+  /* Three column */
+  .three-col {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem; max-width: 850px; width: 100%; margin-top: 1rem;
+  }
+  .col-card {
+    border-radius: 14px; padding: 1.3rem; border: 2px solid #e2e8f0;
+  }
+  .col-card.pos { background: #eff6ff; border-color: #bfdbfe; }
+  .col-card.int { background: #f5f3ff; border-color: #ddd6fe; }
+  .col-card.cri { background: #fdf2f8; border-color: #fbcfe8; }
+  .col-card.green-c { background: #f0fdf4; border-color: #bbf7d0; }
+  .col-card.amber-c { background: #fffbeb; border-color: #fde68a; }
+  .col-card.red-c { background: #fef2f2; border-color: #fecaca; }
+  .col-card h3 {
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 0.6rem;
+  }
+  .col-card.pos h3 { color: #1d4ed8; }
+  .col-card.int h3 { color: #6d28d9; }
+  .col-card.cri h3 { color: #be185d; }
+  .col-card.green-c h3 { color: #16a34a; }
+  .col-card.amber-c h3 { color: #d97706; }
+  .col-card.red-c h3 { color: #dc2626; }
+  .col-card p { font-size: 0.92rem; line-height: 1.55; color: #334155; }
+  .col-card .col-example {
+    margin-top: 0.6rem; padding-top: 0.6rem;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 0.82rem; color: #64748b; font-style: italic;
+  }
+
+  /* Two column */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.2rem; max-width: 800px; width: 100%; margin-top: 1rem;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: #fff; border-radius: 14px;
+    padding: 1.5rem 2rem; border: 2px solid #e2e8f0;
+    max-width: 700px; margin-top: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .highlight-box.blue-border { border-color: #93c5fd; }
+  .highlight-box.amber-border { border-color: #fde68a; }
+  .highlight-box.green-border { border-color: #6ee7b7; }
+  .highlight-box.red-border { border-color: #fca5a5; }
+  .highlight-box.purple-border { border-color: #c4b5fd; }
+  .highlight-box h4 {
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: #64748b; margin-bottom: 0.5rem;
+  }
+  .highlight-box p { font-size: 1.05rem; line-height: 1.6; color: #1e293b; }
+
+  /* Flaw cards */
+  .flaw-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; max-width: 800px; width: 100%; margin-top: 1rem;
+  }
+  .flaw-card {
+    background: #fff; border-radius: 12px;
+    padding: 1.1rem; border: 2px solid #fecaca;
+  }
+  .flaw-card.amber { border-color: #fde68a; }
+  .flaw-card h4 { font-size: 0.9rem; color: #dc2626; margin-bottom: 0.3rem; }
+  .flaw-card.amber h4 { color: #d97706; }
+  .flaw-card p { font-size: 0.85rem; color: #475569; line-height: 1.5; }
+  .flaw-card .flaw-fix {
+    margin-top: 0.4rem; font-size: 0.8rem; color: #16a34a; font-weight: 600;
+  }
+
+  /* Step list */
+  .step-list { max-width: 700px; width: 100%; margin-top: 1rem; }
+  .step-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem; }
+  .step-num {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem; flex-shrink: 0;
+    background: #dbeafe; color: #1d4ed8;
+  }
+  .step-num.green { background: #d1fae5; color: #059669; }
+  .step-num.purple { background: #ede9fe; color: #7c3aed; }
+  .step-content h4 { font-size: 1rem; margin-bottom: 0.2rem; color: #0f172a; }
+  .step-content p { font-size: 0.95rem; color: #475569; line-height: 1.5; }
+
+  /* Phase map */
+  .phase-map {
+    display: flex; gap: 0.4rem; max-width: 800px; width: 100%;
+    margin-top: 1.5rem; align-items: stretch;
+  }
+  .phase-block {
+    flex: 1; border-radius: 10px; padding: 0.8rem 0.6rem;
+    text-align: center; font-size: 0.75rem; line-height: 1.4;
+    border: 2px solid transparent; transition: all 0.3s;
+  }
+  .phase-block .phase-label {
+    font-weight: 800; font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 0.3rem;
+  }
+  .phase-block .phase-weeks { font-size: 0.68rem; color: inherit; opacity: 0.7; }
+  .phase-block.done { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+  .phase-block.current { background: #dbeafe; color: #1d4ed8; border-color: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,0.3); }
+  .phase-block.future { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
+
+  /* Alignment chain (full pipeline) */
+  .alignment-chain {
+    display: flex; align-items: center; gap: 0.3rem;
+    margin: 1.5rem 0; flex-wrap: wrap; justify-content: center;
+  }
+  .ac-box {
+    padding: 0.7rem 1rem; border-radius: 10px;
+    font-weight: 700; font-size: 0.85rem;
+    text-align: center; min-width: 80px;
+  }
+  .ac-arrow { font-size: 1.4rem; color: #94a3b8; }
+
+  /* Grade return mini-table */
+  .mini-table {
+    max-width: 700px; width: 100%; margin-top: 1rem;
+    border-collapse: collapse;
+  }
+  .mini-table th, .mini-table td {
+    padding: 0.5rem 0.8rem; text-align: left;
+    font-size: 0.85rem; border-bottom: 1px solid #e2e8f0;
+  }
+  .mini-table th {
+    font-weight: 700; color: #64748b;
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .mini-table .score { font-weight: 700; }
+  .mini-table .score.high { color: #16a34a; }
+  .mini-table .score.mid { color: #d97706; }
+  .mini-table .score.low { color: #dc2626; }
+
+  /* Navigation */
+  .nav {
+    position: fixed; bottom: 1.5rem;
+    left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 1rem;
+    background: #fff; padding: 0.6rem 1.2rem;
+    border-radius: 999px; border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100;
+  }
+  .nav-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid #e2e8f0; background: #fff;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 1.1rem; color: #475569;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-counter {
+    font-size: 0.82rem; font-weight: 600; color: #64748b;
+    min-width: 60px; text-align: center;
+  }
+  .nav-progress { width: 120px; height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+  .nav-progress-fill {
+    height: 100%; background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: 999px; transition: width 0.3s;
+  }
+
+  .appear {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .slide.active .appear { opacity: 1; transform: translateY(0); }
+  .slide.active .appear.d1 { transition-delay: 0.2s; }
+  .slide.active .appear.d2 { transition-delay: 0.4s; }
+  .slide.active .appear.d3 { transition-delay: 0.6s; }
+  .slide.active .appear.d4 { transition-delay: 0.8s; }
+
+  @media (max-width: 768px) {
+    .slide { padding: 2rem 1.5rem; }
+    .s-title { font-size: 1.8rem; }
+    .s-h2 { font-size: 1.4rem; }
+    .three-col { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .flaw-grid { grid-template-columns: 1fr; }
+    .phase-map { flex-wrap: wrap; }
+    .alignment-chain { gap: 0.2rem; }
+    .ac-box { font-size: 0.7rem; padding: 0.5rem 0.6rem; min-width: 60px; }
+    .s-text { font-size: 1rem; }
+    .s-big { font-size: 1.3rem; }
+  }
+
+  @media print {
+    .nav { display: none; }
+    .slide { position: relative; opacity: 1; transform: none;
+      pointer-events: all; page-break-after: always; min-height: 100vh; }
+    .appear { opacity: 1; transform: none; }
+    body { overflow: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ======== SLIDE 1: TITLE ======== -->
+  <div class="slide slide-title active" data-n="1">
+    <div class="s-overtitle slate appear">PSIR220 · Week 10</div>
+    <div class="s-title gradient appear d1">The Pre-Flight<br>Safety Check</div>
+    <div class="s-subtitle appear d2">Is your research design cleared for take-off — or grounded until further notice?</div>
+    <div class="s-subtitle appear d3" style="margin-top:1.5rem; font-size:0.9rem; color:#94a3b8;">Baglione Ch. 7 · "Making Your Plan and Protecting Yourself from Criticism"</div>
+  </div>
+
+  <!-- ======== SLIDE 2: WHERE WE ARE — SEMESTER MAP ======== -->
+  <div class="slide slide-slate" data-n="2">
+    <div class="s-overtitle blue appear">The Flight Path</div>
+    <div class="s-h2 appear d1">Where We Are in the Semester</div>
+    <div class="phase-map appear d2">
+      <div class="phase-block done">
+        <div class="phase-label">Phase 1</div>
+        Choosing Your Quest<br>
+        <div class="phase-weeks">Weeks 1–3</div>
+      </div>
+      <div class="phase-block done">
+        <div class="phase-label">Phase 2</div>
+        Gathering Intel<br>
+        <div class="phase-weeks">Weeks 4–6</div>
+      </div>
+      <div class="phase-block current">
+        <div class="phase-label">Phase 3</div>
+        Building the Engine<br>
+        <div class="phase-weeks">Weeks 7–10 ← YOU ARE HERE</div>
+      </div>
+      <div class="phase-block future">
+        <div class="phase-label">Phase 4</div>
+        Stress-Testing<br>
+        <div class="phase-weeks">Weeks 11–13</div>
+      </div>
+      <div class="phase-block future">
+        <div class="phase-label">Phase 5</div>
+        The Final Quest<br>
+        <div class="phase-weeks">Weeks 14–15</div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; margin-top:1.5rem;">We've spent nine weeks asking questions, gathering sources, building causal engines, and choosing methods. Today, we check whether all the pieces actually fit together.</div>
+  </div>
+
+  <!-- ======== SLIDE 3: WHAT YOU'VE BUILT SO FAR ======== -->
+  <div class="slide slide-blue" data-n="3">
+    <div class="s-overtitle blue appear">Inventory Check</div>
+    <div class="s-h2 appear d1">The Parts You've Built</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Research Question</h4>
+          <p>Pitch Tank (Week 2) — you proposed a puzzle. Some of you have sharpened it since; some haven't.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Paradigm Track</h4>
+          <p>Sorting Hat + Paradigm Crisis (Weeks 1 & 6) — you committed to Strategist, Storyteller, or Disruptor.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Annotated Bibliography & Literature Review</h4>
+          <p>Core Quests 1 & 2 (Weeks 5 & 9) — you collected and organised the scholarly conversation.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Causal Engine + Method + N-Size</h4>
+          <p>Weeks 6–8 — you built X → M → Y, chose a method, and calibrated your case count.</p>
+        </div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; font-weight:700; color:#1d4ed8; margin-top:0.5rem;">The question today: do all four pieces point in the same direction?</div>
+  </div>
+
+  <!-- ======== SLIDE 4: GRADES RETURNED ======== -->
+  <div class="slide slide-section" data-n="4">
+    <div class="s-overtitle green appear">Grades Returned</div>
+    <div class="s-h2 appear d1">Annotated Bibliography & Pitch Tank</div>
+    <div class="s-text appear d2">Your feedback sheets for both the Annotated Bibliography (Core Quest 1, 10 pts) and the Pitch Tank (Side Quest, 5 pts) are now posted on Teams. Please read them carefully — they diagnose problems you'll need to fix <strong>before</strong> you submit your Research Design.</div>
+    <div class="highlight-box amber-border appear d3">
+      <h4>Class-wide Patterns</h4>
+      <p><strong>Annotation depth</strong> — many of you wrote one sentence where the rubric asked for 2–4. <strong>Paradigm mismatch</strong> — several bibliographies were built on the wrong track. <strong>Missing puzzles</strong> — some research questions still read as yes/no or normative statements. Today's session helps you catch and fix all of these.</p>
+    </div>
+    <div class="s-text appear d4" style="text-align:center; font-size:0.9rem; color:#64748b; margin-top:0.8rem;">If you have questions about your grade, see me during office hours — not during the workshop.</div>
+  </div>
+
+  <!-- ======== SLIDE 5: THE CONCEPT — ALIGNMENT ======== -->
+  <div class="slide slide-dark" data-n="5">
+    <div class="s-overtitle appear" style="color:#f59e0b;">The Core Concept</div>
+    <div class="s-big appear d1" style="color:#e2e8f0;">A research design is not a collection of parts.<br>It is an <em>argument</em> that the parts fit together.</div>
+    <div class="s-text appear d2" style="color:#94a3b8; text-align:center; max-width:600px;">Baglione calls this "Making Your Plan and Protecting Yourself from Criticism" (Ch. 7). KKV call it "internal consistency." We call it alignment.</div>
+  </div>
+
+  <!-- ======== SLIDE 6: THE ALIGNMENT PIPELINE ======== -->
+  <div class="slide slide-section" data-n="6">
+    <div class="s-overtitle blue appear">The Alignment Pipeline</div>
+    <div class="s-h2 appear d1" style="text-align:center;">Six links. Every link must connect.</div>
+    <div class="alignment-chain appear d2">
+      <div class="ac-box rq">Research<br>Question</div>
+      <div class="ac-arrow">→</div>
+      <div class="ac-box p">Paradigm<br>Track</div>
+      <div class="ac-arrow">→</div>
+      <div class="ac-box lr">Literature<br>Review</div>
+      <div class="ac-arrow">→</div>
+      <div class="ac-box m">Causal<br>Pathway</div>
+      <div class="ac-arrow">→</div>
+      <div class="ac-box mt">Method</div>
+      <div class="ac-arrow">→</div>
+      <div class="ac-box ns">N-Size<br>& Cases</div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center;">If any link contradicts the one before it, the chain breaks — and a reviewer (or a Saboteur) will find the weak spot.</div>
+    <div class="s-text appear d4" style="text-align:center; font-size:0.95rem; color:#64748b;">Think of it like a pilot's pre-flight checklist. Every gauge must read green before you're cleared for take-off.</div>
+  </div>
+
+  <!-- ======== SLIDE 7: WHAT ALIGNMENT LOOKS LIKE ======== -->
+  <div class="slide slide-green" data-n="7">
+    <div class="s-overtitle green appear">When It Works</div>
+    <div class="s-h2 appear d1" style="text-align:center;">An Aligned Design</div>
+    <div class="highlight-box green-border appear d2" style="max-width:750px;">
+      <h4>Example — Strategist Track</h4>
+      <p><strong>RQ:</strong> "Why did populist parties gain more seats after the 2008 crisis in Italy than in Germany?"<br>
+      <strong>Track:</strong> Strategist (Positivist) — seeks to explain variation<br>
+      <strong>Lit Review:</strong> Organised by schools — demand-side (economic anxiety) vs. supply-side (party strategy) vs. institutional (electoral system)<br>
+      <strong>Pathway:</strong> Economic shock (X) → voter insecurity activates anti-elite sentiment (M) → populist vote share (Y)<br>
+      <strong>Method:</strong> Most Similar Systems Design<br>
+      <strong>N:</strong> 2 (Italy, Germany) — similar economies, different electoral outcomes</p>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; color:#059669; font-weight:700;">Every piece reinforces the others. A reviewer can follow the logic from question to cases without a single jump.</div>
+  </div>
+
+  <!-- ======== SLIDE 8: WHAT MISALIGNMENT LOOKS LIKE ======== -->
+  <div class="slide slide-red" data-n="8">
+    <div class="s-overtitle red appear">When It Breaks</div>
+    <div class="s-h2 appear d1" style="text-align:center;">Common Misalignment Patterns</div>
+    <div class="flaw-grid appear d2">
+      <div class="flaw-card">
+        <h4>Track ≠ Question</h4>
+        <p>You declared Interpretivist (Storyteller) but your question asks "to what extent" — a Strategist question seeking measurable variation.</p>
+        <div class="flaw-fix">Fix: Reword the question or switch tracks.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Track ≠ Sources</h4>
+        <p>You declared Disruptor but your bibliography is entirely positivist — Mearsheimer, Waltz, regression studies. No critical theory texts at all.</p>
+        <div class="flaw-fix">Fix: Add track-appropriate literature or change your declaration.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Method ≠ N-Size</h4>
+        <p>You chose process tracing (a single-case method) but listed 15 countries. Or you chose large-N regression but have data on 4 cases.</p>
+        <div class="flaw-fix">Fix: Adjust N to match the method's logic, or pick a different method.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Pathway ≠ Track</h4>
+        <p>You declared Disruptor but your causal engine is X → M → Y with measurable variables and no mention of power or discourse.</p>
+        <div class="flaw-fix">Fix: Rebuild the pathway using your paradigm's logic of explanation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 9: BAGLIONE ON RESEARCH DESIGN ======== -->
+  <div class="slide slide-purple" data-n="9">
+    <div class="s-overtitle purple appear">Baglione Ch. 7</div>
+    <div class="s-h2 appear d1">Making Your Plan and Protecting<br>Yourself from Criticism</div>
+    <div class="s-text appear d2">Baglione uses two analogies. The <strong>courtroom analogy</strong>: your research design is a legal brief — it must convince a skeptical judge that your method of gathering evidence is sound. The <strong>medical analogy</strong>: your design is a treatment protocol — if the diagnosis (question) is wrong, the treatment (method) will fail no matter how well-administered.</div>
+    <div class="s-quote appear d3">"The research design is where you make the case that your plan for answering the question is logical, that the evidence you will collect is the right kind, and that you have anticipated the objections a critic would raise."<div class="s-attribution">— Baglione, Ch. 7</div></div>
+    <div class="s-text appear d4" style="text-align:center; color:#6d28d9; font-weight:600; margin-top:0.5rem;">Translation: alignment is not optional. It is the core of what makes a design credible.</div>
+  </div>
+
+  <!-- ======== SLIDE 10: KKV / BRADY & COLLIER PERSPECTIVE ======== -->
+  <div class="slide slide-section" data-n="10">
+    <div class="s-overtitle blue appear">The Broader Debate</div>
+    <div class="s-h2 appear d1">What the Methods Scholars Say</div>
+    <div class="two-col appear d2">
+      <div class="col-card pos">
+        <h3>KKV — Designing Social Inquiry</h3>
+        <p>A research design must maximise <strong>observable implications</strong> of your theory. The more testable predictions your design generates, the stronger it is. Internal consistency means every design choice increases your ability to distinguish your theory from rivals.</p>
+        <div class="col-example">Strategists: this is your Bible. Your design must generate variation, control for alternatives, and produce replicable evidence.</div>
+      </div>
+      <div class="col-card int">
+        <h3>Brady & Collier — Rethinking Social Inquiry</h3>
+        <p>KKV's framework is too narrow. Qualitative research has its own standards of inference — <strong>process tracing</strong>, <strong>causal-process observations</strong>, and <strong>within-case analysis</strong> are not lesser versions of regression. Alignment means matching your evidence to the logic of your paradigm, not forcing everything into one template.</p>
+        <div class="col-example">Storytellers and Disruptors: your methods have their own rules. Alignment means following those rules, not apologising for not running a regression.</div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; margin-top:1rem;">Both sides agree: design choices must be <strong>justified</strong>, not arbitrary. The Alignment Checker helps you do exactly that.</div>
+  </div>
+
+  <!-- ======== SLIDE 11: THREE TRACKS, THREE DESIGN LOGICS ======== -->
+  <div class="slide slide-section" data-n="11">
+    <div class="s-overtitle slate appear">Three Tracks, Three Design Logics</div>
+    <div class="s-h2 appear d1" style="text-align:center;">What "good alignment" looks like on each track</div>
+    <div class="three-col appear d2">
+      <div class="col-card pos">
+        <h3>Strategist</h3>
+        <p><strong>Question:</strong> Why / To what extent<br>
+        <strong>Pathway:</strong> IV → Mechanism → DV<br>
+        <strong>Sources:</strong> Quantitative studies, datasets, realist/liberal canon<br>
+        <strong>Method:</strong> MSSD, MDSD, large-N, QCA<br>
+        <strong>N:</strong> 2–5 (comparative) or 50+ (statistical)</p>
+        <div class="col-example">Key test: Can you state a falsifiable hypothesis?</div>
+      </div>
+      <div class="col-card int">
+        <h3>Storyteller</h3>
+        <p><strong>Question:</strong> How / What meaning<br>
+        <strong>Pathway:</strong> Context → Interpretation → Outcome<br>
+        <strong>Sources:</strong> Qualitative studies, primary documents, constructivist theory<br>
+        <strong>Method:</strong> Process tracing, ethnography, discourse analysis<br>
+        <strong>N:</strong> 1 (deep case) or 2–3 (comparative process tracing)</p>
+        <div class="col-example">Key test: Can you access the actors' meaning-making?</div>
+      </div>
+      <div class="col-card cri">
+        <h3>Disruptor</h3>
+        <p><strong>Question:</strong> Whose interests / What is hidden<br>
+        <strong>Pathway:</strong> Power → Discourse → Reality<br>
+        <strong>Sources:</strong> Critical theory, postcolonial texts, primary discourse material<br>
+        <strong>Method:</strong> CDA, genealogy, deconstruction<br>
+        <strong>N:</strong> 1 (corpus or archive)</p>
+        <div class="col-example">Key test: Can you show how discourse constructs "reality"?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 12: FROM YOUR BIBLIOGRAPHY FEEDBACK ======== -->
+  <div class="slide slide-amber" data-n="12">
+    <div class="s-overtitle amber appear">Lessons from Your Bibliographies</div>
+    <div class="s-h2 appear d1">The Three Most Common Alignment Failures in This Class</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num" style="background:#fecaca; color:#dc2626;">1</div>
+        <div class="step-content">
+          <h4>Paradigm–Bibliography Mismatch</h4>
+          <p>Several of you declared Interpretivist or Disruptor but filled your bibliography with Positivist sources. Your literature should reflect your track — not just the first ten results on Google Scholar.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:#fecaca; color:#dc2626;">2</div>
+        <div class="step-content">
+          <h4>No Puzzle in the Research Question</h4>
+          <p>A good research question contains a surprise — something that shouldn't happen according to theory, but does. "Why do states go to war?" is not a puzzle. "Why did democracies fail to prevent genocide in Rwanda?" is.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:#fecaca; color:#dc2626;">3</div>
+        <div class="step-content">
+          <h4>Shallow Annotations That Dodge Evaluation</h4>
+          <p>Many entries summarised the source but never evaluated it. "This article is relevant" is not evaluation. "This article uses survey data from 2015, which may not capture post-crisis attitudes" is.</p>
+        </div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; color:#d97706; font-weight:600;">The Alignment Checker will flag these automatically. Your job today is to fix them.</div>
+  </div>
+
+  <!-- ======== SLIDE 13: INTRODUCING THE TOOL ======== -->
+  <div class="slide slide-dark" data-n="13">
+    <div class="s-overtitle appear" style="color:#60a5fa;">Introducing</div>
+    <div class="s-big appear d1" style="color:#e2e8f0; font-size:2.2rem;">The Alignment Checker</div>
+    <div class="s-text appear d2" style="color:#94a3b8; text-align:center; max-width:600px;">An interactive pre-flight diagnostic for your research design. Six steps. Traffic-light signals. A downloadable Design Summary you'll use in next week's Saboteurs Workshop.</div>
+    <div class="highlight-box appear d3" style="border-color:#3b82f6; background:rgba(255,255,255,0.05); max-width:500px;">
+      <h4 style="color:#60a5fa;">Open it now</h4>
+      <p style="color:#e2e8f0; font-family:monospace; font-size:0.95rem; word-break:break-all;">efkaymak-del.github.io/PSIR220/tools/alignment-checker.html</p>
+    </div>
+    <div class="s-text appear d4" style="color:#94a3b8; text-align:center; font-size:0.9rem; margin-top:1rem;">Or use the paper worksheet if you prefer — both cover the same six steps.</div>
+  </div>
+
+  <!-- ======== SLIDE 14: THE SIX STEPS ======== -->
+  <div class="slide slide-blue" data-n="14">
+    <div class="s-overtitle blue appear">The Checklist</div>
+    <div class="s-h2 appear d1">Six Steps to Alignment</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Research Question</h4>
+          <p>Is it a why/how question? Does it contain a puzzle? Is it scoped to a time, place, and set of cases?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Paradigm Track</h4>
+          <p>Does the question match the track's logic? A Strategist needs variation; a Storyteller needs meaning; a Disruptor needs discourse.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Causal Pathway</h4>
+          <p>Is X different from Y? Is the mechanism specified, not just asserted? Does it fit the track's causal logic?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Method</h4>
+          <p>Does the method match the paradigm? Can it actually test your mechanism? Is it feasible in one semester?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>N-Size & Cases</h4>
+          <p>Does the N match the method? Are cases selected for analytic reasons, not convenience? Is there variation in the dependent variable?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h4>Ethics & Access</h4>
+          <p>Can you actually obtain the data? Do you need ethical clearance? Is the timeline realistic?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 15: TRAFFIC LIGHTS ======== -->
+  <div class="slide slide-section" data-n="15">
+    <div class="s-overtitle slate appear">Diagnosis</div>
+    <div class="s-h2 appear d1" style="text-align:center;">The Traffic-Light System</div>
+    <div class="three-col appear d2">
+      <div class="col-card green-c">
+        <h3 style="color:#16a34a;">Green — Go</h3>
+        <p>This element is aligned with the rest of your design. No action needed. Proceed with confidence.</p>
+        <div class="col-example">Example: Strategist with a "why" question that specifies variation across cases.</div>
+      </div>
+      <div class="col-card amber-c">
+        <h3 style="color:#d97706;">Amber — Explain Yourself</h3>
+        <p>Not a fatal flaw, but an unusual combination. You must <strong>justify</strong> this choice in your design paper. If you can't justify it, it's actually a red.</p>
+        <div class="col-example">Example: Storyteller using QCA (mid-N) — possible but must explain why not process tracing.</div>
+      </div>
+      <div class="col-card red-c">
+        <h3 style="color:#dc2626;">Red — Grounded</h3>
+        <p>A fundamental contradiction. Do not submit your design until this is resolved. Something must change — the question, the track, the method, or the cases.</p>
+        <div class="col-example">Example: Disruptor running a 200-country regression. The method contradicts the paradigm entirely.</div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; margin-top:1rem; font-weight:600;">Goal: all greens, or greens with justified ambers. Any red = grounded until fixed.</div>
+  </div>
+
+  <!-- ======== SLIDE 16: LIVE EXAMPLE — MISALIGNED ======== -->
+  <div class="slide slide-red" data-n="16">
+    <div class="s-overtitle red appear">Live Diagnosis</div>
+    <div class="s-h2 appear d1" style="text-align:center;">A Design with Three Red Flags</div>
+    <div class="highlight-box red-border appear d2" style="max-width:750px;">
+      <h4>Student X (fictional)</h4>
+      <p><strong>RQ:</strong> "Is climate change bad for developing countries?"<br>
+      <strong>Track:</strong> Interpretivist (Storyteller)<br>
+      <strong>Pathway:</strong> Climate change (X) → economic damage (M) → underdevelopment (Y)<br>
+      <strong>Method:</strong> Large-N regression, 120 countries<br>
+      <strong>Sources:</strong> World Bank datasets, IPCC reports, Nordhaus (2013)</p>
+    </div>
+    <div class="flaw-grid appear d3" style="max-width:750px;">
+      <div class="flaw-card">
+        <h4>Red: Yes/No Question</h4>
+        <p>"Is climate change bad?" can be answered with one word. No puzzle, no variation.</p>
+        <div class="flaw-fix">Rewrite: "Why do some small island states adapt to climate change more successfully than others?"</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Red: Track ≠ Method</h4>
+        <p>Declared Storyteller but using large-N regression — a Strategist method that contradicts interpretive logic.</p>
+        <div class="flaw-fix">Either switch to Strategist, or switch method to process tracing on 1–2 island states.</div>
+      </div>
+      <div class="flaw-card">
+        <h4>Red: Track ≠ Sources</h4>
+        <p>Entirely positivist bibliography (datasets, IPCC, economics). No interpretivist theory — no Geertz, no constructivism, no thick description.</p>
+        <div class="flaw-fix">Add context-specific case studies, anthropological sources on climate adaptation, local voices.</div>
+      </div>
+      <div class="flaw-card amber">
+        <h4 style="color:#d97706;">Amber: Tautology Risk</h4>
+        <p>X (climate change) and Y (underdevelopment) may overlap — economic damage is part of what defines underdevelopment.</p>
+        <div class="flaw-fix">Separate X and Y conceptually. Define underdevelopment independently of climate impact.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 17: LIVE EXAMPLE — FIXED ======== -->
+  <div class="slide slide-green" data-n="17">
+    <div class="s-overtitle green appear">After Repair</div>
+    <div class="s-h2 appear d1" style="text-align:center;">The Same Student, Aligned</div>
+    <div class="highlight-box green-border appear d2" style="max-width:750px;">
+      <h4>Student X — Revised Design</h4>
+      <p><strong>RQ:</strong> "How do small island developing states construct 'climate resilience' in national policy narratives — and why do Fiji and Tuvalu frame it so differently?"<br>
+      <strong>Track:</strong> Storyteller (Interpretivist)<br>
+      <strong>Pathway:</strong> Shared climate vulnerability (context) → different national identity narratives frame "resilience" differently (interpretation) → divergent policy responses (outcome)<br>
+      <strong>Method:</strong> Comparative process tracing, discourse analysis of policy documents<br>
+      <strong>N:</strong> 2 (Fiji, Tuvalu)<br>
+      <strong>Sources:</strong> Barnett & Campbell (2010), Farbotko (2010), official adaptation plans, parliamentary speeches, Geertz (1973) as interpretive method anchor</p>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; color:#059669; font-weight:700;">Every link connects. Question → Track → Sources → Pathway → Method → Cases. All green.</div>
+  </div>
+
+  <!-- ======== SLIDE 18: WORKSHOP INSTRUCTIONS — PART 1 ======== -->
+  <div class="slide slide-amber" data-n="18">
+    <div class="s-overtitle amber appear">Workshop — Part 1</div>
+    <div class="s-h2 appear d1">Individual Pre-Flight Check<br><span style="font-size:1.2rem; font-weight:400; color:#92400e;">30 minutes</span></div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num" style="background:#fef3c7; color:#92400e;">1</div>
+        <div class="step-content">
+          <h4>Open the Alignment Checker</h4>
+          <p>Use the web tool on your device, or the paper worksheet — your choice. Both cover the same six steps.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:#fef3c7; color:#92400e;">2</div>
+        <div class="step-content">
+          <h4>Work through all six steps honestly</h4>
+          <p>Don't write what sounds good — write what you've actually committed to. If a section is blank, that's a finding.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:#fef3c7; color:#92400e;">3</div>
+        <div class="step-content">
+          <h4>Run the diagnostic (or self-diagnose on paper)</h4>
+          <p>Count your greens, ambers, and reds. Fill in the Design Summary at the bottom — you'll need it next week.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:#fef3c7; color:#92400e;">4</div>
+        <div class="step-content">
+          <h4>If you hit red flags, start fixing now</h4>
+          <p>Rewrite the question, swap a method, add a source. Don't wait — the Research Design is due in three weeks.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 19: WORKSHOP INSTRUCTIONS — PART 2 ======== -->
+  <div class="slide slide-purple" data-n="19">
+    <div class="s-overtitle purple appear">Workshop — Part 2</div>
+    <div class="s-h2 appear d1">Peer Pre-Flight Review<br><span style="font-size:1.2rem; font-weight:400; color:#6d28d9;">30 minutes</span></div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num purple">1</div>
+        <div class="step-content">
+          <h4>Pair up and exchange Design Summaries</h4>
+          <p>Share your screen or swap worksheets. Read your partner's summary in silence for 3 minutes.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">2</div>
+        <div class="step-content">
+          <h4>Spot what the checker missed</h4>
+          <p>Look for alignment problems that the self-check didn't catch. Is the mechanism actually testable? Is N realistic? Are the cases comparable?</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">3</div>
+        <div class="step-content">
+          <h4>Fill in the Peer Review section</h4>
+          <p>Identify the strongest part, the weakest link, and one specific revision you'd recommend.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">4</div>
+        <div class="step-content">
+          <h4>Discuss for 5 minutes per partner</h4>
+          <p>Be honest but constructive. This is practice for the Saboteurs Workshop — where your partner's job is to <em>break</em> your design.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 20: WHAT COMES NEXT ======== -->
+  <div class="slide slide-section" data-n="20">
+    <div class="s-overtitle slate appear">The Road Ahead</div>
+    <div class="s-h2 appear d1" style="text-align:center;">What's Coming</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num green">11</div>
+        <div class="step-content">
+          <h4>Week 11 — The Saboteurs Workshop</h4>
+          <p>Your partner reads your Design Summary and tries to <strong>destroy</strong> your design. If it survives, it's strong. If it doesn't, you fix it. Bring your completed Design Summary from today.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num green">12</div>
+        <div class="step-content">
+          <h4>Week 12 — Red Team & Design Revision</h4>
+          <p>Full-class adversarial review. Selected designs go before the "Red Team" panel for stress-testing.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num green">13</div>
+        <div class="step-content">
+          <h4>Week 13 — Core Quest 3 Due: Research Design (15 pts)</h4>
+          <p>The formal submission: your complete, aligned research design paper — question, literature, pathway, method, cases, ethics.</p>
+        </div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; color:#64748b; margin-top:1rem;">Every workshop between now and Week 13 exists to catch problems <em>before</em> they cost you points on the design paper.</div>
+  </div>
+
+  <!-- ======== SLIDE 21: KEY READINGS ======== -->
+  <div class="slide slide-blue" data-n="21">
+    <div class="s-overtitle blue appear">Readings for This Week & Next</div>
+    <div class="s-h2 appear d1">Your Sources on Research Design</div>
+    <div class="two-col appear d2">
+      <div class="col-card pos" style="border-color:#bfdbfe;">
+        <h3 style="color:#1d4ed8;">Required</h3>
+        <p><strong>Baglione, Ch. 7</strong> — "Making Your Plan and Protecting Yourself from Criticism: The Research Design"</p>
+        <p style="margin-top:0.5rem;">This is the chapter that walks you through writing the design section of your paper. Read it before you submit Core Quest 3.</p>
+      </div>
+      <div class="col-card" style="border-color:#e2e8f0;">
+        <h3 style="color:#64748b;">Recommended by Track</h3>
+        <p><strong>Strategists:</strong> KKV, <em>Designing Social Inquiry</em>, Ch. 1–2</p>
+        <p style="margin-top:0.4rem;"><strong>Storytellers:</strong> George & Bennett, <em>Case Studies and Theory Development</em>, Ch. 3</p>
+        <p style="margin-top:0.4rem;"><strong>Disruptors:</strong> Schwartz-Shea & Yanow, <em>Interpretive Research Design</em>, Ch. 4</p>
+      </div>
+    </div>
+    <div class="highlight-box blue-border appear d3">
+      <h4>Reminder</h4>
+      <p>The Alignment Checker and the worksheet both produce a <strong>Design Summary</strong>. Save yours — you'll need it for the Saboteurs Workshop in Week 11. If you lose it, you'll have to redo the entire exercise.</p>
+    </div>
+  </div>
+
+  <!-- ======== SLIDE 22: CLOSING ======== -->
+  <div class="slide slide-title" data-n="22">
+    <div class="s-overtitle slate appear">Summary</div>
+    <div class="s-title gradient appear d1" style="font-size:2rem;">A research design is<br>not a wish list.<br><br>It is a chain — and every<br>link must hold.<br><br>Today, you test the chain.<br>Next week, someone else<br>tries to break it.</div>
+    <div class="s-subtitle appear d2" style="margin-top:1.5rem;">Open the Alignment Checker. Be honest. Fix what's broken.</div>
+    <div class="s-subtitle appear d3" style="margin-top:0.5rem; font-size:0.9rem; color:#94a3b8;">PSIR220 — Research Design — The Research Quest — Erol Kaymak — EMU</div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="nav-prev" onclick="go(-1)">←</button>
+  <div class="nav-progress">
+    <div class="nav-progress-fill" id="nav-fill"></div>
+  </div>
+  <div class="nav-counter" id="nav-counter">1 / 22</div>
+  <button class="nav-btn" id="nav-next" onclick="go(1)">→</button>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+
+function go(dir) {
+  const next = current + dir;
+  if(next < 0 || next >= total) return;
+  slides[current].classList.remove('active');
+  slides[current].classList.add('exit');
+  setTimeout(() => {
+    slides[current].classList.remove('exit');
+    current = next;
+    slides[current].classList.add('active');
+    updateNav();
+  }, 100);
+}
+
+function updateNav() {
+  document.getElementById('nav-counter').textContent = (current+1) + ' / ' + total;
+  document.getElementById('nav-prev').disabled = current === 0;
+  document.getElementById('nav-next').disabled = current === total - 1;
+  document.getElementById('nav-fill').style.width = ((current+1)/total*100) + '%';
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if(e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+});
+
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if(Math.abs(diff) > 50) { go(diff > 0 ? 1 : -1); }
+});
+
+updateNav();
+</script>
+
+</body>
+</html>
