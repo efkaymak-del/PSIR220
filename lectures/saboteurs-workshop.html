@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Saboteurs Workshop — PSIR220 Week 11</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; overflow: hidden; }
+  .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+  .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem 6rem; opacity: 0; transform: translateX(60px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+  .slide.exit { opacity: 0; transform: translateX(-60px); }
+  .slide-title { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #e2e8f0; }
+  .slide-section { background: #fff; }
+  .slide-dark { background: #0f172a; color: #e2e8f0; }
+  .slide-blue { background: #eff6ff; }
+  .slide-purple { background: #f5f3ff; }
+  .slide-pink { background: #fdf2f8; }
+  .slide-amber { background: #fffbeb; }
+  .slide-green { background: #f0fdf4; }
+  .slide-red { background: #fef2f2; }
+  .slide-slate { background: #f1f5f9; }
+  .s-overtitle { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+  .s-overtitle.blue { color: #2563eb; } .s-overtitle.purple { color: #7c3aed; } .s-overtitle.pink { color: #db2777; } .s-overtitle.amber { color: #d97706; } .s-overtitle.green { color: #059669; } .s-overtitle.slate { color: #64748b; } .s-overtitle.red { color: #dc2626; } .s-overtitle.light { color: #94a3b8; }
+  .s-title { font-size: 2.8rem; font-weight: 800; line-height: 1.15; text-align: center; max-width: 800px; margin-bottom: 1rem; }
+  .s-title.gradient { background: linear-gradient(135deg, #dc2626, #f59e0b, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .s-subtitle { font-size: 1.15rem; color: #94a3b8; text-align: center; max-width: 650px; line-height: 1.6; }
+  .s-h2 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem; max-width: 750px; }
+  .s-text { font-size: 1.15rem; line-height: 1.7; max-width: 700px; color: #334155; }
+  .s-text + .s-text { margin-top: 1rem; }
+  .s-big { font-size: 1.8rem; font-weight: 700; line-height: 1.4; max-width: 750px; text-align: center; }
+  .s-quote { font-size: 1.5rem; font-style: italic; line-height: 1.5; max-width: 650px; color: #475569; border-left: 4px solid #dc2626; padding-left: 1.5rem; text-align: left; }
+  .highlight-box { background: #fff; border-radius: 14px; padding: 1.5rem 2rem; border: 2px solid #e2e8f0; max-width: 700px; margin-top: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .highlight-box h4 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; margin-bottom: 0.5rem; }
+  .highlight-box p { font-size: 1.05rem; line-height: 1.6; color: #1e293b; }
+  .flaw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 800px; width: 100%; margin-top: 1rem; }
+  .flaw-card { background: #fff; border-radius: 12px; padding: 1.1rem; border: 2px solid #fecaca; }
+  .flaw-card.amber { border-color: #fde68a; }
+  .flaw-card.blue { border-color: #bfdbfe; }
+  .flaw-card h4 { font-size: 0.9rem; color: #dc2626; margin-bottom: 0.3rem; }
+  .flaw-card.amber h4 { color: #d97706; }
+  .flaw-card.blue h4 { color: #2563eb; }
+  .flaw-card p { font-size: 0.85rem; color: #475569; line-height: 1.5; }
+  .step-list { max-width: 700px; width: 100%; margin-top: 1rem; }
+  .step-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem; }
+  .step-num { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+  .step-num.red { background: #fee2e2; color: #dc2626; }
+  .step-num.amber { background: #fef3c7; color: #92400e; }
+  .step-num.blue { background: #dbeafe; color: #1d4ed8; }
+  .step-num.green { background: #d1fae5; color: #059669; }
+  .step-num.purple { background: #ede9fe; color: #7c3aed; }
+  .step-content h4 { font-size: 1rem; margin-bottom: 0.2rem; color: #0f172a; }
+  .step-content p { font-size: 0.95rem; color: #475569; line-height: 1.5; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; max-width: 850px; width: 100%; margin-top: 1rem; }
+  .col-card { border-radius: 14px; padding: 1.3rem; border: 2px solid #e2e8f0; }
+  .col-card h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.6rem; }
+  .col-card p { font-size: 0.92rem; line-height: 1.55; color: #334155; }
+  .col-card .col-example { margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(0,0,0,0.08); font-size: 0.82rem; color: #64748b; font-style: italic; }
+  .nav { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1rem; background: #fff; padding: 0.6rem 1.2rem; border-radius: 999px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100; }
+  .nav-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #475569; transition: all 0.2s; }
+  .nav-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-counter { font-size: 0.82rem; font-weight: 600; color: #64748b; min-width: 60px; text-align: center; }
+  .nav-progress { width: 120px; height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: linear-gradient(135deg, #dc2626, #f59e0b); border-radius: 999px; transition: width 0.3s; }
+  .appear { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .slide.active .appear { opacity: 1; transform: translateY(0); }
+  .slide.active .appear.d1 { transition-delay: 0.2s; }
+  .slide.active .appear.d2 { transition-delay: 0.4s; }
+  .slide.active .appear.d3 { transition-delay: 0.6s; }
+  .slide.active .appear.d4 { transition-delay: 0.8s; }
+  @media (max-width: 768px) { .slide { padding: 2rem 1.5rem; } .s-title { font-size: 1.8rem; } .s-h2 { font-size: 1.4rem; } .three-col { grid-template-columns: 1fr; } .flaw-grid { grid-template-columns: 1fr; } .s-text { font-size: 1rem; } .s-big { font-size: 1.3rem; } }
+  @media print { .nav { display: none; } .slide { position: relative; opacity: 1; transform: none; pointer-events: all; page-break-after: always; min-height: 100vh; } .appear { opacity: 1; transform: none; } body { overflow: auto; } }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide slide-title active" data-n="1">
+    <div class="s-overtitle light appear">PSIR220 · Week 11</div>
+    <div class="s-title gradient appear d1">The Saboteurs<br>Workshop</div>
+    <div class="s-subtitle appear d2">Your partner's job is to break your research design.<br>Your job is to make sure they can't.</div>
+    <div class="s-subtitle appear d3" style="margin-top:1.5rem; font-size:0.9rem; color:#64748b;">Baglione Ch. 7 · "Protecting Yourself from Criticism"</div>
+  </div>
+
+  <!-- SLIDE 2: LAST WEEK RECAP -->
+  <div class="slide slide-blue" data-n="2">
+    <div class="s-overtitle blue appear">Last Week</div>
+    <div class="s-h2 appear d1">You ran the Pre-Flight Check.<br>You found your red flags.</div>
+    <div class="s-text appear d2">The Alignment Checker tested whether your six design elements — question, paradigm, literature, pathway, method, and cases — all point in the same direction. Some of you were cleared. Some were grounded.</div>
+    <div class="s-text appear d3" style="font-weight:700; color:#1d4ed8;">Today, someone else checks your work.</div>
+  </div>
+
+  <!-- SLIDE 3: WHY ADVERSARIAL -->
+  <div class="slide slide-dark" data-n="3">
+    <div class="s-overtitle appear" style="color:#f59e0b;">The Logic</div>
+    <div class="s-big appear d1" style="color:#e2e8f0;">Peer review is not about reassurance.<br>It's about survival.</div>
+    <div class="s-text appear d2" style="color:#94a3b8; text-align:center; max-width:600px;">Every published article survives hostile reviewers. Every successful dissertation survives its committee. Every conference paper survives the Q&A. If your design can't survive a classmate with a worksheet, it won't survive the real world.</div>
+  </div>
+
+  <!-- SLIDE 4: SUPPORTIVE VS ADVERSARIAL -->
+  <div class="slide slide-section" data-n="4">
+    <div class="s-overtitle slate appear">Two Kinds of Peer Review</div>
+    <div class="s-h2 appear d1" style="text-align:center;">Last week vs. this week</div>
+    <div class="flaw-grid appear d2" style="max-width:700px;">
+      <div class="flaw-card blue">
+        <h4 style="color:#2563eb;">Week 10 — Pre-Flight Check</h4>
+        <p><strong>Supportive.</strong> Your partner helped you find problems. The tone was collaborative: "Have you thought about...?" The goal was to identify issues <em>together</em>.</p>
+      </div>
+      <div class="flaw-card">
+        <h4>Week 11 — Saboteurs Workshop</h4>
+        <p><strong>Adversarial.</strong> Your partner's job is to <em>break</em> your design. The tone is prosecutorial: "This doesn't work because..." The goal is to find the fatal flaw.</p>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; margin-top:1rem;">Both are essential. Support without challenge produces complacency. Challenge without support produces anxiety. You need both — in that order.</div>
+  </div>
+
+  <!-- SLIDE 5: RULES OF ENGAGEMENT -->
+  <div class="slide slide-red" data-n="5">
+    <div class="s-overtitle red appear">Rules of Engagement</div>
+    <div class="s-h2 appear d1" style="text-align:center;">How to be a good Saboteur</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num red">1</div>
+        <div class="step-content">
+          <h4>Attack the design, never the person</h4>
+          <p>"Your mechanism is tautological" — yes. "You clearly didn't think about this" — no.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num red">2</div>
+        <div class="step-content">
+          <h4>Every attack must name a specific flaw type</h4>
+          <p>Use the Flaw Menu on your worksheet. "I don't like it" is not an attack. "This is selection bias because you only study cases where Y occurred" is.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num red">3</div>
+        <div class="step-content">
+          <h4>The designer gets a rebuttal</h4>
+          <p>After each attack, the designer can defend, concede, or propose a fix. Record the outcome honestly.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num red">4</div>
+        <div class="step-content">
+          <h4>If you can't find a flaw, say so — and explain why</h4>
+          <p>A clean bill of health is valuable feedback too. But you have to earn it by actually looking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: THE FLAW MENU -->
+  <div class="slide slide-section" data-n="6">
+    <div class="s-overtitle red appear">Your Arsenal</div>
+    <div class="s-h2 appear d1" style="text-align:center;">The Flaw Menu</div>
+    <div class="flaw-grid appear d2">
+      <div class="flaw-card">
+        <h4>Alignment Flaws</h4>
+        <p>Track ≠ Question · Track ≠ Sources · Track ≠ Method · Method ≠ N-Size · Pathway ≠ Track</p>
+      </div>
+      <div class="flaw-card amber">
+        <h4 style="color:#d97706;">Question Flaws</h4>
+        <p>Yes/No Question · Too Broad · No Puzzle · Normative Disguised as Empirical</p>
+      </div>
+      <div class="flaw-card">
+        <h4>Causal Flaws</h4>
+        <p>Tautology · Missing Mechanism · Reverse Causality · Omitted Variable</p>
+      </div>
+      <div class="flaw-card amber">
+        <h4 style="color:#d97706;">Method / Case Flaws</h4>
+        <p>Selection Bias · No DV Variation · Convenience Cases · Unfalsifiable · Feasibility</p>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; font-size:0.95rem; color:#64748b; margin-top:1rem;">Every attack must reference one of these categories. No vague complaints.</div>
+  </div>
+
+  <!-- SLIDE 7: LIVE DEMO — THE ATTACK -->
+  <div class="slide slide-amber" data-n="7">
+    <div class="s-overtitle amber appear">Live Demo</div>
+    <div class="s-h2 appear d1" style="text-align:center;">Watch Me Sabotage a Design</div>
+    <div class="highlight-box appear d2" style="border-color:#fde68a; max-width:750px;">
+      <h4>Target Design</h4>
+      <p><strong>RQ:</strong> "Why do some countries accept more refugees than others?"<br>
+      <strong>Track:</strong> Strategist<br>
+      <strong>Pathway:</strong> Economic capacity (X) → government willingness (M) → refugee intake (Y)<br>
+      <strong>Method:</strong> Process tracing, N = 1 (Germany)<br>
+      <strong>Cases:</strong> Germany 2015–2020</p>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; font-weight:700; color:#d97706; margin-top:0.5rem;">Can you spot the problems? I see at least three...</div>
+  </div>
+
+  <!-- SLIDE 8: LIVE DEMO — THREE ATTACKS -->
+  <div class="slide slide-section" data-n="8">
+    <div class="s-overtitle red appear">Three Attacks</div>
+    <div class="s-h2 appear d1" style="text-align:center;">How a Saboteur would strike</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num red">1</div>
+        <div class="step-content">
+          <h4>Method ≠ N-Size (Alignment Flaw)</h4>
+          <p>The question asks "why do <em>some countries</em>" — plural, comparative — but the method is process tracing on a single case. One case can't explain cross-national variation. Either change the question to "how did Germany decide..." or switch to MSSD with N = 2–3.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num red">2</div>
+        <div class="step-content">
+          <h4>Selection Bias (Method / Case Flaw)</h4>
+          <p>Germany is the highest-intake case in Europe. Studying only the most extreme case tells you nothing about why other countries with similar economic capacity (France, UK) took far fewer. You're selecting on the DV.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num red">3</div>
+        <div class="step-content">
+          <h4>Missing Mechanism (Causal Flaw)</h4>
+          <p>"Government willingness" is not a mechanism — it restates the outcome. <em>Why</em> was the German government willing? Merkel's domestic political calculation? Historical guilt? EU pressure? The mechanism needs to explain the willingness, not just assert it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: LIVE DEMO — DESIGNER RESPONDS -->
+  <div class="slide slide-green" data-n="9">
+    <div class="s-overtitle green appear">Designer's Response</div>
+    <div class="s-h2 appear d1" style="text-align:center;">Defend, Concede, or Fix</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num green">1</div>
+        <div class="step-content">
+          <h4>Attack 1 — Concede & Fix</h4>
+          <p>"You're right — I'll narrow the question to 'How did Germany's domestic political context shape its decision to open borders in 2015?' and keep process tracing, N = 1."</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num green">2</div>
+        <div class="step-content">
+          <h4>Attack 2 — Defend</h4>
+          <p>"With the revised question, I'm no longer explaining cross-national variation — I'm tracing a single decision. Germany is a crucial case, not a convenience case. Selection bias doesn't apply to single-case process tracing the same way."</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num green">3</div>
+        <div class="step-content">
+          <h4>Attack 3 — Concede & Fix</h4>
+          <p>"Fair. I'll replace 'government willingness' with a specific mechanism: Merkel's party calculated that humanitarian framing would neutralise the AfD's early populist challenge — a domestic political strategy, not altruism."</p>
+        </div>
+      </div>
+    </div>
+    <div class="s-text appear d3" style="text-align:center; color:#059669; font-weight:700; margin-top:0.5rem;">Verdict: DAMAGED — fixable. Two concessions, one successful defence. The core survives with revisions.</div>
+  </div>
+
+  <!-- SLIDE 10: WORKSHOP PROTOCOL -->
+  <div class="slide slide-purple" data-n="10">
+    <div class="s-overtitle purple appear">Workshop Protocol</div>
+    <div class="s-h2 appear d1" style="text-align:center;">How the Next 60 Minutes Work</div>
+    <div class="step-list appear d2">
+      <div class="step-item">
+        <div class="step-num purple">1</div>
+        <div class="step-content">
+          <h4>Pair up & swap Design Summaries (2 min)</h4>
+          <p>Different partner from last week. Exchange your Alignment Checker output or worksheet tear-off.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">2</div>
+        <div class="step-content">
+          <h4>Read & plan your attacks in silence (10 min)</h4>
+          <p>Fill in Part A of the Saboteur worksheet. Identify your three strongest attacks using the Flaw Menu.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">3</div>
+        <div class="step-content">
+          <h4>Round 1 — Saboteur A attacks Designer B (15 min)</h4>
+          <p>Present your three attacks. The designer responds to each. Record the outcomes in Part B.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">4</div>
+        <div class="step-content">
+          <h4>Round 2 — Switch roles (15 min)</h4>
+          <p>Saboteur B attacks Designer A. Same protocol.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">5</div>
+        <div class="step-content">
+          <h4>Verdict & Repair Plan (10 min)</h4>
+          <p>Each Saboteur delivers the verdict: Survived, Damaged, or Destroyed. Designers fill in Part D — what they'll fix.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num purple">6</div>
+        <div class="step-content">
+          <h4>Class debrief (10 min)</h4>
+          <p>Volunteers share the most interesting attack. We'll identify patterns across designs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: WHAT'S AT STAKE -->
+  <div class="slide slide-dark" data-n="11">
+    <div class="s-overtitle appear" style="color:#f59e0b;">What's at Stake</div>
+    <div class="s-big appear d1" style="color:#e2e8f0;">Core Quest 3 — Research Design<br>15 points · Due Week 13</div>
+    <div class="s-text appear d2" style="color:#94a3b8; text-align:center; max-width:600px;">That's the single largest assignment in the course. Everything you fix today is a problem that won't cost you points in two weeks. Everything you ignore is a problem a Saboteur found — and so will your instructor.</div>
+  </div>
+
+  <!-- SLIDE 12: PREVIEW NEXT WEEK -->
+  <div class="slide slide-slate" data-n="12">
+    <div class="s-overtitle slate appear">Next Week — Week 12</div>
+    <div class="s-h2 appear d1" style="text-align:center;">The Red Team</div>
+    <div class="s-text appear d2">Today was one-on-one. Next week, selected designs go before the <strong>full class</strong> for a Red Team review. The entire room plays Saboteur. If your design survives today's partner, it might face the whole class next week.</div>
+    <div class="highlight-box appear d3" style="border-color:#94a3b8;">
+      <h4>To prepare</h4>
+      <p>Revise your design based on today's feedback. Bring an updated Design Summary next week. If your Saboteur gave you a "Destroyed" verdict, you <strong>must</strong> bring a repaired version — or volunteer for the Red Team panel to get live help from the class.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: CLOSING -->
+  <div class="slide slide-title" data-n="13">
+    <div class="s-overtitle light appear">Begin</div>
+    <div class="s-title gradient appear d1" style="font-size:2.2rem;">Find your partner.<br>Read their design.<br>Break it if you can.</div>
+    <div class="s-subtitle appear d2" style="margin-top:1.5rem; color:#94a3b8;">The best thing a Saboteur can give you is a problem you can fix before it costs you points.</div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="nav-prev" onclick="go(-1)">&#8592;</button>
+  <div class="nav-progress"><div class="nav-progress-fill" id="nav-fill"></div></div>
+  <div class="nav-counter" id="nav-counter">1 / 13</div>
+  <button class="nav-btn" id="nav-next" onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+let current=0;const slides=document.querySelectorAll('.slide'),total=slides.length;
+function go(d){const n=current+d;if(n<0||n>=total)return;slides[current].classList.remove('active');slides[current].classList.add('exit');setTimeout(()=>{slides[current].classList.remove('exit');current=n;slides[current].classList.add('active');updateNav()},100)}
+function updateNav(){document.getElementById('nav-counter').textContent=(current+1)+' / '+total;document.getElementById('nav-prev').disabled=current===0;document.getElementById('nav-next').disabled=current===total-1;document.getElementById('nav-fill').style.width=((current+1)/total*100)+'%'}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)go(d>0?1:-1)});
+updateNav();
+</script>
+</body>
+</html>
