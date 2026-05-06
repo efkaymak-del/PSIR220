@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PSIR220 · Week 11 · Session 2 — The Research Design</title>
+<style>
+  :root{--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--accent2:#f472b6;
+        --accent3:#a78bfa;--green:#4ade80;--amber:#fbbf24;--red:#f87171;
+        --text:#e2e8f0;--muted:#94a3b8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+
+  /* ── slide engine ── */
+  .slide{display:none;flex-direction:column;justify-content:center;
+         min-height:100vh;padding:4rem 6rem}
+  .slide.active{display:flex}
+  .slide h1{font-size:3rem;line-height:1.15;margin-bottom:1rem}
+  .slide h2{font-size:2rem;color:var(--accent);margin-bottom:.75rem}
+  .slide h3{font-size:1.4rem;color:var(--accent2);margin-bottom:.5rem}
+  .slide p,.slide li{font-size:1.25rem;line-height:1.7;color:var(--muted)}
+  .slide p+p{margin-top:1rem}
+  .slide strong{color:var(--text)}
+  .slide em{color:var(--accent3);font-style:normal}
+  ul{list-style:none;padding-left:0}
+  li::before{content:'→ ';color:var(--accent)}
+  li{margin-bottom:.5rem}
+  .highlight{color:var(--accent)}
+  .warn{color:var(--red)}
+  .ok{color:var(--green)}
+  .mid{color:var(--amber)}
+
+  /* ── quotation block ── */
+  blockquote{border-left:4px solid var(--accent);padding:.75rem 1.5rem;
+             margin:1.5rem 0;background:rgba(56,189,248,.07);border-radius:0 8px 8px 0}
+  blockquote p{color:var(--text)!important;font-size:1.15rem}
+  blockquote cite{display:block;margin-top:.5rem;color:var(--muted);font-size:1rem}
+
+  /* ── diagram boxes ── */
+  .chain{display:flex;align-items:center;gap:1rem;margin:2rem 0;flex-wrap:wrap}
+  .chain .box{background:var(--card);border:1px solid var(--accent);border-radius:8px;
+              padding:1rem 1.5rem;text-align:center;min-width:140px}
+  .chain .arrow{font-size:2rem;color:var(--accent)}
+  .chain .box.warn-box{border-color:var(--red)}
+  .chain .box.ok-box{border-color:var(--green)}
+
+  /* ── comparison columns ── */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:1.5rem 0}
+  .cols.three{grid-template-columns:1fr 1fr 1fr}
+  .col{background:var(--card);border-radius:10px;padding:1.5rem;border:1px solid transparent}
+  .col.strat{border-color:var(--accent)}
+  .col.story{border-color:var(--accent2)}
+  .col.dis{border-color:var(--accent3)}
+
+  /* ── table ── */
+  table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+  th,td{text-align:left;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,.1)}
+  th{color:var(--accent);font-weight:600}
+
+  /* ── tag / pill ── */
+  .tag{display:inline-block;padding:.2rem .7rem;border-radius:20px;font-size:.9rem;margin-right:.5rem}
+  .tag.blue{background:rgba(56,189,248,.15);color:var(--accent)}
+  .tag.pink{background:rgba(244,114,182,.15);color:var(--accent2)}
+  .tag.purple{background:rgba(167,139,250,.15);color:var(--accent3)}
+
+  /* ── nav ── */
+  .nav{position:fixed;bottom:1.5rem;right:2rem;display:flex;gap:.5rem;z-index:10}
+  .nav button{background:var(--card);color:var(--text);border:1px solid var(--accent);
+              border-radius:6px;padding:.5rem 1rem;cursor:pointer;font-size:1rem}
+  .nav button:hover{background:var(--accent);color:var(--bg)}
+  .counter{position:fixed;bottom:1.7rem;left:2rem;color:var(--muted);font-size:.9rem}
+
+  /* ── subtle subtitle ── */
+  .sub{font-size:1rem;color:var(--muted);margin-bottom:2rem}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: TITLE -->
+<!-- ============================================================ -->
+<div class="slide active" id="s1">
+  <p class="sub">PSIR220 · Week 11 · Session 2</p>
+  <h1>The Research Design</h1>
+  <p><strong>"Making Your Plan and Protecting Yourself from Criticism"</strong></p>
+  <p>What it is, what it isn't, and how to build one that survives contact with your data.</p>
+  <p style="margin-top:2rem;">Baglione Ch. 7 · KKV Ch. 1–4 · George &amp; Bennett Ch. 3–4</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: SABOTEURS DEBRIEF (10 min) -->
+<!-- ============================================================ -->
+<div class="slide" id="s2">
+  <h2>First: The Damage Report</h2>
+  <p>On Monday, the Saboteurs went to work on your designs. Let's look at what they found.</p>
+  <p style="margin-top:1.5rem;"><strong>Patterns from the Saboteur Reports:</strong></p>
+  <p><em>[Instructor: share 3–4 anonymized patterns from the Form 2 responses here. Common ones to expect:]</em></p>
+  <ul>
+    <li>Research question was too broad — no clear scope or puzzle</li>
+    <li>Causal mechanism was vague or missing — "X leads to Y" with no engine</li>
+    <li>Case selection driven by convenience, not logic</li>
+    <li>Method didn't match the paradigm track</li>
+  </ul>
+  <p style="margin-top:1rem;">These are not unique to your designs. They're the most common problems in <strong>all</strong> undergraduate — and much professional — research.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: THE PIVOT -->
+<!-- ============================================================ -->
+<div class="slide" id="s3">
+  <h2>What Now?</h2>
+  <p>The Saboteurs found problems. That's the point. The question is: <strong>what are you going to do about it?</strong></p>
+  <p style="margin-top:1rem;">The answer is your <strong>Research Design</strong> — Core Quest 3, worth <span class="highlight">15 points</span>, due <span class="warn">May 18</span>.</p>
+  <p>A research design is not a summary of your topic. It's not "what I'm interested in." It's the <strong>plan</strong> — the logic that connects your question to your evidence to your answer.</p>
+  <p style="margin-top:1rem;">Today: what that plan looks like, and what the best scholars in the field say it must contain.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: BAGLIONE'S TWO ANALOGIES -->
+<!-- ============================================================ -->
+<div class="slide" id="s4">
+  <h2>Baglione's Two Analogies</h2>
+  <p>Baglione (Ch. 7) says a research design is like two things at once:</p>
+  <div class="cols">
+    <div class="col">
+      <h3>The Courtroom</h3>
+      <p>You are a <strong>lawyer</strong> making a case before a skeptical jury. Your research design is your argument: here is my claim, here is my evidence, here is why you should believe me and not the opposing counsel. Every element must hold up to cross-examination.</p>
+      <p style="margin-top:.5rem;"><em>If the jury isn't convinced, it doesn't matter how passionate you are.</em></p>
+    </div>
+    <div class="col">
+      <h3>Medical Science</h3>
+      <p>You are a <strong>doctor</strong> diagnosing a patient. The symptoms are the data. The diagnosis is your theory. The treatment plan is your method. But you must also consider differential diagnoses — what <em>else</em> could explain these symptoms? If you skip that step, you might kill the patient.</p>
+      <p style="margin-top:.5rem;"><em>Alternative explanations are not optional.</em></p>
+    </div>
+  </div>
+  <p style="margin-top:1rem;">Both analogies make the same point: <strong>a research design is an argument for why your approach will produce a valid answer.</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: WHAT A RESEARCH DESIGN CONTAINS -->
+<!-- ============================================================ -->
+<div class="slide" id="s5">
+  <h2>What Goes Into a Research Design?</h2>
+  <p>Across Baglione, KKV, and George &amp; Bennett, the core components are remarkably consistent:</p>
+  <div class="chain">
+    <div class="box"><strong>Research<br>Question</strong></div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Theory &amp;<br>Argument</strong></div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Literature<br>Position</strong></div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Method</strong></div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Cases &amp;<br>N-Size</strong></div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Evidence &amp;<br>Sources</strong></div>
+  </div>
+  <p>Each element constrains and justifies the next. If any link breaks, the whole chain fails. That's what the Saboteurs were testing on Monday.</p>
+  <p style="margin-top:1rem;">But there's a deeper question: <strong>what counts as a valid link</strong> depends on your paradigm.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: KKV — THE STRATEGIST'S DESIGN -->
+<!-- ============================================================ -->
+<div class="slide" id="s6">
+  <span class="tag blue">Strategist Track</span>
+  <h2>KKV: The Four Components</h2>
+  <p>King, Keohane, and Verba argue that <strong>all</strong> research designs — quantitative or qualitative — share the same logic of inference. Their four components:</p>
+  <blockquote>
+    <p>"We divide all research designs into four components: <strong>the research question, the theory, the data, and the use of the data</strong>."</p>
+    <cite>— KKV, <em>Designing Social Inquiry</em>, Ch. 1 (p. 12–13)</cite>
+  </blockquote>
+  <p>The research question must be "important in the real world" <em>and</em> "make a specific contribution to an identifiable scholarly literature." Not just interesting — consequential and positioned.</p>
+  <p style="margin-top:1rem;">The theory must generate <strong>observable implications</strong> — predictions that can be checked against evidence. The more observable implications, the stronger the design.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: KKV — OBSERVABLE IMPLICATIONS -->
+<!-- ============================================================ -->
+<div class="slide" id="s7">
+  <span class="tag blue">Strategist Track</span>
+  <h2>Observable Implications: The KKV Test</h2>
+  <blockquote>
+    <p>"Whether we study many phenomena or few — or even one — the study will be improved if we collect data on <strong>as many observable implications of our theory as possible</strong>."</p>
+    <cite>— KKV, <em>Designing Social Inquiry</em>, Ch. 1 (p. 12)</cite>
+  </blockquote>
+  <p>This is the central Strategist move: your theory predicts things. A good research design identifies those predictions and tests them. The more tests you can run, the more confident you can be.</p>
+  <p style="margin-top:1rem;"><strong>Example:</strong> If your theory is that "economic crisis causes populist voting," the observable implications include: populist parties should gain votes <em>after</em> recessions; regions hit hardest should show the biggest gains; countries with strong safety nets should show smaller effects; the pattern should hold across multiple elections.</p>
+  <p>Each implication is a test. Each test that passes strengthens the design. Each test that fails forces revision.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: KKV — MAXIMIZE LEVERAGE -->
+<!-- ============================================================ -->
+<div class="slide" id="s8">
+  <span class="tag blue">Strategist Track</span>
+  <h2>KKV's Rules for Causal Theories</h2>
+  <p>KKV Chapter 3 lays out five rules for constructing causal theories. If you're a Strategist, these are your commandments:</p>
+  <table>
+    <tr><th>#</th><th>Rule</th><th>What It Means</th></tr>
+    <tr><td>1</td><td><strong>Construct falsifiable theories</strong></td><td>State what evidence would <em>disprove</em> your argument. If nothing could, it's not a theory.</td></tr>
+    <tr><td>2</td><td><strong>Internal consistency</strong></td><td>Your assumptions can't contradict each other. If they do, any conclusion follows.</td></tr>
+    <tr><td>3</td><td><strong>Select dependent variables carefully</strong></td><td>Don't study only cases where the outcome happened. Include variation.</td></tr>
+    <tr><td>4</td><td><strong>Maximize concreteness</strong></td><td>Vague theories are untestable. Define your variables precisely.</td></tr>
+    <tr><td>5</td><td><strong>State theories as encompassingly as feasible</strong></td><td>Don't limit your theory to one case if it could apply to many. Broader scope = more tests.</td></tr>
+  </table>
+  <p style="margin-top:1rem;">Notice: these are all about <strong>protecting yourself from criticism</strong> — exactly Baglione's framing.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: GEORGE & BENNETT — THE STORYTELLER'S DESIGN -->
+<!-- ============================================================ -->
+<div class="slide" id="s9">
+  <span class="tag pink">Storyteller Track</span>
+  <h2>George &amp; Bennett: Structured, Focused Comparison</h2>
+  <p>George and Bennett offer the Storyteller's answer to research design. Their key method — <strong>structured, focused comparison</strong> — has two requirements:</p>
+  <blockquote>
+    <p>"The method is <strong>'structured'</strong> in that the researcher writes general questions that reflect the research objective and that these questions are asked of each case under study to guide and standardize data collection. The method is <strong>'focused'</strong> in that it deals only with certain aspects of the historical cases examined."</p>
+    <cite>— George &amp; Bennett, <em>Case Studies and Theory Development</em>, Ch. 3 (p. 67)</cite>
+  </blockquote>
+  <p>This matters because earlier case study research was criticized for being "noncumulative" — each study went its own way, reflecting the researcher's interests rather than a systematic design. Structured, focused comparison solved this.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: GEORGE & BENNETT — PHASE ONE -->
+<!-- ============================================================ -->
+<div class="slide" id="s10">
+  <span class="tag pink">Storyteller Track</span>
+  <h2>George &amp; Bennett: Five Design Tasks</h2>
+  <p>Their Chapter 4 outlines five tasks for designing case study research — the Storyteller's equivalent of KKV's four components:</p>
+  <table>
+    <tr><th>Task</th><th>What You Do</th><th>Why It Matters</th></tr>
+    <tr><td><strong>1. Specify the problem</strong></td><td>Define the class of events your case belongs to</td><td>Your case must be an instance of <em>something</em> — not just "interesting"</td></tr>
+    <tr><td><strong>2. Specify variables</strong></td><td>Identify DV, IV, and intervening variables</td><td>Even qualitative work requires clear concepts</td></tr>
+    <tr><td><strong>3. Select cases</strong></td><td>Choose cases relevant to the research objective</td><td>"Cases should not be selected simply because they are interesting, important, or easily researched"</td></tr>
+    <tr><td><strong>4. Describe variance</strong></td><td>How do your variables change across cases?</td><td>Without variance, there's nothing to explain</td></tr>
+    <tr><td><strong>5. Formulate expectations</strong></td><td>What do you expect to find, and why?</td><td>This is your theoretical argument</td></tr>
+  </table>
+  <blockquote>
+    <p>"The primary criterion for case selection should be <strong>relevance to the research objective</strong> of the study, whether it includes theory development, theory testing, or heuristic purposes."</p>
+    <cite>— George &amp; Bennett, Ch. 4 (p. 83)</cite>
+  </blockquote>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: GEORGE & BENNETT — SIX TYPES -->
+<!-- ============================================================ -->
+<div class="slide" id="s11">
+  <span class="tag pink">Storyteller Track</span>
+  <h2>Six Types of Theory-Building</h2>
+  <p>George &amp; Bennett identify six different purposes a case study can serve. Knowing which one you're doing is part of your research design:</p>
+  <table>
+    <tr><th>Type</th><th>Purpose</th></tr>
+    <tr><td><strong>Atheoretical / idiographic</strong></td><td>Good description, but doesn't build theory on its own</td></tr>
+    <tr><td><strong>Disciplined configurative</strong></td><td>Uses existing theory to explain a case — can impugn theories that should fit but don't</td></tr>
+    <tr><td><strong>Heuristic</strong></td><td>Inductively discovers new variables, hypotheses, or causal mechanisms</td></tr>
+    <tr><td><strong>Theory testing</strong></td><td>Assesses validity via most-likely, least-likely, or crucial cases</td></tr>
+    <tr><td><strong>Plausibility probe</strong></td><td>Preliminary test — is a deeper investigation warranted?</td></tr>
+    <tr><td><strong>Building block</strong></td><td>Studies a subtype to fill a space in a larger typological theory</td></tr>
+  </table>
+  <p style="margin-top:1rem;">Most of you doing process tracing are doing <strong>heuristic</strong> or <strong>disciplined configurative</strong> work. Name it.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: THE DISRUPTOR'S DESIGN -->
+<!-- ============================================================ -->
+<div class="slide" id="s12">
+  <span class="tag purple">Disruptor Track</span>
+  <h2>The Disruptor's Research Design</h2>
+  <p>KKV and George &amp; Bennett write primarily for Strategists and Storytellers. What about Disruptors? The critical tradition doesn't abandon design — it redefines it.</p>
+  <p style="margin-top:1rem;">Jennifer Milliken identifies three commitments that structure discourse analysis as a research design:</p>
+  <blockquote>
+    <p>Discourse studies in IR share three theoretical commitments: discourses as <strong>systems of signification</strong> that construct social realities; a focus on <strong>discursive productivity</strong> — what discourses make possible and what they shut down; and a commitment to studying <strong>how dominant meanings are produced and challenged</strong>.</p>
+    <cite>— Milliken, "The Study of Discourse in International Relations" (1999), p. 225–229</cite>
+  </blockquote>
+  <p>The Disruptor's design still needs structure: a defined corpus of texts, a systematic method of analysis, a clear articulation of what the discourse produces, and an account of what it excludes.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13: DISRUPTOR DESIGN COMPONENTS -->
+<!-- ============================================================ -->
+<div class="slide" id="s13">
+  <span class="tag purple">Disruptor Track</span>
+  <h2>Designing a Discourse Analysis</h2>
+  <p>A Disruptor research design must answer these questions:</p>
+  <table>
+    <tr><th>Component</th><th>Strategist Equivalent</th><th>What You Specify</th></tr>
+    <tr><td><strong>Discourse</strong></td><td>Independent variable</td><td>What system of meaning are you analyzing? (e.g., EU migration policy documents)</td></tr>
+    <tr><td><strong>Productivity</strong></td><td>Dependent variable</td><td>What does this discourse make possible or foreclose? (e.g., construction of migrants as threats)</td></tr>
+    <tr><td><strong>Corpus</strong></td><td>Case selection / data</td><td>Which texts, speeches, or documents? What time period? Why these and not others?</td></tr>
+    <tr><td><strong>Analytical method</strong></td><td>Method</td><td>How will you read the texts? (predicate analysis, genealogy, narrative analysis)</td></tr>
+    <tr><td><strong>Positionality</strong></td><td>—</td><td>Where do you stand in relation to this discourse? The Disruptor names their position explicitly.</td></tr>
+  </table>
+  <p style="margin-top:1rem;">The design is different, but the logic is the same: <strong>justify every choice, anticipate every criticism.</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14: SIDE BY SIDE -->
+<!-- ============================================================ -->
+<div class="slide" id="s14">
+  <h2>Three Designs, One Logic</h2>
+  <p>Despite their differences, all three tracks demand the same thing: a <strong>coherent plan</strong> where each element justifies the next.</p>
+  <div class="cols three">
+    <div class="col strat">
+      <h3>Strategist</h3>
+      <p><strong>Question:</strong> Why does X cause Y?</p>
+      <p><strong>Theory:</strong> Hypothesis with observable implications</p>
+      <p><strong>Method:</strong> Large-N, QCA, MSSD/MDSD</p>
+      <p><strong>Cases:</strong> Selected for variation in X and Y</p>
+      <p><strong>Key test:</strong> Can I falsify this?</p>
+      <p style="margin-top:.5rem;"><em>KKV: "Maximize observable implications"</em></p>
+    </div>
+    <div class="col story">
+      <h3>Storyteller</h3>
+      <p><strong>Question:</strong> How did this outcome come about?</p>
+      <p><strong>Theory:</strong> Causal mechanism traced through process</p>
+      <p><strong>Method:</strong> Process tracing, structured comparison</p>
+      <p><strong>Cases:</strong> Selected for theoretical relevance</p>
+      <p><strong>Key test:</strong> Can I trace the mechanism?</p>
+      <p style="margin-top:.5rem;"><em>G&amp;B: "Structured, focused, cumulative"</em></p>
+    </div>
+    <div class="col dis">
+      <h3>Disruptor</h3>
+      <p><strong>Question:</strong> How does power produce this reality?</p>
+      <p><strong>Theory:</strong> Discourse as constitutive of practice</p>
+      <p><strong>Method:</strong> Discourse analysis, genealogy</p>
+      <p><strong>Cases:</strong> Defined corpus with justification</p>
+      <p><strong>Key test:</strong> Can I show what's excluded?</p>
+      <p style="margin-top:.5rem;"><em>Milliken: "Discursive productivity"</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15: BAGLIONE — WRITING THE RESEARCH DESIGN -->
+<!-- ============================================================ -->
+<div class="slide" id="s15">
+  <h2>Baglione: Writing the Research Design</h2>
+  <p>Baglione Ch. 7 gives you the practical structure. Your written research design must contain:</p>
+  <table>
+    <tr><th>Section</th><th>Content</th><th>Function</th></tr>
+    <tr><td><strong>Introduction</strong></td><td>Your research question + why it matters</td><td>The courtroom opening statement</td></tr>
+    <tr><td><strong>Literature position</strong></td><td>Where you stand in the scholarly debate</td><td>Shows you know the field and have found a gap</td></tr>
+    <tr><td><strong>Theory / argument</strong></td><td>Your causal claim: X → M → Y</td><td>The engine — what you built in Week 6</td></tr>
+    <tr><td><strong>Hypothesis or expectations</strong></td><td>What you expect to find if your theory is right</td><td>Observable implications (Strategist) or expected process (Storyteller)</td></tr>
+    <tr><td><strong>Research design proper</strong></td><td>Method + cases + data sources + justification</td><td>The plan of attack — how you'll generate evidence</td></tr>
+    <tr><td><strong>Alternative explanations</strong></td><td>What else could explain Y? How will you rule it out?</td><td>The differential diagnosis — Baglione's medical analogy</td></tr>
+  </table>
+  <p style="margin-top:1rem;">If you skip alternative explanations, you're a doctor who prescribes medicine without checking whether the patient has a different disease. <strong>This is where most undergrad designs fail.</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16: THE ALTERNATIVE EXPLANATION PROBLEM -->
+<!-- ============================================================ -->
+<div class="slide" id="s16">
+  <h2>The Rival Explanation</h2>
+  <p>This is the single most important thing the Saboteurs should have tested — and the single most common omission in your designs.</p>
+  <blockquote>
+    <p>"Social science research at its best is a creative process of insight and discovery taking place within a well-established structure of scientific inquiry. The first-rate social scientist does not regard a research design as a blueprint for a mechanical process of data-gathering and evaluation."</p>
+    <cite>— KKV, <em>Designing Social Inquiry</em>, Ch. 1 (p. 12)</cite>
+  </blockquote>
+  <p>The creative part is <strong>imagining what could prove you wrong</strong>. A design without a rival explanation is not a design — it's an assertion.</p>
+  <div class="cols">
+    <div class="col">
+      <h3>Bad: No Rival</h3>
+      <p>"Economic crisis causes populism." <em>(What if it's cultural backlash? Immigration anxiety? Institutional failure?)</em></p>
+    </div>
+    <div class="col">
+      <h3>Good: Named Rival</h3>
+      <p>"I argue economic crisis drives populism via left-behind voters, but the cultural backlash thesis (Norris &amp; Inglehart 2019) offers a competing mechanism. My case selection is designed to distinguish between them."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17: SELECTION BIAS -->
+<!-- ============================================================ -->
+<div class="slide" id="s17">
+  <h2>Selection Bias: The Silent Killer</h2>
+  <p>KKV devote an entire chapter (Ch. 4) to what you choose to observe — and what happens when you choose wrong.</p>
+  <blockquote>
+    <p>"Selection bias occurs when observations are chosen in a way that is correlated with the dependent variable... This can produce dramatically misleading inferences."</p>
+    <cite>— KKV, Ch. 4</cite>
+  </blockquote>
+  <p><strong>The classic mistake:</strong> You want to study why revolutions succeed. So you study five successful revolutions. You find they all had economic crises beforehand. Conclusion: economic crisis causes revolution. <span class="warn">Wrong.</span></p>
+  <p>You never looked at countries that <em>had</em> economic crises but <em>didn't</em> have revolutions. That's selecting on the dependent variable.</p>
+  <p style="margin-top:1rem;"><strong>George &amp; Bennett's fix:</strong> select cases for <em>theoretical relevance</em>, not for interesting outcomes. Use most-similar, most-different, deviant, or crucial case logic — and <strong>justify it in writing</strong>.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18: YOUR DESIGN = YOUR ARGUMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="s18">
+  <h2>The Research Design Is the Argument</h2>
+  <p>Here's what students get wrong: they think the research design is a <em>bureaucratic requirement</em> — fill out the form, check the boxes, submit.</p>
+  <p style="margin-top:1rem;">It's not. The research design <strong>is</strong> the intellectual work. It's the argument for why your approach will produce knowledge that we can trust. Everything else — data collection, analysis, writing — follows from it.</p>
+  <blockquote>
+    <p>"If a research design proves inadequate, it will be difficult to achieve the research objectives of the study."</p>
+    <cite>— George &amp; Bennett, Ch. 4 (p. 73–74)</cite>
+  </blockquote>
+  <p>Baglione's lawyer analogy: you wouldn't walk into court and say "I feel like my client is innocent." You'd present evidence, anticipate the prosecution's counter-arguments, and explain why your evidence is more convincing. <strong>That's a research design.</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19: CORE QUEST 3 REQUIREMENTS -->
+<!-- ============================================================ -->
+<div class="slide" id="s19">
+  <h2>Core Quest 3: The Battle Plan</h2>
+  <p><strong>15 points · Due May 18</strong></p>
+  <p>Your written research design must include:</p>
+  <table>
+    <tr><th>Section</th><th>Approx. Length</th><th>Key Question It Answers</th></tr>
+    <tr><td>Research Question</td><td>1 paragraph</td><td>What puzzle are you solving?</td></tr>
+    <tr><td>Literature Position</td><td>1–2 paragraphs</td><td>Where do you stand in the debate?</td></tr>
+    <tr><td>Theory &amp; Causal Argument</td><td>1–2 paragraphs</td><td>What is your X → M → Y?</td></tr>
+    <tr><td>Hypothesis / Expected Findings</td><td>1 paragraph</td><td>What will you find if you're right?</td></tr>
+    <tr><td>Method &amp; Justification</td><td>1–2 paragraphs</td><td>How will you test this, and why this method?</td></tr>
+    <tr><td>Case Selection &amp; N-Size</td><td>1 paragraph</td><td>Which cases, why these, and not others?</td></tr>
+    <tr><td>Data &amp; Sources</td><td>1 paragraph</td><td>What evidence, and can you access it?</td></tr>
+    <tr><td>Alternative Explanations</td><td>1 paragraph</td><td>What's the rival, and how will you address it?</td></tr>
+  </table>
+  <p style="margin-top:1rem;">Total: approximately <strong>1,500–2,500 words</strong>. This is not a research paper — it's the <em>plan</em> for the paper you'll write as Core Quest 4.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20: COMMON FATAL FLAWS -->
+<!-- ============================================================ -->
+<div class="slide" id="s20">
+  <h2>Fatal Flaws in Research Designs</h2>
+  <p>From Baglione, KKV, and George &amp; Bennett — the things that sink a design:</p>
+  <div class="cols">
+    <div class="col">
+      <h3 style="color:var(--red)">Design Killers</h3>
+      <ul>
+        <li><strong>No rival explanation</strong> — you haven't considered alternatives</li>
+        <li><strong>Selecting on the DV</strong> — only studying cases where Y happened</li>
+        <li><strong>Tautological mechanism</strong> — X causes Y because of X</li>
+        <li><strong>Unfalsifiable theory</strong> — nothing could prove you wrong</li>
+        <li><strong>Method-paradigm mismatch</strong> — discourse analysis for a Strategist question</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3 style="color:var(--amber)">Fixable Weaknesses</h3>
+      <ul>
+        <li><strong>Question too broad</strong> — narrow the scope, add conditions</li>
+        <li><strong>Vague mechanism</strong> — specify the steps, name the process</li>
+        <li><strong>Convenience cases</strong> — articulate the selection logic</li>
+        <li><strong>Missing sources</strong> — check access, find alternatives</li>
+        <li><strong>Weak lit position</strong> — identify the gap more precisely</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:1rem;">The <span class="warn">red column</span> requires a redesign. The <span class="mid">amber column</span> requires revision. Your Saboteur Report tells you which column you're in.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 21: NEXT WEEK — RESEARCH PANELS -->
+<!-- ============================================================ -->
+<div class="slide" id="s21">
+  <h2>Next Week: The Research Panels</h2>
+  <p><strong>Monday May 11</strong> (2 hours) — we're doing something different.</p>
+  <p style="margin-top:1rem;">This week, Saboteurs attacked your design. Next week, you'll <strong>read other people's designs</strong> — not to attack, but to understand. I'll group you into panels of 3 based on thematic or methodological connections between your projects. You'll read each other's work and discuss:</p>
+  <ul>
+    <li>What connects these designs? What thread runs through them?</li>
+    <li>What does each design contribute that the others can't?</li>
+    <li>What would make each paper stronger — not in your eyes, but in the field's?</li>
+  </ul>
+  <p style="margin-top:1rem;">This is how academic conferences work. Panels aren't random — they have themes. Your job is to think <strong>across</strong> designs, not just about your own.</p>
+  <p style="margin-top:1rem;"><strong>To prepare:</strong> Have a rough draft of your research design ready by <span class="warn">Friday May 8</span>. I'll assign panels over the weekend.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 22: READINGS -->
+<!-- ============================================================ -->
+<div class="slide" id="s22">
+  <h2>Readings for This Week &amp; Next</h2>
+  <table>
+    <tr><th>Source</th><th>What to Focus On</th><th>Track</th></tr>
+    <tr><td>Baglione, Ch. 7</td><td>The courtroom &amp; medical analogies; the structure of a written research design; model specification</td><td>All</td></tr>
+    <tr><td>KKV, Ch. 1</td><td>Four components of research design; observable implications; two styles, one logic</td><td>Strategist</td></tr>
+    <tr><td>KKV, Ch. 3 (§3.5)</td><td>Five rules for constructing causal theories — especially falsifiability and concreteness</td><td>Strategist</td></tr>
+    <tr><td>KKV, Ch. 4 (§4.3)</td><td>Selection bias — selecting on the DV, other types</td><td>All</td></tr>
+    <tr><td>George &amp; Bennett, Ch. 3</td><td>Structured, focused comparison — why "structure" and "focus" matter</td><td>Storyteller</td></tr>
+    <tr><td>George &amp; Bennett, Ch. 4</td><td>Five tasks of research design; six types of theory-building case studies</td><td>Storyteller</td></tr>
+    <tr><td>Milliken (1999)</td><td>Three commitments of discourse research; what counts as systematic analysis</td><td>Disruptor</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 23: CLOSING -->
+<!-- ============================================================ -->
+<div class="slide" id="s23">
+  <h2>The Bottom Line</h2>
+  <p style="font-size:1.5rem;color:var(--text);line-height:1.6;margin-top:1rem;">A research design is not a form to fill out.<br>
+  It is not a topic statement.<br>
+  It is not "what I'm interested in."</p>
+  <p style="font-size:1.5rem;color:var(--accent);margin-top:1.5rem;"><strong>It is the argument for why your plan will produce knowledge we can trust.</strong></p>
+  <p style="margin-top:2rem;">Baglione's lawyer builds a case. KKV's scientist maximizes observable implications. George &amp; Bennett's comparativist structures and focuses. Milliken's critic names what the discourse produces and excludes.</p>
+  <p style="margin-top:1rem;">Different languages. Same demand: <strong>justify every choice. Anticipate every criticism. Name every rival.</strong></p>
+  <p style="margin-top:2rem;color:var(--muted);">Core Quest 3 due <strong>May 18</strong> · Rough draft needed by <strong>May 8</strong> for panel assignment · Questions?</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- NAVIGATION -->
+<!-- ============================================================ -->
+<div class="counter"><span id="curr">1</span> / <span id="total"></span></div>
+<div class="nav">
+  <button onclick="go(-1)">← Prev</button>
+  <button onclick="go(1)">Next →</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+let idx=0;
+document.getElementById('total').textContent=slides.length;
+function go(d){
+  slides[idx].classList.remove('active');
+  idx=Math.max(0,Math.min(slides.length-1,idx+d));
+  slides[idx].classList.add('active');
+  document.getElementById('curr').textContent=idx+1;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+});
+</script>
+
+</body>
+</html>
