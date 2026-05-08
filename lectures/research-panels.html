@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PSIR220 · Week 12 — The Research Panels</title>
+<style>
+  :root{--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--accent2:#f472b6;
+        --accent3:#a78bfa;--green:#4ade80;--amber:#fbbf24;--red:#f87171;
+        --text:#e2e8f0;--muted:#94a3b8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+  .slide{display:none;flex-direction:column;justify-content:center;
+         min-height:100vh;padding:4rem 6rem}
+  .slide.active{display:flex}
+  .slide h1{font-size:3rem;line-height:1.15;margin-bottom:1rem}
+  .slide h2{font-size:2rem;color:var(--accent);margin-bottom:.75rem}
+  .slide h3{font-size:1.4rem;color:var(--accent2);margin-bottom:.5rem}
+  .slide p,.slide li{font-size:1.25rem;line-height:1.7;color:var(--muted)}
+  .slide p+p{margin-top:1rem}
+  .slide strong{color:var(--text)}
+  .slide em{color:var(--accent3);font-style:normal}
+  ul{list-style:none;padding-left:0}
+  li::before{content:'→ ';color:var(--accent)}
+  li{margin-bottom:.5rem}
+  .highlight{color:var(--accent)}
+  .warn{color:var(--red)}
+  .ok{color:var(--green)}
+  .mid{color:var(--amber)}
+  blockquote{border-left:4px solid var(--accent);padding:.75rem 1.5rem;
+             margin:1.5rem 0;background:rgba(56,189,248,.07);border-radius:0 8px 8px 0}
+  blockquote p{color:var(--text)!important;font-size:1.15rem}
+  blockquote cite{display:block;margin-top:.5rem;color:var(--muted);font-size:1rem}
+  .chain{display:flex;align-items:center;gap:1rem;margin:2rem 0;flex-wrap:wrap}
+  .chain .box{background:var(--card);border:1px solid var(--accent);border-radius:8px;
+              padding:1rem 1.5rem;text-align:center;min-width:140px}
+  .chain .arrow{font-size:2rem;color:var(--accent)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:1.5rem 0}
+  .cols.three{grid-template-columns:1fr 1fr 1fr}
+  .col{background:var(--card);border-radius:10px;padding:1.5rem;border:1px solid transparent}
+  .col.strat{border-color:var(--accent)}
+  .col.story{border-color:var(--accent2)}
+  .col.dis{border-color:var(--accent3)}
+  table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+  th,td{text-align:left;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,.1)}
+  th{color:var(--accent);font-weight:600}
+  .tag{display:inline-block;padding:.2rem .7rem;border-radius:20px;font-size:.9rem;margin-right:.5rem}
+  .tag.blue{background:rgba(56,189,248,.15);color:var(--accent)}
+  .tag.pink{background:rgba(244,114,182,.15);color:var(--accent2)}
+  .tag.purple{background:rgba(167,139,250,.15);color:var(--accent3)}
+  .nav{position:fixed;bottom:1.5rem;right:2rem;display:flex;gap:.5rem;z-index:10}
+  .nav button{background:var(--card);color:var(--text);border:1px solid var(--accent);
+              border-radius:6px;padding:.5rem 1rem;cursor:pointer;font-size:1rem}
+  .nav button:hover{background:var(--accent);color:var(--bg)}
+  .counter{position:fixed;bottom:1.7rem;left:2rem;color:var(--muted);font-size:.9rem}
+  .sub{font-size:1rem;color:var(--muted);margin-bottom:2rem}
+  .timeline{display:flex;gap:0;margin:2rem 0;flex-wrap:wrap}
+  .timeline .step{flex:1;min-width:120px;padding:1rem;background:var(--card);
+                  border-right:2px solid var(--accent);position:relative}
+  .timeline .step:last-child{border-right:none}
+  .timeline .step .time{font-size:.85rem;color:var(--accent);font-weight:700}
+  .timeline .step .label{font-size:1.05rem;color:var(--text);margin-top:.3rem}
+  .timeline .step .detail{font-size:.9rem;color:var(--muted);margin-top:.3rem}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" id="s1">
+  <p class="sub">PSIR220 · Week 12 · Monday</p>
+  <h1>The Research Panels</h1>
+  <p><strong>From cottage industries to scholarly community.</strong></p>
+  <p>Today you stop thinking only about your own design — and start thinking about how research projects speak to each other.</p>
+</div>
+
+<!-- SLIDE 2: THE SHIFT -->
+<div class="slide" id="s2">
+  <h2>A Different Posture</h2>
+  <div class="cols">
+    <div class="col" style="border-color:var(--red)">
+      <h3 style="color:var(--red)">Last Week: Saboteurs</h3>
+      <p><strong>Goal:</strong> Find weaknesses. Break the design.</p>
+      <p><strong>Posture:</strong> Adversarial.</p>
+      <p><strong>Question:</strong> "Where does this fail?"</p>
+      <p><strong>Reward:</strong> Points for identifying flaws.</p>
+    </div>
+    <div class="col" style="border-color:var(--green)">
+      <h3 style="color:var(--green)">This Week: Panels</h3>
+      <p><strong>Goal:</strong> Understand designs comparatively. Strengthen each other's work.</p>
+      <p><strong>Posture:</strong> Constructive.</p>
+      <p><strong>Question:</strong> "How does this connect, and how can it land better?"</p>
+      <p><strong>Reward:</strong> Points for helping — including the <em>Methodological Savior</em> bounty (+2).</p>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem;">The Saboteurs asked: <em>is this design internally sound?</em> Today's question is different: <em>how does this design fit into a larger scholarly conversation — and how can we make it stronger together?</em></p>
+</div>
+
+<!-- SLIDE 3: WHY PANELS -->
+<div class="slide" id="s3">
+  <h2>Why Panels?</h2>
+  <p>In academic conferences, papers aren't presented in isolation. They're grouped into <strong>panels</strong> — clusters of 3–4 papers that share a theme, a method, or a puzzle.</p>
+  <p>The panel format forces you to think across projects:</p>
+  <ul>
+    <li>What connects these papers? What's the common thread?</li>
+    <li>What does each paper contribute that the others can't?</li>
+    <li>If these three papers were published in the same journal issue, what would the introduction say?</li>
+  </ul>
+  <p style="margin-top:1rem;">This is the skill that separates someone who can <em>do</em> research from someone who can <em>think about</em> research. You need both.</p>
+  <blockquote>
+    <p>Academic research can sometimes feel like a collection of cottage industries — everyone working in isolation on their own narrow problem. Panels are how we connect those industries into a field.</p>
+  </blockquote>
+</div>
+
+<!-- SLIDE 4: YOUR PANELS -->
+<div class="slide" id="s4">
+  <h2>Your Panel Assignments</h2>
+  <p>I've grouped you into panels of 3 based on your Design Briefs. Some panels share a <strong>theme</strong> (similar topics, same region, related puzzles). Others share a <strong>method</strong> or <strong>paradigm track</strong>. Some are deliberately <strong>mixed</strong> — different tracks studying similar questions.</p>
+  <p style="margin-top:1rem;"><em>[Instructor: display the panel list here or on Teams.]</em></p>
+  <p style="margin-top:1.5rem;">Each panel has a <strong>thread</strong> — a reason I put these three designs together. Part of your job today is to figure out what that thread is. I'll give each panel a prompt question to start the conversation, but the best panels will go beyond the prompt.</p>
+</div>
+
+<!-- SLIDE 5: THE FORMAT -->
+<div class="slide" id="s5">
+  <h2>How It Works</h2>
+  <div class="timeline">
+    <div class="step">
+      <div class="time">0–10 min</div>
+      <div class="label">Briefing</div>
+      <div class="detail">This lecture. Find your panel. Settle in.</div>
+    </div>
+    <div class="step">
+      <div class="time">10–25 min</div>
+      <div class="label">Round 1: The Thread</div>
+      <div class="detail">Discuss: what connects your three designs? What's the common puzzle, method, or tension?</div>
+    </div>
+    <div class="step">
+      <div class="time">25–55 min</div>
+      <div class="label">Round 2: Presentations</div>
+      <div class="detail">Each member: 5 min to present your design, then 5 min of constructive feedback from the panel. ×3 = 30 min.</div>
+    </div>
+    <div class="step">
+      <div class="time">55–75 min</div>
+      <div class="label">Round 3: Cross-Pollination</div>
+      <div class="detail">What can you offer each other? A source, a case, a reframing? This is where Methodological Saviors are born.</div>
+    </div>
+    <div class="step">
+      <div class="time">75–90 min</div>
+      <div class="label">Round 4: Memo Time</div>
+      <div class="detail">Begin writing your Constructive Review Memo (due tonight).</div>
+    </div>
+    <div class="step">
+      <div class="time">90–100 min</div>
+      <div class="label">Debrief</div>
+      <div class="detail">Each panel shares one insight with the class. Savior nominations.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: ROUND 1 — THE THREAD -->
+<div class="slide" id="s6">
+  <h2>Round 1: Finding the Thread</h2>
+  <p><strong>15 minutes.</strong> Before you present individual designs, step back and look at the panel as a whole.</p>
+  <p>You've all read each other's Design Briefs. Now discuss:</p>
+  <ul>
+    <li><strong>What connects these three projects?</strong> Is it a shared region, a similar puzzle, a common method, the same paradigm — or something less obvious?</li>
+    <li><strong>Where do they diverge?</strong> What does each design do that the others can't or don't?</li>
+    <li><strong>If you were writing the introduction to a journal special issue containing all three papers, what would it say?</strong></li>
+  </ul>
+  <p style="margin-top:1rem;">This isn't a warm-up exercise. The thread you identify here should inform the feedback you give in Rounds 2 and 3. When you know how the designs relate, you can see what each one needs to do to position itself in the conversation.</p>
+</div>
+
+<!-- SLIDE 7: ROUND 2 — PRESENTATIONS -->
+<div class="slide" id="s7">
+  <h2>Round 2: Presentations &amp; Feedback</h2>
+  <p><strong>30 minutes total — 10 minutes per person.</strong></p>
+  <p><strong>The presenter (5 min):</strong> Walk your panel through your design. Don't read the brief — <em>talk</em> through it. Cover:</p>
+  <ul>
+    <li>Your research question and why it matters</li>
+    <li>Your causal argument (X → M → Y) or analytical framework</li>
+    <li>Your method, cases, and key sources</li>
+    <li>Your biggest unresolved issue — be honest about what's not working yet</li>
+  </ul>
+  <p style="margin-top:1rem;"><strong>The panel (5 min):</strong> Respond constructively. Not "this is wrong" but "this would be stronger if..." Focus on:</p>
+  <ul>
+    <li>Is the question clearly positioned in the literature?</li>
+    <li>Does the method match the question and the track?</li>
+    <li>What would make this more convincing to a skeptical reader?</li>
+    <li>Do you know a source, a case, or a framing that could help?</li>
+  </ul>
+</div>
+
+<!-- SLIDE 8: ROUND 3 — CROSS-POLLINATION -->
+<div class="slide" id="s8">
+  <h2>Round 3: Cross-Pollination</h2>
+  <p><strong>20 minutes.</strong> This is the most important round.</p>
+  <p>Now that you've heard all three designs and discussed the thread, ask yourselves:</p>
+  <ul>
+    <li><strong>Can I offer a source?</strong> "I read something for my annotated bibliography that's directly relevant to your argument — here's the citation."</li>
+    <li><strong>Can I offer a case?</strong> "You're studying democratic backsliding in Hungary — have you considered comparing it to Poland? I've been reading about both."</li>
+    <li><strong>Can I offer a reframing?</strong> "Your question might be sharper if you framed it as a 'how' question instead of a 'why' question — here's why..."</li>
+    <li><strong>Can I offer a rival?</strong> "From my track, I'd see this puzzle differently — here's the alternative mechanism, and dealing with it would strengthen your design."</li>
+  </ul>
+  <p style="margin-top:1rem;">This is where the <span class="tag purple">Methodological Savior (+2 bonus)</span> happens. If someone's feedback demonstrably improves your Core Quest 3, you can nominate them.</p>
+</div>
+
+<!-- SLIDE 9: THE CONSTRUCTIVE REVIEW MEMO -->
+<div class="slide" id="s9">
+  <h2>The Deliverable: Constructive Review Memo</h2>
+  <p><strong>4 Side Quest points · Due tonight (Monday May 11) 11:59 PM · Submit on Teams</strong></p>
+  <p>After the workshop, each student writes <strong>one memo</strong> covering both panel partners. Structure:</p>
+  <table>
+    <tr><th>Section</th><th>Content</th><th>Length</th></tr>
+    <tr><td><strong>1. The Panel Thread</strong></td><td>What connected the three designs in your panel? What was the common theme, method, or tension?</td><td>1 paragraph</td></tr>
+    <tr><td><strong>2. Review of Partner A</strong></td><td>What does this design contribute? What's its strongest element? What one change would improve it most?</td><td>1–2 paragraphs</td></tr>
+    <tr><td><strong>3. Review of Partner B</strong></td><td>Same as above.</td><td>1–2 paragraphs</td></tr>
+    <tr><td><strong>4. What I Learned</strong></td><td>How did reading these designs change your understanding of your own project? What will you revise before submitting Core Quest 3?</td><td>1 paragraph</td></tr>
+    <tr><td><strong>5. Savior Nomination</strong></td><td>(Optional) Name a panel member whose specific feedback you plan to incorporate. Describe what they suggested.</td><td>1–2 sentences</td></tr>
+  </table>
+  <p style="margin-top:1rem;">Total: roughly <strong>400–600 words</strong>. This is not an essay — it's a structured reflection.</p>
+</div>
+
+<!-- SLIDE 10: WHAT GOOD FEEDBACK LOOKS LIKE -->
+<div class="slide" id="s10">
+  <h2>Constructive vs. Critical</h2>
+  <p>The Saboteurs Workshop rewarded you for finding flaws. Today rewards you for <strong>making someone's work better</strong>. Here's the difference:</p>
+  <div class="cols">
+    <div class="col" style="border-color:var(--red)">
+      <h3 style="color:var(--red)">Critical (Saboteur mode)</h3>
+      <p>"Your causal mechanism is circular."</p>
+      <p>"You selected on the dependent variable."</p>
+      <p>"This method doesn't fit your track."</p>
+      <p><em>Identifies what's wrong.</em></p>
+    </div>
+    <div class="col" style="border-color:var(--green)">
+      <h3 style="color:var(--green)">Constructive (Panel mode)</h3>
+      <p>"Your mechanism would be stronger if you specified the step between X and M — maybe institutional capacity is the missing link."</p>
+      <p>"Adding a negative case (where X was present but Y didn't happen) would make your case selection more convincing."</p>
+      <p>"Have you looked at Finnemore (1996)? Her norm diffusion argument might help you frame the Storyteller version of your theory."</p>
+      <p><em>Shows how to fix it — and offers specific resources.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: PANEL GROUPING CRITERIA -->
+<div class="slide" id="s11">
+  <h2>How I Grouped You</h2>
+  <p>Some of you will look at your panel and think: "these projects have nothing in common." Look harder. Here are the types of threads I used:</p>
+  <table>
+    <tr><th>Thread Type</th><th>Example</th><th>What to Discuss</th></tr>
+    <tr><td><strong>Thematic</strong></td><td>Three papers on conflict — Cyprus, Kurdish question, Syria</td><td>How does each design approach violence differently? What can they learn from each other's cases?</td></tr>
+    <tr><td><strong>Methodological</strong></td><td>Three process-tracing studies on different topics</td><td>How does each define "the mechanism"? Are the standards of evidence the same?</td></tr>
+    <tr><td><strong>Cross-paradigm</strong></td><td>One Strategist, one Storyteller, one Disruptor — same region or theme</td><td>What does each paradigm reveal that the others miss? Where do they contradict each other?</td></tr>
+    <tr><td><strong>Puzzle match</strong></td><td>Two similar questions, different methods</td><td>Why did you choose different approaches to the same puzzle? What are the trade-offs?</td></tr>
+  </table>
+  <p style="margin-top:1rem;">The point is not that your projects are the same — it's that they <strong>speak to each other</strong> in ways that aren't obvious until you read them side by side.</p>
+</div>
+
+<!-- SLIDE 12: LOOKING AHEAD -->
+<div class="slide" id="s12">
+  <h2>The Road to Core Quest 3</h2>
+  <p>Here's where we are and where we're going:</p>
+  <table>
+    <tr><th>When</th><th>What</th><th>Points</th></tr>
+    <tr><td><span class="ok">✓ Done</span></td><td>Saboteurs Workshop — your design was stress-tested</td><td>8 Side Quest pts</td></tr>
+    <tr><td><span class="highlight">Today</span></td><td>Research Panels — your design gets constructive feedback from peers + you learn to read across designs</td><td>6 Side Quest pts</td></tr>
+    <tr><td><span class="mid">May 13–16</span></td><td>Spring Festival — no class. Use this time to revise.</td><td>—</td></tr>
+    <tr><td><span class="warn">May 18</span></td><td><strong>Core Quest 3 — Research Design / Battle Plan due</strong></td><td><strong>15 pts</strong></td></tr>
+    <tr><td>May 25–29</td><td>Consultation week (Kurban Bairam)</td><td>—</td></tr>
+    <tr><td>June 1–5</td><td>Research Symposium + Museum</td><td>Bounty (+1)</td></tr>
+    <tr><td>June 15–27</td><td>Final Exam + Core Quest 4 (Final Paper)</td><td>10 + 15 pts</td></tr>
+  </table>
+  <p style="margin-top:1rem;">After today, you have everything you need: Saboteur damage reports, panel feedback, your own Design Brief, and the Baglione/KKV/George &amp; Bennett readings. <strong>Write the design.</strong></p>
+</div>
+
+<!-- SLIDE 13: GO -->
+<div class="slide" id="s13">
+  <h2>Find Your Panel</h2>
+  <p style="font-size:1.5rem;color:var(--text);margin-top:1rem;">Check the panel list on Teams.<br>
+  Sit with your group.<br>
+  Begin Round 1: <strong>What's the thread?</strong></p>
+  <p style="margin-top:2rem;font-size:1.1rem;color:var(--muted);">Remember: the Saboteurs tore things down. Today, you build each other up.</p>
+  <p style="margin-top:1rem;"><span class="tag purple">Methodological Savior (+2 bonus)</span> is on the table. Help someone — and get helped in return.</p>
+</div>
+
+<!-- NAVIGATION -->
+<div class="counter"><span id="curr">1</span> / <span id="total"></span></div>
+<div class="nav">
+  <button onclick="go(-1)">← Prev</button>
+  <button onclick="go(1)">Next →</button>
+</div>
+<script>
+const slides=document.querySelectorAll('.slide');
+let idx=0;
+document.getElementById('total').textContent=slides.length;
+function go(d){
+  slides[idx].classList.remove('active');
+  idx=Math.max(0,Math.min(slides.length-1,idx+d));
+  slides[idx].classList.add('active');
+  document.getElementById('curr').textContent=idx+1;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+});
+</script>
+</body>
+</html>
