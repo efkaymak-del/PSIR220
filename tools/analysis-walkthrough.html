@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Analysis Walkthrough</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
+header{background:#fff;border-bottom:1px solid #e5e7eb;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:1.45rem;color:#0f3460}
+header p{font-size:.85rem;color:#888}
+.badge{display:inline-block;padding:3px 12px;border-radius:14px;font-size:.8rem;font-weight:600}
+.badge-str{background:#dbeafe;color:#1e40af}
+.badge-sto{background:#fef3c7;color:#92400e}
+.badge-dis{background:#fce7f3;color:#9d174d}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;overflow-x:auto}
+.tab{padding:12px 20px;font-size:.95rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:#0f3460}
+.tab.active{color:#0f3460;border-bottom-color:#0f3460}
+main{max-width:900px;margin:0 auto;padding:24px 20px 80px}
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border-radius:12px;padding:24px 28px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:5px solid #0f3460}
+.card.str{border-left-color:#2563eb}
+.card.sto{border-left-color:#d97706}
+.card.dis{border-left-color:#db2777}
+.card.neutral{border-left-color:#6366f1}
+.card.green{border-left-color:#16a34a}
+.card.red{border-left-color:#dc2626}
+.card h3{font-size:1.15rem;margin-bottom:8px;color:#0f3460}
+.card p,.card li{font-size:.95rem;line-height:1.7;margin-bottom:6px}
+.step-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.step-num.str-bg{background:#2563eb}
+.step-num.sto-bg{background:#d97706}
+.step-num.dis-bg{background:#db2777}
+label{display:block;font-size:.9rem;font-weight:600;color:#0f3460;margin:12px 0 4px}
+textarea,input[type=text],select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:8px;font-size:.95rem;font-family:inherit;line-height:1.6;transition:.2s;background:#fafafa}
+textarea:focus,input[type=text]:focus,select:focus{border-color:#0f3460;outline:none;background:#fff}
+textarea{min-height:100px;resize:vertical}
+.helper{font-size:.82rem;color:#888;margin-top:2px;font-style:italic}
+.output-box{background:#f0f4ff;border:2px solid #c7d2fe;border-radius:10px;padding:20px;margin:20px 0;font-size:.95rem;line-height:1.7;white-space:pre-wrap}
+.btn{display:inline-block;padding:12px 28px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:.2s;margin:6px 4px 6px 0}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#1a4a8a}
+.btn-outline{background:#fff;color:#0f3460;border:2px solid #0f3460}
+.btn-outline:hover{background:#f0f4ff}
+.btn-copy{background:#16a34a;color:#fff}
+.btn-copy:hover{background:#15803d}
+.verdict-box{background:#fff;border-radius:10px;padding:20px;margin:16px 0;border:2px solid #e5e7eb}
+.verdict-box h4{color:#0f3460;margin-bottom:8px}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:8px 0;border-bottom:1px solid #f0f0f0;display:flex;align-items:flex-start;gap:10px;font-size:.92rem}
+.checklist li:last-child{border:none}
+.check-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.track-select{display:flex;gap:12px;margin:20px 0;flex-wrap:wrap}
+.track-btn{flex:1;min-width:200px;padding:20px;border-radius:12px;cursor:pointer;border:3px solid #e5e7eb;background:#fff;text-align:center;transition:.2s}
+.track-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.track-btn.selected{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.track-btn.sel-str{border-color:#2563eb;background:#eff6ff}
+.track-btn.sel-sto{border-color:#d97706;background:#fffbeb}
+.track-btn.sel-dis{border-color:#db2777;background:#fdf2f8}
+.track-btn h4{font-size:1rem;margin-bottom:4px}
+.track-btn p{font-size:.82rem;color:#666}
+.progress{display:flex;gap:4px;margin:16px 0}
+.progress-step{flex:1;height:6px;border-radius:3px;background:#e5e7eb;transition:.3s}
+.progress-step.done{background:#16a34a}
+.progress-step.current{background:#6366f1}
+.nav-btns{display:flex;justify-content:space-between;margin:24px 0}
+.warning{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:14px;font-size:.9rem;color:#92400e;margin:12px 0}
+.tip{background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:14px;font-size:.9rem;color:#065f46;margin:12px 0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🔬 Analysis Walkthrough</h1>
+    <p>Build your analysis section step by step — track by track.</p>
+  </div>
+  <span class="badge badge-str">CQ4 Prep Tool</span>
+</header>
+
+<main>
+
+<!-- ===== TRACK SELECTION ===== -->
+<div id="trackSelect">
+  <div class="card neutral">
+    <h3>Select Your Paradigm Track</h3>
+    <p>This tool walks you through the analysis section of your final paper (Core Quest 4). Each track has different steps, different evidence standards, and different language. Pick yours to begin.</p>
+  </div>
+  <div class="track-select">
+    <div class="track-btn" onclick="selectTrack('str')" id="btnStr">
+      <h4>⚔️ Strategist</h4>
+      <p>Positivist · Test hypotheses · Observable implications · KKV</p>
+    </div>
+    <div class="track-btn" onclick="selectTrack('sto')" id="btnSto">
+      <h4>📖 Storyteller</h4>
+      <p>Interpretivist · Trace processes · Reconstruct mechanisms · George & Bennett</p>
+    </div>
+    <div class="track-btn" onclick="selectTrack('dis')" id="btnDis">
+      <h4>🔥 Disruptor</h4>
+      <p>Critical · Expose discourse · Map power · Milliken</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STRATEGIST WALKTHROUGH ===== -->
+<div id="strPanel" class="hidden">
+  <div class="progress" id="strProgress"></div>
+
+  <!-- Step 0: Context -->
+  <div class="str-step" id="strStep0">
+    <div class="card str">
+      <div class="step-header">
+        <div class="step-num str-bg">0</div>
+        <h3>Set the Stage</h3>
+      </div>
+      <p>Before diving into analysis, remind the reader of your argument. This is a 2–3 sentence bridge between your Research Design section and your Analysis section.</p>
+      <label>Your hypothesis (from CQ3):</label>
+      <textarea id="strHyp" placeholder="e.g., Severe economic crisis increases populist party support through erosion of institutional trust."></textarea>
+      <label>Your cases:</label>
+      <input type="text" id="strCases" placeholder="e.g., Italy (Five Star Movement) vs. Germany (AfD), 2008–2018">
+      <label>Your method:</label>
+      <input type="text" id="strMethod" placeholder="e.g., MSSD with Eurobarometer and electoral data">
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+      <button class="btn btn-primary" onclick="strNext(1)">Next: Evidence →</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Evidence -->
+  <div class="str-step hidden" id="strStep1">
+    <div class="card str">
+      <div class="step-header">
+        <div class="step-num str-bg">1</div>
+        <h3>Present Your Evidence</h3>
+      </div>
+      <p>What data did you collect? Be specific: numbers, dates, sources. The reader must be able to verify what you claim.</p>
+      <div class="tip">💡 <strong>Strong practice:</strong> "Eurobarometer trust-in-parliament data shows Italy dropped from 29% to 11% (2008–2013)." <br><strong>Weak practice:</strong> "Trust declined significantly in Italy."</div>
+      <label>Key evidence — Case 1:</label>
+      <textarea id="strEv1" placeholder="Present the main data points for your first case. Include numbers, dates, and sources."></textarea>
+      <label>Key evidence — Case 2 (if applicable):</label>
+      <textarea id="strEv2" placeholder="Same for your second case. If single-case, leave blank."></textarea>
+      <label>Key evidence — Additional cases or data:</label>
+      <textarea id="strEv3" placeholder="Any additional data points, controls, or contextual evidence."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="strNext(0)">← Back</button>
+      <button class="btn btn-primary" onclick="strNext(2)">Next: Test Implications →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Observable Implications -->
+  <div class="str-step hidden" id="strStep2">
+    <div class="card str">
+      <div class="step-header">
+        <div class="step-num str-bg">2</div>
+        <h3>Test Your Observable Implications</h3>
+      </div>
+      <p>KKV says: a good theory generates predictions that can be checked. List each observable implication and state whether your evidence supports it.</p>
+      <div class="tip">💡 List at least 2 observable implications. For each, state what you predicted and what you found. Use ✅ (supported), ⚠️ (partially), or ❌ (not supported).</div>
+      <label>Observable Implication 1:</label>
+      <textarea id="strOI1" placeholder="e.g., OI-1: The country with deeper crisis should show higher populist vote. ✅ Italy 32.7% vs Germany 12.6%."></textarea>
+      <label>Observable Implication 2:</label>
+      <textarea id="strOI2" placeholder="e.g., OI-2: Trust should erode more where the crisis was deeper. ✅ Italy: -18 points vs Germany: +4 points."></textarea>
+      <label>Observable Implication 3 (optional):</label>
+      <textarea id="strOI3" placeholder="e.g., OI-3: Timing — populist rise should follow crisis, not precede it. ✅ M5S founded 2009, peaked 2018."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="strNext(1)">← Back</button>
+      <button class="btn btn-primary" onclick="strNext(3)">Next: Rival Explanation →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Rival -->
+  <div class="str-step hidden" id="strStep3">
+    <div class="card str">
+      <div class="step-header">
+        <div class="step-num str-bg">3</div>
+        <h3>Address the Rival Explanation</h3>
+      </div>
+      <p>Test the alternative explanation with the <strong>same evidence</strong>. Does it fit better, worse, or equally well? This is the "differential diagnosis" — the step most undergrads skip.</p>
+      <label>What is the rival explanation?</label>
+      <textarea id="strRival" placeholder="e.g., Cultural backlash thesis (Norris & Inglehart 2019): identity threat, not economics, drives populism."></textarea>
+      <label>How does your evidence perform against the rival?</label>
+      <textarea id="strRivalTest" placeholder="e.g., If cultural backlash were primary, Germany (higher immigration post-2015) should show greater populist growth — but AfD peaked at 12.6% while M5S hit 32.7%."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="strNext(2)">← Back</button>
+      <button class="btn btn-primary" onclick="strNext(4)">Next: Verdict →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Verdict -->
+  <div class="str-step hidden" id="strStep4">
+    <div class="card str">
+      <div class="step-header">
+        <div class="step-num str-bg">4</div>
+        <h3>State Your Verdict</h3>
+      </div>
+      <p>Based on the evidence and the tests above, what is your conclusion? Choose carefully — and be honest.</p>
+      <div class="warning">⚠️ Never write "This proves that…" — write "This evidence supports / is consistent with / suggests…"</div>
+      <label>Select your verdict:</label>
+      <select id="strVerdict">
+        <option value="">— Choose —</option>
+        <option value="supported">Hypothesis supported</option>
+        <option value="partial">Hypothesis partially supported</option>
+        <option value="refuted">Hypothesis not supported / refuted</option>
+        <option value="indeterminate">Indeterminate — evidence insufficient</option>
+      </select>
+      <label>Explain the verdict in 2–3 sentences:</label>
+      <textarea id="strVerdictText" placeholder="e.g., The evidence supports the hypothesis: economic severity, mediated by trust erosion, better explains the variance in populist support. However, the AfD's post-2015 rise suggests cultural factors may serve as a secondary amplifier."></textarea>
+      <label>What are the limitations of your analysis?</label>
+      <textarea id="strLimits" placeholder="e.g., Only two cases — cannot generalise beyond EU core. Trust data is aggregate, not individual-level. The cultural backlash variable was not directly measured."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="strNext(3)">← Back</button>
+      <button class="btn btn-primary" onclick="strGenerate()">Generate Analysis Draft →</button>
+    </div>
+  </div>
+
+  <!-- Step 5: Output -->
+  <div class="str-step hidden" id="strStep5">
+    <div class="card green">
+      <h3>✅ Your Analysis Section Draft</h3>
+      <p>Copy this into your Core Quest 4 paper and <strong>revise</strong>. This is a scaffold, not a finished product — add detail, smooth transitions, and cite your sources properly.</p>
+    </div>
+    <div class="output-box" id="strOutput"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-copy" onclick="copyText('strOutput')">📋 Copy to Clipboard</button>
+      <button class="btn btn-outline" onclick="strNext(0)">↻ Start Over</button>
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+    </div>
+    <div class="card neutral" style="margin-top:20px">
+      <h3>Self-Check Before Submitting</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">☐</span> Every claim has a specific data point, number, or citation</li>
+        <li><span class="check-icon">☐</span> Each observable implication is explicitly tested (not just asserted)</li>
+        <li><span class="check-icon">☐</span> The rival explanation is tested with the same evidence — not dismissed</li>
+        <li><span class="check-icon">☐</span> The verdict uses cautious language ("supports" not "proves")</li>
+        <li><span class="check-icon">☐</span> Limitations are named — this is a strength, not a weakness</li>
+        <li><span class="check-icon">☐</span> A reader could replicate this analysis with the same data</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STORYTELLER WALKTHROUGH ===== -->
+<div id="stoPanel" class="hidden">
+  <div class="progress" id="stoProgress"></div>
+
+  <div class="sto-step" id="stoStep0">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">0</div>
+        <h3>Set the Stage</h3>
+      </div>
+      <p>Before tracing, remind the reader of your expected causal mechanism — the chain of events you hypothesized in your research design.</p>
+      <label>Your expected process (from CQ3):</label>
+      <textarea id="stoProcess" placeholder="e.g., Institutional centralization → reduced parliamentary autonomy → perceived irrelevance among youth → trust decline."></textarea>
+      <label>Your case(s):</label>
+      <input type="text" id="stoCases" placeholder="e.g., Turkey, 2013–2023, focusing on 18–25 cohort">
+      <label>Your method:</label>
+      <input type="text" id="stoMethod" placeholder="e.g., Process tracing using legislative records, constitutional texts, and WVS data">
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+      <button class="btn btn-primary" onclick="stoNext(1)">Next: Starting Conditions →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep1">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">1</div>
+        <h3>Establish Starting Conditions</h3>
+      </div>
+      <p>What was the situation <strong>before</strong> your causal process began? Set the baseline so the reader can see what changed.</p>
+      <label>What were the conditions at the start of your story?</label>
+      <textarea id="stoBaseline" placeholder="e.g., Before 2017: parliamentary system, legislative branch held meaningful agenda-setting power, youth trust at 41% (WVS 2013)."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="stoNext(0)">← Back</button>
+      <button class="btn btn-primary" onclick="stoNext(2)">Next: Trace the Links →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep2">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">2</div>
+        <h3>Trace Each Link in the Chain</h3>
+      </div>
+      <p>Walk through your mechanism step by step. Each link needs its own evidence — a document, a decision, a speech, a data point. Name dates, actors, and sources.</p>
+      <div class="tip">💡 George & Bennett: "Process tracing attempts to identify the intervening causal process — the causal chain and causal mechanism — between an independent variable and the outcome."</div>
+      <label>Link 1 — What happened first?</label>
+      <textarea id="stoLink1" placeholder="e.g., 2017 constitutional referendum: shift to presidential system. Evidence: Official Gazette, constitutional amendment text."></textarea>
+      <label>Link 2 — What did that lead to?</label>
+      <textarea id="stoLink2" placeholder="e.g., Parliamentary legislative output drops 34% (2016–2020); 78% of laws initiated by executive. Source: TBMM records."></textarea>
+      <label>Link 3 — And then?</label>
+      <textarea id="stoLink3" placeholder="e.g., Survey data: 78% of youth endorse democracy but only 14% trust parliament specifically. Source: WVS, Eurobarometer Turkey."></textarea>
+      <label>Link 4 — The outcome:</label>
+      <textarea id="stoLink4" placeholder="e.g., Trust in parliament falls from 41% (2013) to 14% (2023) among 18–25 cohort. Source: WVS longitudinal data."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="stoNext(1)">← Back</button>
+      <button class="btn btn-primary" onclick="stoNext(3)">Next: Identify the Breaks →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep3">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">3</div>
+        <h3>Identify the Breaks</h3>
+      </div>
+      <p>Where is the chain <strong>weakest</strong>? Where is the evidence thin, the causal step inferred rather than directly observed? Naming this is a strength — it shows analytical maturity.</p>
+      <label>Which link is weakest, and why?</label>
+      <textarea id="stoBreak" placeholder="e.g., Link 2→3 is weakest: parliament lost autonomy and youth distrust parliament, but the causal step — that youth noticed and responded to reduced autonomy — is inferred, not directly observed."></textarea>
+      <label>What additional evidence would strengthen it?</label>
+      <textarea id="stoFix" placeholder="e.g., Interviews or focus groups with university-age respondents about their perception of parliament's role."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="stoNext(2)">← Back</button>
+      <button class="btn btn-primary" onclick="stoNext(4)">Next: Alternative Pathway →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep4">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">4</div>
+        <h3>Assess the Alternative Pathway</h3>
+      </div>
+      <p>Could a <strong>different mechanism</strong> have produced the same outcome? Trace it briefly and show where the evidence favors your pathway over the rival's.</p>
+      <label>What is the alternative pathway?</label>
+      <textarea id="stoAlt" placeholder="e.g., Social media → generalized cynicism → trust decline (not institution-specific)."></textarea>
+      <label>Why does the evidence favor your pathway?</label>
+      <textarea id="stoAltTest" placeholder="e.g., If generalized cynicism, trust in ALL institutions should decline equally. But military trust (48%) and judiciary trust (31%) declined less. The distrust is targeted at parliament — inconsistent with generalized cynicism."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="stoNext(3)">← Back</button>
+      <button class="btn btn-primary" onclick="stoNext(5)">Next: Verdict →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep5">
+    <div class="card sto">
+      <div class="step-header">
+        <div class="step-num sto-bg">5</div>
+        <h3>State Your Verdict</h3>
+      </div>
+      <div class="warning">⚠️ A Storyteller doesn't say "hypothesis confirmed." A Storyteller says "the chain holds at these links, weakens at this link, and the rival pathway cannot account for [specific pattern]."</div>
+      <label>Select your verdict:</label>
+      <select id="stoVerdict">
+        <option value="">— Choose —</option>
+        <option value="traced">Process fully traced — all links supported by evidence</option>
+        <option value="partial">Process partially traced — most links hold, one or more are weak</option>
+        <option value="broken">Process breaks — key link unsupported</option>
+        <option value="rival">Alternative pathway fits the evidence better</option>
+      </select>
+      <label>Explain in 2–3 sentences:</label>
+      <textarea id="stoVerdictText" placeholder="e.g., The expected process is partially traced. Three of four links are supported by direct evidence. The perceptual link requires further investigation through qualitative methods."></textarea>
+      <label>What are the limitations?</label>
+      <textarea id="stoLimits" placeholder="e.g., Single-country analysis. No interview data to confirm the perceptual step. WVS data is aggregated, not panel."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="stoNext(4)">← Back</button>
+      <button class="btn btn-primary" onclick="stoGenerate()">Generate Analysis Draft →</button>
+    </div>
+  </div>
+
+  <div class="sto-step hidden" id="stoStep6">
+    <div class="card green">
+      <h3>✅ Your Analysis Section Draft</h3>
+      <p>Copy this into Core Quest 4 and revise — add citations, smooth transitions, and deepen the evidence at each link.</p>
+    </div>
+    <div class="output-box" id="stoOutput"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-copy" onclick="copyText('stoOutput')">📋 Copy to Clipboard</button>
+      <button class="btn btn-outline" onclick="stoNext(0)">↻ Start Over</button>
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+    </div>
+    <div class="card neutral" style="margin-top:20px">
+      <h3>Self-Check Before Submitting</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">☐</span> Starting conditions are clearly established with evidence</li>
+        <li><span class="check-icon">☐</span> Each link has its own specific evidence (not just narrative)</li>
+        <li><span class="check-icon">☐</span> The weakest link is named honestly — this shows maturity</li>
+        <li><span class="check-icon">☐</span> The alternative pathway is traced and compared, not just dismissed</li>
+        <li><span class="check-icon">☐</span> The verdict distinguishes between "fully traced" and "partially traced"</li>
+        <li><span class="check-icon">☐</span> Another researcher could follow the same process with the same sources</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DISRUPTOR WALKTHROUGH ===== -->
+<div id="disPanel" class="hidden">
+  <div class="progress" id="disProgress"></div>
+
+  <div class="dis-step" id="disStep0">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">0</div>
+        <h3>Set the Stage</h3>
+      </div>
+      <p>Remind the reader of your analytical framework — the discourse you're analyzing, what you expect it to produce and foreclose, and your positionality.</p>
+      <label>Your analytical framework (from CQ3):</label>
+      <textarea id="disFramework" placeholder="e.g., EU border discourse produces a racialized hierarchy of movement — 'mobility' for Europeans, 'migration' for non-European subjects."></textarea>
+      <label>Your corpus:</label>
+      <input type="text" id="disCorpus" placeholder="e.g., 35 EU policy documents (2015–2023): European Agenda on Migration, Frontex risk analyses, Council conclusions">
+      <label>Your method:</label>
+      <input type="text" id="disMethod" placeholder="e.g., Critical Discourse Analysis — predicate analysis, metaphor mapping, absence identification">
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+      <button class="btn btn-primary" onclick="disNext(1)">Next: Corpus Description →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep1">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">1</div>
+        <h3>Describe Your Corpus</h3>
+      </div>
+      <p>What texts did you analyze? How many? From what period? Produced by whom? Why <strong>these</strong> texts and not others? The Disruptor must justify the boundaries of the corpus with the same rigor a Strategist justifies case selection.</p>
+      <label>Corpus details (texts, count, period, producer):</label>
+      <textarea id="disCorpusDetail" placeholder="e.g., 35 documents: 12 European Agenda on Migration reports, 8 Frontex annual risk analyses, 15 European Council conclusions on migration. Period: 2015–2023. Produced by EU institutions — selected because they represent official discourse that shapes policy, funding, and enforcement."></textarea>
+      <label>Why these texts and not others?</label>
+      <textarea id="disCorpusJust" placeholder="e.g., These represent the most authoritative expressions of EU migration governance. NGO reports, media coverage, and migrant testimony are excluded to isolate the official discourse — the language that becomes policy."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="disNext(0)">← Back</button>
+      <button class="btn btn-primary" onclick="disNext(2)">Next: Discursive Patterns →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep2">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">2</div>
+        <h3>Map the Discursive Patterns</h3>
+      </div>
+      <p>What recurring terms, metaphors, categories, or binaries did you find? Be <strong>systematic</strong>: use frequencies, predicates, or collocations — not impressions.</p>
+      <div class="tip">💡 Milliken: discourse studies must show patterns <strong>systematically</strong>. "The language seems biased" is not analysis. "The term 'irregular migration' appears 247 times with predicates 'managed,' 'combated,' 'prevented'" — that is analysis.</div>
+      <label>Key term / pattern 1:</label>
+      <textarea id="disPat1" placeholder="e.g., 'irregular migration' — 247 mentions. Predicates: managed, combated, prevented, reduced, stemmed."></textarea>
+      <label>Key term / pattern 2:</label>
+      <textarea id="disPat2" placeholder="e.g., 'labour mobility' — 83 mentions. Predicates: facilitated, encouraged, protected, promoted."></textarea>
+      <label>Key term / pattern 3:</label>
+      <textarea id="disPat3" placeholder="e.g., Hydraulic metaphor: 'flows' (189 mentions) — stemmed, diverted, controlled. People as liquid."></textarea>
+      <label>Key absence — what term or concept is missing?</label>
+      <textarea id="disAbsence" placeholder="e.g., 'people' / 'persons' appear only 41 times. 'Right to move' for non-EU subjects: 0 mentions."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="disNext(1)">← Back</button>
+      <button class="btn btn-primary" onclick="disNext(3)">Next: Productivity & Foreclosure →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep3">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">3</div>
+        <h3>Show What the Discourse Produces and Forecloses</h3>
+      </div>
+      <p>This is the core Disruptor move. What does this language <strong>make possible</strong>? What does it <strong>make unthinkable</strong>? What subjects, categories, or policies emerge from this discourse — and what alternatives are silenced?</p>
+      <label>What does the discourse produce? (subjects, categories, policies made "natural"):</label>
+      <textarea id="disProduce" placeholder="e.g., A two-tier system: 'mobility' (positive, European, facilitated) vs. 'migration' (threatening, non-European, controlled). Migrants become a liquid to be managed — not people with agency."></textarea>
+      <label>What does the discourse foreclose? (what becomes unthinkable, unsayable):</label>
+      <textarea id="disForclose" placeholder="e.g., A right to move for non-EU subjects. 'Mobility' is never applied to African or Middle Eastern movement. The possibility that borders — not movement — are the problem is excluded."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="disNext(2)">← Back</button>
+      <button class="btn btn-primary" onclick="disNext(4)">Next: Dominant Account →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep4">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">4</div>
+        <h3>Contrast with the Dominant Account</h3>
+      </div>
+      <p>The Disruptor's "rival" is the mainstream reading of the issue. How does the dominant account present what you've analyzed — and how does your analysis challenge it?</p>
+      <label>What is the dominant/mainstream account?</label>
+      <textarea id="disDominant" placeholder="e.g., EU border policy is a neutral security measure designed to manage flows and protect citizens."></textarea>
+      <label>How does your analysis challenge it?</label>
+      <textarea id="disChallenge" placeholder="e.g., The analysis reveals border policy as a constitutive practice — the language doesn't describe migration, it creates the categories through which some bodies are mobile and others are threats. The 6:1 ratio of 'irregular migration' to 'people' shows what the discourse considers worth naming."></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="disNext(3)">← Back</button>
+      <button class="btn btn-primary" onclick="disNext(5)">Next: Positionality & Verdict →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep5">
+    <div class="card dis">
+      <div class="step-header">
+        <div class="step-num dis-bg">5</div>
+        <h3>Positionality & Verdict</h3>
+      </div>
+      <p>The Disruptor names their position. Where do you stand in relation to this discourse? And what is your overall finding?</p>
+      <label>Positionality statement (3–5 sentences):</label>
+      <textarea id="disPosition" placeholder="e.g., As a student of international relations at a European university, I am both a beneficiary and a critic of the system I analyze. My mobility as a student is facilitated by the same discourse that restricts others."></textarea>
+      <div class="warning">⚠️ The Disruptor doesn't "confirm a hypothesis." The Disruptor <strong>makes visible</strong> what the dominant account renders invisible. Your verdict is what the analysis <em>reveals</em>.</div>
+      <label>What does your analysis reveal?</label>
+      <textarea id="disReveal" placeholder="e.g., The analysis reveals a discursive hierarchy that mirrors colonial-era distinctions between civilized mobility and uncivilized movement. This is shown — not proven — through systematic textual evidence."></textarea>
+      <label>What might your reading miss? (Limitations):</label>
+      <textarea id="disLimits" placeholder="e.g., Only official documents — excludes counter-discourses from NGOs, media, and migrants. English-language documents only. Corpus period begins 2015 — earlier genealogy would reveal whether these patterns predate the 'crisis.'"></textarea>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="disNext(4)">← Back</button>
+      <button class="btn btn-primary" onclick="disGenerate()">Generate Analysis Draft →</button>
+    </div>
+  </div>
+
+  <div class="dis-step hidden" id="disStep6">
+    <div class="card green">
+      <h3>✅ Your Analysis Section Draft</h3>
+      <p>Copy this into Core Quest 4 and revise — embed citations, add textual examples, and refine the analytical voice.</p>
+    </div>
+    <div class="output-box" id="disOutput"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-copy" onclick="copyText('disOutput')">📋 Copy to Clipboard</button>
+      <button class="btn btn-outline" onclick="disNext(0)">↻ Start Over</button>
+      <button class="btn btn-outline" onclick="backToSelect()">← Change Track</button>
+    </div>
+    <div class="card neutral" style="margin-top:20px">
+      <h3>Self-Check Before Submitting</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">☐</span> Corpus is precisely described — another researcher could assemble the same set</li>
+        <li><span class="check-icon">☐</span> Patterns are systematic — frequencies, predicates, collocations (not impressions)</li>
+        <li><span class="check-icon">☐</span> Productivity is named — what the discourse makes possible</li>
+        <li><span class="check-icon">☐</span> Foreclosure is named — what the discourse makes unthinkable</li>
+        <li><span class="check-icon">☐</span> The dominant account is stated and challenged with evidence</li>
+        <li><span class="check-icon">☐</span> Positionality statement is included</li>
+        <li><span class="check-icon">☐</span> Limitations acknowledge what your reading might miss</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ===== TRACK SELECTION ===== */
+function selectTrack(t){
+  document.getElementById('trackSelect').classList.add('hidden');
+  document.getElementById('strPanel').classList.add('hidden');
+  document.getElementById('stoPanel').classList.add('hidden');
+  document.getElementById('disPanel').classList.add('hidden');
+  document.querySelectorAll('.track-btn').forEach(b=>b.className='track-btn');
+  if(t==='str'){document.getElementById('strPanel').classList.remove('hidden');document.getElementById('btnStr').classList.add('selected','sel-str');buildProgress('str',6);}
+  if(t==='sto'){document.getElementById('stoPanel').classList.remove('hidden');document.getElementById('btnSto').classList.add('selected','sel-sto');buildProgress('sto',7);}
+  if(t==='dis'){document.getElementById('disPanel').classList.remove('hidden');document.getElementById('btnDis').classList.add('selected','sel-dis');buildProgress('dis',7);}
+  showStep(t,0);
+}
+function backToSelect(){
+  document.getElementById('strPanel').classList.add('hidden');
+  document.getElementById('stoPanel').classList.add('hidden');
+  document.getElementById('disPanel').classList.add('hidden');
+  document.getElementById('trackSelect').classList.remove('hidden');
+}
+
+/* ===== PROGRESS BAR ===== */
+function buildProgress(prefix,steps){
+  var el=document.getElementById(prefix+'Progress');
+  el.innerHTML='';
+  for(var i=0;i<steps;i++){var d=document.createElement('div');d.className='progress-step';d.id=prefix+'Prog'+i;el.appendChild(d);}
+}
+function updateProgress(prefix,step,total){
+  for(var i=0;i<total;i++){
+    var el=document.getElementById(prefix+'Prog'+i);
+    if(!el)continue;
+    el.className='progress-step';
+    if(i<step)el.classList.add('done');
+    if(i===step)el.classList.add('current');
+  }
+}
+
+/* ===== STEP NAVIGATION ===== */
+function showStep(prefix,n){
+  var steps=document.querySelectorAll('.'+prefix+'-step');
+  steps.forEach(function(s){s.classList.add('hidden');});
+  var target=document.getElementById(prefix+'Step'+n);
+  if(target)target.classList.remove('hidden');
+  var total=steps.length;
+  updateProgress(prefix,n,total);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function strNext(n){showStep('str',n);}
+function stoNext(n){showStep('sto',n);}
+function disNext(n){showStep('dis',n);}
+
+/* ===== GENERATORS ===== */
+function v(id){return document.getElementById(id)?document.getElementById(id).value.trim():'';}
+
+function strGenerate(){
+  var out='';
+  out+='ANALYSIS\n\n';
+  out+='This study hypothesized that '+v('strHyp')+' Using '+v('strMethod')+', the analysis examines '+v('strCases')+'.\n\n';
+  out+='Evidence\n\n';
+  if(v('strEv1'))out+=v('strEv1')+'\n\n';
+  if(v('strEv2'))out+=v('strEv2')+'\n\n';
+  if(v('strEv3'))out+=v('strEv3')+'\n\n';
+  out+='Testing Observable Implications\n\n';
+  if(v('strOI1'))out+=v('strOI1')+'\n\n';
+  if(v('strOI2'))out+=v('strOI2')+'\n\n';
+  if(v('strOI3'))out+=v('strOI3')+'\n\n';
+  out+='Addressing the Rival Explanation\n\n';
+  out+='The main rival explanation holds that '+v('strRival')+' However, '+v('strRivalTest')+'\n\n';
+  var vLabel={'supported':'supported','partial':'partially supported','refuted':'not supported','indeterminate':'indeterminate given the available evidence'};
+  var vd=v('strVerdict');
+  out+='Verdict\n\n';
+  out+='On balance, the hypothesis is '+(vLabel[vd]||'[SELECT A VERDICT]')+'. '+v('strVerdictText')+'\n\n';
+  out+='Limitations\n\n';
+  out+=v('strLimits')+'\n';
+  document.getElementById('strOutput').textContent=out;
+  strNext(5);
+}
+
+function stoGenerate(){
+  var out='';
+  out+='ANALYSIS\n\n';
+  out+='This study traces the following expected process: '+v('stoProcess')+' The analysis focuses on '+v('stoCases')+' using '+v('stoMethod')+'.\n\n';
+  out+='Starting Conditions\n\n';
+  out+=v('stoBaseline')+'\n\n';
+  out+='Tracing the Mechanism\n\n';
+  if(v('stoLink1'))out+='Link 1: '+v('stoLink1')+'\n\n';
+  if(v('stoLink2'))out+='Link 2: '+v('stoLink2')+'\n\n';
+  if(v('stoLink3'))out+='Link 3: '+v('stoLink3')+'\n\n';
+  if(v('stoLink4'))out+='Link 4: '+v('stoLink4')+'\n\n';
+  out+='Identifying the Weakest Link\n\n';
+  out+=v('stoBreak')+' '+v('stoFix')+'\n\n';
+  out+='Assessing the Alternative Pathway\n\n';
+  out+='An alternative pathway suggests that '+v('stoAlt')+' However, '+v('stoAltTest')+'\n\n';
+  var vLabel={'traced':'fully traced — all links are supported by direct evidence','partial':'partially traced — most links hold but one or more require further evidence','broken':'broken at a key link — the expected process is not supported','rival':'not supported — the alternative pathway better accounts for the evidence'};
+  var vd=v('stoVerdict');
+  out+='Verdict\n\n';
+  out+='The expected process is '+(vLabel[vd]||'[SELECT A VERDICT]')+'. '+v('stoVerdictText')+'\n\n';
+  out+='Limitations\n\n';
+  out+=v('stoLimits')+'\n';
+  document.getElementById('stoOutput').textContent=out;
+  stoNext(6);
+}
+
+function disGenerate(){
+  var out='';
+  out+='ANALYSIS\n\n';
+  out+='This study analyzes '+v('disCorpus')+' using '+v('disMethod')+'. The analytical framework holds that '+v('disFramework')+'\n\n';
+  out+='Corpus Description\n\n';
+  out+=v('disCorpusDetail')+' '+v('disCorpusJust')+'\n\n';
+  out+='Discursive Patterns\n\n';
+  if(v('disPat1'))out+=v('disPat1')+'\n\n';
+  if(v('disPat2'))out+=v('disPat2')+'\n\n';
+  if(v('disPat3'))out+=v('disPat3')+'\n\n';
+  if(v('disAbsence'))out+='Notable absence: '+v('disAbsence')+'\n\n';
+  out+='Discursive Productivity\n\n';
+  out+=v('disProduce')+'\n\n';
+  out+='Discursive Foreclosure\n\n';
+  out+=v('disForclose')+'\n\n';
+  out+='Contrasting the Dominant Account\n\n';
+  out+='The dominant account holds that '+v('disDominant')+' This analysis challenges that reading: '+v('disChallenge')+'\n\n';
+  out+='Positionality\n\n';
+  out+=v('disPosition')+'\n\n';
+  out+='What the Analysis Reveals\n\n';
+  out+=v('disReveal')+'\n\n';
+  out+='Limitations\n\n';
+  out+=v('disLimits')+'\n';
+  document.getElementById('disOutput').textContent=out;
+  disNext(6);
+}
+
+/* ===== CLIPBOARD ===== */
+function copyText(id){
+  var t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(function(){
+    var btn=event.target;
+    btn.textContent='✅ Copied!';
+    setTimeout(function(){btn.textContent='📋 Copy to Clipboard';},2000);
+  });
+}
+</script>
+
+</body>
+</html>
