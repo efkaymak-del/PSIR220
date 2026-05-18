@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 – Symposium Prep Kit</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f5f5;color:#1a1a2e;min-height:100vh}
+header{background:#fff;border-bottom:1px solid #e5e7eb;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:1.45rem;color:#0f3460}
+header p{font-size:.85rem;color:#888}
+.badge{display:inline-block;padding:3px 12px;border-radius:14px;font-size:.8rem;font-weight:600;background:#fef3c7;color:#92400e}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;overflow-x:auto}
+.tab{padding:12px 20px;font-size:.95rem;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
+.tab:hover{color:#0f3460}
+.tab.active{color:#0f3460;border-bottom-color:#0f3460}
+main{max-width:900px;margin:0 auto;padding:24px 20px 80px}
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border-radius:12px;padding:24px 28px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:5px solid #0f3460}
+.card.green{border-left-color:#16a34a}
+.card.amber{border-left-color:#d97706}
+.card.red{border-left-color:#dc2626}
+.card.purple{border-left-color:#7c3aed}
+.card h3{font-size:1.15rem;margin-bottom:8px;color:#0f3460}
+.card p,.card li{font-size:.95rem;line-height:1.7;margin-bottom:6px}
+label{display:block;font-size:.9rem;font-weight:600;color:#0f3460;margin:12px 0 4px}
+textarea,input[type=text],select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:8px;font-size:.95rem;font-family:inherit;line-height:1.6;transition:.2s;background:#fafafa}
+textarea:focus,input[type=text]:focus{border-color:#0f3460;outline:none;background:#fff}
+textarea{min-height:80px;resize:vertical}
+.helper{font-size:.82rem;color:#888;margin-top:2px;font-style:italic}
+.btn{display:inline-block;padding:12px 28px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:.2s;margin:6px 4px 6px 0}
+.btn-primary{background:#0f3460;color:#fff}
+.btn-primary:hover{background:#1a4a8a}
+.btn-outline{background:#fff;color:#0f3460;border:2px solid #0f3460}
+.btn-outline:hover{background:#f0f4ff}
+.btn-copy{background:#16a34a;color:#fff}
+.btn-copy:hover{background:#15803d}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.output-box{background:#f0f4ff;border:2px solid #c7d2fe;border-radius:10px;padding:20px;margin:20px 0;font-size:.95rem;line-height:1.7;white-space:pre-wrap}
+.tip{background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:14px;font-size:.9rem;color:#065f46;margin:12px 0}
+.warning{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:14px;font-size:.9rem;color:#92400e;margin:12px 0}
+.timer-container{text-align:center;padding:40px 20px;margin:20px 0}
+.timer-display{font-size:5rem;font-weight:800;color:#0f3460;font-variant-numeric:tabular-nums;margin:16px 0}
+.timer-display.warning-time{color:#d97706}
+.timer-display.danger-time{color:#dc2626}
+.timer-label{font-size:1.1rem;color:#888;margin-bottom:20px}
+.timer-bar{width:100%;height:12px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin:16px 0}
+.timer-fill{height:100%;border-radius:6px;transition:width .5s linear;background:linear-gradient(90deg,#16a34a,#d97706,#dc2626)}
+.slide-card{background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:24px;margin:16px 0;position:relative;transition:.2s}
+.slide-card:hover{border-color:#c7d2fe}
+.slide-card.filled{border-color:#16a34a;background:#f0fdf4}
+.slide-num{position:absolute;top:-12px;left:20px;background:#0f3460;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700}
+.slide-card h4{font-size:1rem;color:#0f3460;margin:4px 0 4px 0}
+.slide-card .time{font-size:.82rem;color:#888;margin-bottom:8px}
+.slide-preview{background:#0a0e1a;color:#c9d1d9;border-radius:8px;padding:20px;margin:12px 0;font-size:.9rem;line-height:1.6;min-height:120px}
+.slide-preview h5{color:#58a6ff;margin-bottom:6px;font-size:1rem}
+.slide-preview .content{color:#c9d1d9}
+.qa-card{background:#fff;border-radius:10px;padding:16px 20px;margin:10px 0;border-left:4px solid #d97706}
+.qa-card h5{font-size:.95rem;color:#0f3460;margin-bottom:4px}
+.qa-card p{font-size:.9rem;color:#555;line-height:1.6}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:10px 0;border-bottom:1px solid #f0f0f0;display:flex;align-items:flex-start;gap:10px;font-size:.92rem;cursor:pointer}
+.checklist li:last-child{border:none}
+.checklist li.checked{color:#16a34a;text-decoration:line-through}
+.check-box{width:22px;height:22px;border:2px solid #d1d5db;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:.2s}
+.checklist li.checked .check-box{background:#16a34a;border-color:#16a34a;color:#fff}
+.score-display{text-align:center;padding:20px;margin:16px 0}
+.score-num{font-size:3rem;font-weight:800;color:#0f3460}
+.score-label{font-size:1rem;color:#888}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🎤 Symposium Prep Kit</h1>
+    <p>Build your 5-minute presentation, rehearse with a timer, and prepare for Q&A.</p>
+  </div>
+  <span class="badge">Week 15 · 8 Side Quest pts</span>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPanel('build',this)">📝 Build Slides</div>
+  <div class="tab" onclick="showPanel('preview',this)">🖥 Preview</div>
+  <div class="tab" onclick="showPanel('timer',this)">⏱ Rehearse</div>
+  <div class="tab" onclick="showPanel('qa',this)">❓ Q&A Prep</div>
+  <div class="tab" onclick="showPanel('checklist',this)">✅ Checklist</div>
+</div>
+
+<main>
+
+<!-- ===== TAB 1: BUILD ===== -->
+<div class="panel active" id="panelBuild">
+  <div class="card">
+    <h3>Build Your 5-Minute Presentation</h3>
+    <p>A symposium talk is <strong>not</strong> a summary of your paper. It's a <strong>compressed argument</strong> — the same logic as your abstract, but spoken and visual. Fill in each slide below. Keep text minimal; you'll <em>say</em> the details.</p>
+  </div>
+
+  <div class="slide-card" id="slideCard1">
+    <div class="slide-num">1</div>
+    <h4>Title & Hook</h4>
+    <div class="time">~30 seconds</div>
+    <p style="font-size:.88rem;color:#666;">Your title, your name, and one sentence that makes the audience care.</p>
+    <label>Paper title:</label>
+    <input type="text" id="s1Title" placeholder="e.g., Trust Without Parliament: Youth Distrust in Turkey's Presidential Transition" oninput="markFilled(1)">
+    <label>Your name:</label>
+    <input type="text" id="s1Name" placeholder="Your full name">
+    <label>Opening hook (1 sentence — a puzzle, a statistic, a provocative question):</label>
+    <textarea id="s1Hook" placeholder="e.g., 78% of Turkish youth endorse democracy — but only 14% trust their parliament. What happened?" style="min-height:60px"></textarea>
+  </div>
+
+  <div class="slide-card" id="slideCard2">
+    <div class="slide-num">2</div>
+    <h4>The Argument</h4>
+    <div class="time">~1 minute</div>
+    <p style="font-size:.88rem;color:#666;">Your research question, the gap in the literature, and your core argument — in 3 sentences maximum on the slide. You explain the rest verbally.</p>
+    <label>Research question:</label>
+    <textarea id="s2Question" placeholder="e.g., Why has trust in parliament declined specifically among Turkish youth?" style="min-height:60px" oninput="markFilled(2)"></textarea>
+    <label>The gap (what existing scholarship misses):</label>
+    <textarea id="s2Gap" placeholder="e.g., Current explanations cite generalized cynicism — but don't explain why distrust is targeted at parliament." style="min-height:60px"></textarea>
+    <label>Your argument (1 sentence):</label>
+    <textarea id="s2Argument" placeholder="e.g., The 2017 shift to a presidential system reduced parliamentary autonomy, rendering the institution irrelevant in the eyes of politically aware youth." style="min-height:60px"></textarea>
+  </div>
+
+  <div class="slide-card" id="slideCard3">
+    <div class="slide-num">3</div>
+    <h4>Method & Cases</h4>
+    <div class="time">~1 minute</div>
+    <p style="font-size:.88rem;color:#666;">How you investigated. Name the method, the cases (or corpus), the data sources, and why this approach fits.</p>
+    <label>Method:</label>
+    <input type="text" id="s3Method" placeholder="e.g., Process tracing" oninput="markFilled(3)">
+    <label>Cases / corpus:</label>
+    <textarea id="s3Cases" placeholder="e.g., Turkey, 2013–2023. Legislative records, constitutional texts, WVS longitudinal data for 18–25 cohort." style="min-height:60px"></textarea>
+    <label>Why this method? (1 sentence):</label>
+    <textarea id="s3Why" placeholder="e.g., The question asks how a process unfolded — this requires tracing each link in the causal chain, not measuring a correlation." style="min-height:60px"></textarea>
+  </div>
+
+  <div class="slide-card" id="slideCard4">
+    <div class="slide-num">4</div>
+    <h4>Key Findings</h4>
+    <div class="time">~1.5 minutes</div>
+    <p style="font-size:.88rem;color:#666;">This is the heart of your talk. Present 2–3 key findings. Use a table, a chart description, or bullet points. Be specific — numbers, patterns, quotes from texts.</p>
+    <label>Finding 1:</label>
+    <textarea id="s4Find1" placeholder="e.g., Legislative output dropped 34% after the 2017 referendum; 78% of laws now initiated by the executive." oninput="markFilled(4)"></textarea>
+    <label>Finding 2:</label>
+    <textarea id="s4Find2" placeholder="e.g., Trust in parliament fell from 41% to 14% among 18–25 year-olds — while trust in the military (48%) and judiciary (31%) declined less steeply."></textarea>
+    <label>Finding 3 (optional):</label>
+    <textarea id="s4Find3" placeholder="e.g., The distrust is targeted, not generalized — inconsistent with the social media cynicism explanation."></textarea>
+    <label>Verdict — what do the findings mean?</label>
+    <textarea id="s4Verdict" placeholder="e.g., The expected process is partially traced. Three of four links hold. The perceptual step needs further investigation."></textarea>
+  </div>
+
+  <div class="slide-card" id="slideCard5">
+    <div class="slide-num">5</div>
+    <h4>Limitations & Next Steps</h4>
+    <div class="time">~1 minute</div>
+    <p style="font-size:.88rem;color:#666;">End honestly. Name one limitation and one direction for future research. This shows intellectual maturity — not weakness.</p>
+    <label>One honest limitation:</label>
+    <textarea id="s5Limit" placeholder="e.g., The perceptual link — how youth became aware of reduced parliamentary autonomy — is inferred, not directly observed. Interview data would strengthen this." style="min-height:60px" oninput="markFilled(5)"></textarea>
+    <label>One next step:</label>
+    <textarea id="s5Next" placeholder="e.g., Focus groups with university students about their understanding of parliament's constitutional role before and after 2017." style="min-height:60px"></textarea>
+    <label>Closing line (leave them thinking):</label>
+    <textarea id="s5Close" placeholder="e.g., If young democrats stop trusting the institutions designed to represent them, the question is not whether they believe in democracy — but whether democracy still believes in them." style="min-height:60px"></textarea>
+  </div>
+
+  <div style="text-align:center;margin:24px 0">
+    <button class="btn btn-primary" onclick="showPanel('preview',document.querySelectorAll('.tab')[1])">Preview Your Slides →</button>
+  </div>
+</div>
+
+<!-- ===== TAB 2: PREVIEW ===== -->
+<div class="panel" id="panelPreview">
+  <div class="card purple">
+    <h3>Slide Preview</h3>
+    <p>This is how your content will look as presentation slides. Use this to check flow and completeness. Your actual slides (PowerPoint/Google Slides) should have <strong>even less text</strong> — these are your speaking notes.</p>
+  </div>
+  <div id="previewArea"></div>
+  <div style="text-align:center;margin:24px 0">
+    <button class="btn btn-outline" onclick="showPanel('build',document.querySelectorAll('.tab')[0])">← Edit Slides</button>
+    <button class="btn btn-primary" onclick="showPanel('timer',document.querySelectorAll('.tab')[2])">Rehearse with Timer →</button>
+  </div>
+</div>
+
+<!-- ===== TAB 3: TIMER ===== -->
+<div class="panel" id="panelTimer">
+  <div class="card amber">
+    <h3>Rehearsal Timer</h3>
+    <p>Practice your talk against the clock. You have <strong>5 minutes</strong>. The timer turns amber at 1 minute remaining and red at 30 seconds. If you go over, the audience (and the instructor) will notice.</p>
+  </div>
+  <div class="timer-container">
+    <div class="timer-label" id="timerLabel">Press Start to begin your 5-minute rehearsal</div>
+    <div class="timer-display" id="timerDisplay">5:00</div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" id="timerStartBtn" onclick="startTimer()">▶ Start</button>
+      <button class="btn btn-outline" onclick="pauseTimer()">⏸ Pause</button>
+      <button class="btn btn-danger" onclick="resetTimer()">↻ Reset</button>
+    </div>
+  </div>
+  <div class="tip" id="timerTip">
+    💡 <strong>Pacing guide:</strong> Slide 1 (0:00–0:30) · Slide 2 (0:30–1:30) · Slide 3 (1:30–2:30) · Slide 4 (2:30–4:00) · Slide 5 (4:00–5:00)
+  </div>
+</div>
+
+<!-- ===== TAB 4: Q&A PREP ===== -->
+<div class="panel" id="panelQa">
+  <div class="card">
+    <h3>Prepare for Q&A</h3>
+    <p>After your 5-minute talk, you'll face 3 minutes of questions. The best defense is preparation. Here are the most common types of questions at academic conferences — draft your answers now.</p>
+  </div>
+
+  <div class="qa-card">
+    <h5>🎯 "Why these cases and not others?"</h5>
+    <p>The case-selection question. Be ready to justify your choice with the logic from your research design.</p>
+    <label>Your prepared answer:</label>
+    <textarea id="qa1" placeholder="e.g., I selected Turkey as a single case because the 2017 constitutional shift provides a clear temporal marker..."></textarea>
+  </div>
+
+  <div class="qa-card">
+    <h5>🔄 "What about the rival explanation?"</h5>
+    <p>Someone will ask whether an alternative theory explains your findings better. Don't be defensive — show you've thought about it.</p>
+    <label>Your prepared answer:</label>
+    <textarea id="qa2" placeholder="e.g., The social media cynicism thesis predicts generalized distrust across institutions. But my data shows distrust is targeted at parliament..."></textarea>
+  </div>
+
+  <div class="qa-card">
+    <h5>📊 "How do you know X causes Y and not the reverse?"</h5>
+    <p>The causality / endogeneity question. Explain the temporal ordering or your method's approach to causal inference.</p>
+    <label>Your prepared answer:</label>
+    <textarea id="qa3" placeholder="e.g., The constitutional change (2017) precedes the trust decline (2018–2023). Process tracing establishes temporal sequence at each link..."></textarea>
+  </div>
+
+  <div class="qa-card">
+    <h5>🌍 "Can you generalize from this?"</h5>
+    <p>The scope question. Be honest about what your study can and cannot claim.</p>
+    <label>Your prepared answer:</label>
+    <textarea id="qa4" placeholder="e.g., This is a single-case study — I cannot generalize. But the mechanism I identify (institutional redesign → perceived irrelevance → targeted distrust) is testable in other presidential transitions..."></textarea>
+  </div>
+
+  <div class="qa-card">
+    <h5>🤔 "What would you do differently?"</h5>
+    <p>The self-reflection question. This is where Pivot Badge thinking pays off. Show growth.</p>
+    <label>Your prepared answer:</label>
+    <textarea id="qa5" placeholder="e.g., I would add interview data to trace the perceptual link directly. I'd also extend the time frame back to 2007 to capture the baseline more fully."></textarea>
+  </div>
+
+  <div class="tip">💡 You won't get all of these. But preparing for them will make you calm, confident, and articulate when the real questions come. The worst answer is "I didn't think about that."</div>
+</div>
+
+<!-- ===== TAB 5: CHECKLIST ===== -->
+<div class="panel" id="panelChecklist">
+  <div class="card">
+    <h3>Symposium Readiness Checklist</h3>
+    <p>Click each item to mark it complete. Aim for all green before June 1.</p>
+  </div>
+
+  <div class="score-display">
+    <div class="score-num" id="scoreNum">0</div>
+    <div class="score-label">of 15 items complete</div>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:12px">Content</h4>
+    <ul class="checklist" id="checkContent">
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Research question is clear and specific (not yes/no, not normative)</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Argument is stated in one sentence (not a topic — an argument)</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Method is named and justified (not just "I used qualitative methods")</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Cases or corpus are specified with selection logic</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> At least 2 specific findings with evidence (numbers, patterns, quotes)</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Rival explanation is addressed — not dismissed, addressed</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> One limitation is named honestly</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:12px">Presentation</h4>
+    <ul class="checklist" id="checkPresentation">
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Slides are ready (3–5 slides, minimal text)</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Rehearsed at least once with the timer (under 5 minutes)</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Opening hook grabs attention in the first 15 seconds</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Closing line leaves the audience thinking</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:12px">Q&A Readiness</h4>
+    <ul class="checklist" id="checkQA">
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Prepared answer for case-selection question</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Prepared answer for rival explanation question</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Prepared answer for generalizability question</li>
+      <li onclick="toggleCheck(this)"><span class="check-box"></span> Prepared answer for "what would you do differently?"</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ===== TABS ===== */
+function showPanel(id,tabEl){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel'+id.charAt(0).toUpperCase()+id.slice(1)).classList.add('active');
+  if(tabEl)tabEl.classList.add('active');
+  if(id==='preview')renderPreview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== MARK FILLED ===== */
+function markFilled(n){
+  var card=document.getElementById('slideCard'+n);
+  var inputs=card.querySelectorAll('textarea,input[type=text]');
+  var filled=Array.from(inputs).some(i=>i.value.trim()!=='');
+  card.classList.toggle('filled',filled);
+}
+
+/* ===== PREVIEW ===== */
+function renderPreview(){
+  var v=function(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+  var area=document.getElementById('previewArea');
+  var slides=[
+    {title:v('s1Title')||'[Your Title]',content:'<em>'+( v('s1Name')||'[Your Name]')+'</em><br><br>'+(v('s1Hook')||'[Your opening hook]')},
+    {title:'The Argument',content:'<strong>RQ:</strong> '+(v('s2Question')||'[Research question]')+'<br><br><strong>Gap:</strong> '+(v('s2Gap')||'[Gap]')+'<br><br><strong>Argument:</strong> '+(v('s2Argument')||'[Argument]')},
+    {title:'Method & Cases',content:'<strong>Method:</strong> '+(v('s3Method')||'[Method]')+'<br><br><strong>Cases:</strong> '+(v('s3Cases')||'[Cases]')+'<br><br><strong>Why:</strong> '+(v('s3Why')||'[Justification]')},
+    {title:'Key Findings',content:(v('s4Find1')?'• '+v('s4Find1')+'<br>':'')+(v('s4Find2')?'• '+v('s4Find2')+'<br>':'')+(v('s4Find3')?'• '+v('s4Find3')+'<br>':'')+'<br><strong>Verdict:</strong> '+(v('s4Verdict')||'[Verdict]')},
+    {title:'Limitations & Next Steps',content:'<strong>Limitation:</strong> '+(v('s5Limit')||'[Limitation]')+'<br><br><strong>Next:</strong> '+(v('s5Next')||'[Next step]')+'<br><br><em>'+(v('s5Close')||'[Closing line]')+'</em>'}
+  ];
+  var pacing=['0:00 – 0:30','0:30 – 1:30','1:30 – 2:30','2:30 – 4:00','4:00 – 5:00'];
+  var html='';
+  slides.forEach(function(s,i){
+    html+='<div class="slide-preview"><h5>Slide '+(i+1)+' <span style="font-weight:400;font-size:.82rem;color:#8b949e;">('+pacing[i]+')</span></h5><div class="content">'+
+    '<div style="color:#58a6ff;font-size:1.1rem;font-weight:600;margin-bottom:8px;">'+s.title+'</div>'+
+    '<div>'+s.content+'</div></div></div>';
+  });
+  area.innerHTML=html;
+}
+
+/* ===== TIMER ===== */
+var totalSec=300,remaining=300,timerInterval=null,running=false;
+function startTimer(){
+  if(running)return;
+  running=true;
+  document.getElementById('timerStartBtn').textContent='Running…';
+  timerInterval=setInterval(function(){
+    remaining--;
+    if(remaining<=0){remaining=0;clearInterval(timerInterval);running=false;document.getElementById('timerStartBtn').textContent='▶ Start';document.getElementById('timerLabel').textContent='⏰ Time\'s up!';}
+    updateTimerDisplay();
+  },1000);
+}
+function pauseTimer(){if(running){clearInterval(timerInterval);running=false;document.getElementById('timerStartBtn').textContent='▶ Resume';}}
+function resetTimer(){clearInterval(timerInterval);running=false;remaining=300;document.getElementById('timerStartBtn').textContent='▶ Start';document.getElementById('timerLabel').textContent='Press Start to begin your 5-minute rehearsal';updateTimerDisplay();}
+function updateTimerDisplay(){
+  var m=Math.floor(remaining/60),s=remaining%60;
+  var display=document.getElementById('timerDisplay');
+  display.textContent=m+':'+(s<10?'0':'')+s;
+  display.className='timer-display';
+  if(remaining<=30)display.classList.add('danger-time');
+  else if(remaining<=60)display.classList.add('warning-time');
+  var pct=(remaining/totalSec)*100;
+  document.getElementById('timerFill').style.width=pct+'%';
+  // Pacing cues
+  var label=document.getElementById('timerLabel');
+  if(remaining>270)label.textContent='Slide 1 — Title & Hook';
+  else if(remaining>210)label.textContent='Slide 2 — The Argument';
+  else if(remaining>150)label.textContent='Slide 3 — Method & Cases';
+  else if(remaining>60)label.textContent='Slide 4 — Key Findings';
+  else if(remaining>0)label.textContent='Slide 5 — Limitations & Close';
+}
+
+/* ===== CHECKLIST ===== */
+function toggleCheck(li){
+  li.classList.toggle('checked');
+  var box=li.querySelector('.check-box');
+  box.textContent=li.classList.contains('checked')?'✓':'';
+  updateScore();
+}
+function updateScore(){
+  var total=document.querySelectorAll('.checklist li').length;
+  var done=document.querySelectorAll('.checklist li.checked').length;
+  document.getElementById('scoreNum').textContent=done;
+}
+
+/* ===== COPY ===== */
+function copyText(id){
+  var t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t).then(function(){
+    var btn=event.target;var orig=btn.textContent;
+    btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent=orig;},2000);
+  });
+}
+</script>
+
+</body>
+</html>
