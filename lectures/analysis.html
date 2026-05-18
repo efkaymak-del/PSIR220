@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 · The Final Stretch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0a0e1a; color: #c9d1d9; line-height: 1.7; }
+  .slide { display: none; min-height: 100vh; padding: 60px 80px; max-width: 960px; margin: 0 auto; }
+  .slide.active { display: flex; flex-direction: column; justify-content: center; }
+  h1 { font-size: 2.4rem; color: #58a6ff; margin-bottom: 0.3em; }
+  h2 { font-size: 1.8rem; color: #58a6ff; margin-bottom: 0.6em; }
+  h3 { font-size: 1.3rem; color: #79c0ff; margin-bottom: 0.4em; }
+  h4 { font-size: 1.1rem; color: #d2a8ff; margin-bottom: 0.3em; }
+  p, li { font-size: 1.05rem; margin-bottom: 0.6em; }
+  .subtitle { font-size: 1.2rem; color: #8b949e; font-style: italic; margin-bottom: 1.2em; }
+  .track-label { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8em; }
+  .strategist { background: #1f3a1f; color: #7ee787; }
+  .storyteller { background: #1f2a3a; color: #79c0ff; }
+  .disruptor { background: #3a1f2a; color: #f778ba; }
+  .all-tracks { background: #2a2a1f; color: #e3b341; }
+  table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.95rem; }
+  th, td { border: 1px solid #30363d; padding: 10px 14px; text-align: left; }
+  th { background: #161b22; color: #58a6ff; font-weight: 600; }
+  td { background: #0d1117; }
+  blockquote { border-left: 3px solid #58a6ff; padding: 12px 20px; margin: 1em 0; background: #161b22; font-style: italic; color: #8b949e; }
+  blockquote strong { color: #c9d1d9; }
+  ul, ol { padding-left: 1.6em; margin-bottom: 1em; }
+  .highlight-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin: 1em 0; }
+  .fatal { color: #f85149; font-weight: 600; }
+  .strong { color: #7ee787; font-weight: 600; }
+  .nav { position: fixed; bottom: 30px; right: 40px; display: flex; gap: 10px; z-index: 100; }
+  .nav button { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+  .nav button:hover { background: #30363d; }
+  .counter { position: fixed; bottom: 35px; left: 40px; color: #484f58; font-size: 0.9rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 1em 0; }
+  .col-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
+  em { color: #8b949e; }
+</style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1 ==================== -->
+<div class="slide active" id="s1">
+  <h1>The Final Stretch</h1>
+  <p class="subtitle">From Design to Paper · Abstracts · Symposium · What Comes Next</p>
+  <p>PSIR220 — Research Design (The Research Quest)<br>
+  Week 13 · Monday, May 18, 2026</p>
+  <p style="margin-top:1.5em;">Today's session (2 hours):</p>
+  <ul>
+    <li><strong>Hour 1:</strong> Bridge — from Research Design to Final Paper, with analysis examples across all three tracks</li>
+    <li><strong>Hour 2:</strong> Abstract Workshop · Symposium Preview · Pivot Badges · What's left</li>
+  </ul>
+</div>
+
+<!-- ==================== SLIDE 2 ==================== -->
+<div class="slide" id="s2">
+  <h2>Where We Stand: The Gradebook</h2>
+  <table>
+    <tr><th>Component</th><th>Points</th><th>Status</th></tr>
+    <tr><td>CQ1 — Annotated Bibliography</td><td>10</td><td>✅ Graded</td></tr>
+    <tr><td>CQ2 — Literature Review</td><td>10</td><td>⏳ Grading in progress</td></tr>
+    <tr><td>Midterm Exam</td><td>10</td><td>⏳ Grading in progress</td></tr>
+    <tr><td>Side Quests (to date)</td><td>~17 of 30</td><td>✅ Earned</td></tr>
+    <tr><td colspan="3" style="background:#161b22; color:#58a6ff; font-weight:600;">≈ 40 points earned or in progress</td></tr>
+  </table>
+  <table>
+    <tr><th>Remaining</th><th>Points</th><th>When</th></tr>
+    <tr><td>CQ3 — Research Design</td><td>15</td><td>Due May 23</td></tr>
+    <tr><td>Research Symposium (Side Quest)</td><td>8</td><td>Week 15 — June 1–3</td></tr>
+    <tr><td>Final Exam Workshop</td><td>10</td><td>Finals — June 15–27</td></tr>
+    <tr><td>CQ4 — Final Research Paper</td><td>15</td><td>Finals — June 15–27</td></tr>
+    <tr><td>Remaining Side Quests</td><td>~5</td><td>Various</td></tr>
+    <tr><td colspan="3" style="background:#161b22; color:#58a6ff; font-weight:600;">≈ 53 points remaining + up to 5 bonus</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SLIDE 3 ==================== -->
+<div class="slide" id="s3">
+  <h2>The Semester Map</h2>
+  <table>
+    <tr><th>Date</th><th>Event</th><th>Points</th></tr>
+    <tr><td>May 18 (today)</td><td>The Final Stretch — this session</td><td>—</td></tr>
+    <tr><td>May 23 (Fri)</td><td>Core Quest 3 deadline</td><td>15</td></tr>
+    <tr><td>May 25–29</td><td>Kurban Bairam — no class</td><td>—</td></tr>
+    <tr><td>June 1–3</td><td>Research Symposium (Week 15)</td><td>8 SQ</td></tr>
+    <tr><td>June 11</td><td>Last day of classes</td><td>—</td></tr>
+    <tr><td>June 15–27</td><td>Final Exam Workshop + CQ4 due</td><td>10 + 15</td></tr>
+  </table>
+  <p style="margin-top:1em;">You have <strong>five weeks</strong>. Two of them are holidays. The real working time left is <strong>three weeks</strong>.</p>
+</div>
+
+<!-- ==================== SLIDE 4 ==================== -->
+<div class="slide" id="s4">
+  <h2>The Bridge: Design → Paper</h2>
+  <p>Core Quest 3 (Research Design) is your <strong>plan</strong>. Core Quest 4 (Final Paper) is the <strong>execution</strong>.</p>
+  <p>What changes?</p>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Core Quest 3 — The Battle Plan</h4>
+      <p>"Here is what I <em>will</em> do and why."</p>
+      <ul>
+        <li>Question, theory, method, cases</li>
+        <li>Prospective: future tense</li>
+        <li>1,500–2,500 words</li>
+      </ul>
+    </div>
+    <div class="col-box">
+      <h4>Core Quest 4 — The Final Paper</h4>
+      <p>"Here is what I <em>did</em> and what I <em>found</em>."</p>
+      <ul>
+        <li>All of the above, <strong>plus</strong> analysis, findings, and conclusions</li>
+        <li>Retrospective: past tense</li>
+        <li>4,000–6,000 words</li>
+      </ul>
+    </div>
+  </div>
+  <p>The final paper is not a new assignment — it's your Research Design <strong>brought to life</strong>.</p>
+</div>
+
+<!-- ==================== SLIDE 5 ==================== -->
+<div class="slide" id="s5">
+  <h2>Structure of the Final Paper</h2>
+  <p class="subtitle">Baglione, Chapters 7–10</p>
+  <table>
+    <tr><th>#</th><th>Section</th><th>Source</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>Abstract</td><td>—</td><td>150–200 words: the compressed argument</td></tr>
+    <tr><td>2</td><td>Introduction</td><td>Ch. 7</td><td>Puzzle, question, why it matters</td></tr>
+    <tr><td>3</td><td>Literature Review</td><td>Ch. 4–5</td><td>Scholarly conversation, your position, the gap</td></tr>
+    <tr><td>4</td><td>Theory & Argument</td><td>Ch. 7</td><td>Causal claim, mechanism, hypothesis</td></tr>
+    <tr><td>5</td><td>Research Design</td><td>Ch. 7</td><td>Method, cases, data, justification</td></tr>
+    <tr><td>6</td><td><strong>Analysis</strong></td><td>Ch. 8–9</td><td><strong>What you did with the evidence</strong></td></tr>
+    <tr><td>7</td><td><strong>Findings</strong></td><td>Ch. 9</td><td><strong>What the evidence showed</strong></td></tr>
+    <tr><td>8</td><td><strong>Conclusion</strong></td><td>Ch. 10</td><td><strong>So what? Implications, limits, future research</strong></td></tr>
+    <tr><td>9</td><td>Bibliography</td><td>—</td><td>Chicago Author-Date</td></tr>
+  </table>
+  <p>Sections 6–8 are new. They're what separates a <em>plan</em> from a <em>paper</em>. The rest of this hour focuses on what those sections look like — <strong>across all three tracks</strong>.</p>
+</div>
+
+<!-- ==================== SLIDE 6 ==================== -->
+<div class="slide" id="s6">
+  <h2>The Analysis Section: What Are You Actually Doing?</h2>
+  <p>The analysis is where you <strong>confront your theory with your evidence</strong>. It's the most important — and most misunderstood — part of a research paper.</p>
+  <blockquote>
+    "A research paper is not a book report. It is an <strong>argument</strong> supported by evidence."<br>
+    — Baglione, Ch. 8
+  </blockquote>
+  <p>The question every analysis must answer:</p>
+  <div class="highlight-box">
+    <p style="font-size:1.2rem; text-align:center; color:#58a6ff;"><strong>Does the evidence support, complicate, or contradict your argument?</strong></p>
+  </div>
+  <p>How you answer that question depends on your track. The evidence is different. The standards are different. The language is different. But the <strong>logic</strong> is the same: you made a claim, now you must show whether reality cooperates.</p>
+</div>
+
+<!-- ==================== SLIDE 7 ==================== -->
+<div class="slide" id="s7">
+  <span class="track-label strategist">Strategist Track</span>
+  <h2>Analysis: The Strategist Way</h2>
+  <p class="subtitle">Test, compare, rule out.</p>
+  <p>For the Strategist, analysis means <strong>testing observable implications</strong> of your hypothesis against empirical evidence. The steps:</p>
+  <ol>
+    <li><strong>Present the evidence</strong> — data, statistics, case comparisons. Be specific: numbers, dates, sources.</li>
+    <li><strong>Test each observable implication</strong> — does what you predicted actually appear in the data? Walk through them one by one.</li>
+    <li><strong>Compare across cases</strong> — if using MSSD/MDSD, show how the independent variable varies and whether the dependent variable moves accordingly.</li>
+    <li><strong>Address the rival</strong> — test the alternative explanation with the same evidence. Does it fit better, worse, or equally well?</li>
+    <li><strong>State the verdict</strong> — hypothesis supported, partially supported, or refuted. No hedging without evidence for the hedge.</li>
+  </ol>
+  <blockquote>
+    "We should always try to find observable implications that <strong>distinguish</strong> our theory from its rivals."<br>
+    — KKV, Ch. 1
+  </blockquote>
+</div>
+
+<!-- ==================== SLIDE 8 ==================== -->
+<div class="slide" id="s8">
+  <span class="track-label strategist">Strategist Track</span>
+  <h2>Worked Example: Populism in Italy vs. Germany</h2>
+  <p class="subtitle">MSSD — Economic Crisis → Populist Support</p>
+  <div class="highlight-box">
+    <p><strong>Hypothesis:</strong> Severe economic crisis increases populist party support via erosion of trust in mainstream institutions.</p>
+    <p><strong>Rival:</strong> Cultural backlash (Norris & Inglehart 2019) — identity threat, not economic pain, drives populism.</p>
+    <p><strong>Cases:</strong> Italy (Five Star Movement) vs. Germany (AfD) — both EU members, both hit by 2008 crisis, but different severity.</p>
+  </div>
+  <h3>The Evidence:</h3>
+  <table>
+    <tr><th>Indicator</th><th>Italy</th><th>Germany</th></tr>
+    <tr><td>GDP contraction (2008–2013)</td><td>−8.5%</td><td>−5.6% (recovered by 2011)</td></tr>
+    <tr><td>Unemployment change</td><td>6.7% → 12.7%</td><td>7.8% → 5.2%</td></tr>
+    <tr><td>Trust in parliament (Eurobarometer)</td><td>29% → 11%</td><td>40% → 44%</td></tr>
+    <tr><td>Populist vote share (peak)</td><td>M5S: 32.7% (2018)</td><td>AfD: 12.6% (2017)</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SLIDE 9 ==================== -->
+<div class="slide" id="s9">
+  <span class="track-label strategist">Strategist Track</span>
+  <h2>Strategist Analysis: The Verdict</h2>
+  <h3>Testing the Observable Implications:</h3>
+  <ul>
+    <li><strong>OI-1:</strong> The country with the deeper crisis should show higher populist vote share. ✅ Italy: 32.7% vs. Germany: 12.6%.</li>
+    <li><strong>OI-2:</strong> The mechanism — institutional trust — should erode more where the crisis was deeper. ✅ Italy: 18-point drop vs. Germany: 4-point <em>increase</em>.</li>
+    <li><strong>OI-3:</strong> Timing — populist rise should follow economic distress, not precede it. ✅ M5S founded 2009, peaked 2018; AfD founded 2013 (Eurozone crisis context).</li>
+  </ul>
+  <h3>Testing the Rival:</h3>
+  <p>If cultural backlash were the primary driver, Germany — with its higher immigration exposure post-2015 — should show <em>greater</em> populist growth. Instead, AfD peaked at 12.6% while M5S hit 32.7%. The cultural backlash thesis does not explain the Italian case well.</p>
+  <h3>Verdict:</h3>
+  <p><strong>Hypothesis supported.</strong> Economic severity, mediated by trust erosion, better explains the variance in populist support between these two cases. However, the AfD's rise post-2015 suggests cultural factors may serve as a <em>secondary</em> amplifier — the analysis is honest about this.</p>
+  <div class="highlight-box">
+    <p><strong>Key lesson:</strong> "Supported" does not mean "proven." It means your evidence fits your theory better than the rival's — for now, in these cases, with this data.</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 10 ==================== -->
+<div class="slide" id="s10">
+  <span class="track-label storyteller">Storyteller Track</span>
+  <h2>Analysis: The Storyteller Way</h2>
+  <p class="subtitle">Trace, narrate, reconstruct.</p>
+  <p>For the Storyteller, analysis means <strong>tracing the causal mechanism</strong> through a sequence of evidence. You're not testing a correlation — you're reconstructing how an outcome came about. The steps:</p>
+  <ol>
+    <li><strong>Establish the starting conditions</strong> — what was the situation before your causal process began? Set the baseline.</li>
+    <li><strong>Trace each link in the chain</strong> — show evidence for each step of the mechanism: A led to B, B led to C, C led to the outcome. Each link needs its own evidence.</li>
+    <li><strong>Show the evidence at each step</strong> — documents, interviews, speeches, decisions, observable actions. Name dates, actors, and sources.</li>
+    <li><strong>Identify the breaks</strong> — where the chain didn't work as expected. Where did the process diverge, stall, or produce something unexpected?</li>
+    <li><strong>Assess the alternative pathway</strong> — could a different mechanism have produced the same outcome? Trace it and show where the evidence favors your pathway over the rival's.</li>
+  </ol>
+  <blockquote>
+    "Process tracing attempts to identify the intervening causal process — the causal chain and causal mechanism — between an independent variable and the outcome of the dependent variable."<br>
+    — George & Bennett, Ch. 6
+  </blockquote>
+</div>
+
+<!-- ==================== SLIDE 11 ==================== -->
+<div class="slide" id="s11">
+  <span class="track-label storyteller">Storyteller Track</span>
+  <h2>Worked Example: Youth Trust in the Turkish Parliament</h2>
+  <p class="subtitle">Process Tracing — Institutional Change → Declining Trust</p>
+  <div class="highlight-box">
+    <p><strong>Question:</strong> Why has trust in the Turkish parliament among young people dropped to 14%?</p>
+    <p><strong>Expected process:</strong> Institutional centralization → reduced parliamentary autonomy → perceived irrelevance among youth → trust decline.</p>
+    <p><strong>Rival pathway:</strong> Social media exposure → generalized cynicism → trust decline (not institution-specific).</p>
+  </div>
+  <h3>Tracing the Mechanism:</h3>
+  <table>
+    <tr><th>Link</th><th>Evidence</th><th>Source</th></tr>
+    <tr><td>1. Institutional centralization (2017 referendum)</td><td>Constitutional shift to presidential system; parliament loses legislative initiative</td><td>Official Gazette, constitutional text</td></tr>
+    <tr><td>2. Reduced parliamentary autonomy</td><td>Legislative output drops 34% (2016–2020); 78% of laws initiated by executive</td><td>TBMM records</td></tr>
+    <tr><td>3. Youth perception of irrelevance</td><td>Survey data: 78% of respondents endorse democracy but only 14% trust parliament specifically</td><td>World Values Survey, Eurobarometer Turkey</td></tr>
+    <tr><td>4. Trust decline</td><td>Trust in parliament falls from 41% (2013) to 14% (2023) among 18–25 cohort</td><td>WVS longitudinal data</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SLIDE 12 ==================== -->
+<div class="slide" id="s12">
+  <span class="track-label storyteller">Storyteller Track</span>
+  <h2>Storyteller Analysis: The Verdict</h2>
+  <h3>Testing the Rival Pathway:</h3>
+  <p>If generalized social media cynicism were the driver, we'd expect trust in <em>all</em> institutions to decline equally among youth — not parliament specifically. But the data shows: trust in the military (48%) and the judiciary (31%) declined less steeply. The distrust is <strong>targeted</strong> at parliament. This is inconsistent with a generalized cynicism explanation.</p>
+  <h3>The Break:</h3>
+  <p>Link 2→3 is the weakest: the analysis shows parliament <em>lost</em> autonomy and youth <em>distrust</em> parliament, but the causal step — that youth <em>noticed</em> and <em>responded to</em> reduced autonomy — is inferred, not directly observed. An interview or focus-group study would strengthen this link.</p>
+  <h3>Verdict:</h3>
+  <p><strong>Expected process partially traced.</strong> Three of four links are supported by direct evidence. The mechanism holds, but the perceptual link (how youth became aware of institutional change) requires further evidence.</p>
+  <div class="highlight-box">
+    <p><strong>Key lesson:</strong> A Storyteller doesn't say "hypothesis confirmed." A Storyteller says "the chain holds at these links, weakens at this link, and the rival pathway cannot account for the targeted nature of the distrust." Honesty about weak links is a <em>strength</em>, not a failure.</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 13 ==================== -->
+<div class="slide" id="s13">
+  <span class="track-label disruptor">Disruptor Track</span>
+  <h2>Analysis: The Disruptor Way</h2>
+  <p class="subtitle">Read, map, excavate, expose.</p>
+  <p>For the Disruptor, analysis means <strong>showing what discourse produces and forecloses</strong>. You're not testing a hypothesis — you're excavating a system of meaning. The steps:</p>
+  <ol>
+    <li><strong>Describe the corpus</strong> — what texts, how many, from when, produced by whom, and why these. Be precise about boundaries.</li>
+    <li><strong>Map the discursive patterns</strong> — recurring terms, metaphors, categories, binaries. Use frequency, collocation, or predicate analysis to show patterns systematically (not anecdotally).</li>
+    <li><strong>Show what the discourse produces</strong> — what subjects, objects, categories, or policies does this language make possible? What becomes "natural" or "obvious"?</li>
+    <li><strong>Show what the discourse forecloses</strong> — what is absent, silenced, or made unthinkable? What alternatives cannot be articulated within this framework?</li>
+    <li><strong>Contrast with the dominant account</strong> — how does the mainstream reading of this issue differ from what your analysis reveals?</li>
+  </ol>
+  <blockquote>
+    "Discourse studies focus on how discourses produce the <strong>subjects authorized to speak and act</strong>, how they construct the <strong>knowledgeable practices</strong> that become common sense, and what they <strong>exclude</strong> as impractical or unthinkable."<br>
+    — Milliken (1999), p. 229
+  </blockquote>
+</div>
+
+<!-- ==================== SLIDE 14 ==================== -->
+<div class="slide" id="s14">
+  <span class="track-label disruptor">Disruptor Track</span>
+  <h2>Worked Example: EU Border Policy as a "Caste System"</h2>
+  <p class="subtitle">CDA — Sanctions & Border Regimes as Tools of Exclusion</p>
+  <div class="highlight-box">
+    <p><strong>Question:</strong> How does EU border policy discourse construct mobility as a right for some and a threat when exercised by others?</p>
+    <p><strong>Framework:</strong> Border discourse produces a hierarchy of movement — "mobility" for EU citizens, "migration" for non-EU subjects — that functions as a system of racialized exclusion.</p>
+    <p><strong>Dominant account:</strong> EU border policy is a security measure designed to manage flows and protect citizens.</p>
+  </div>
+  <h3>The Corpus:</h3>
+  <p>35 EU policy documents (2015–2023): European Agenda on Migration, Frontex annual risk analyses, European Council conclusions on migration. Selected because they represent <em>official</em> EU discourse — the language that shapes policy, funding, and enforcement.</p>
+</div>
+
+<!-- ==================== SLIDE 15 ==================== -->
+<div class="slide" id="s15">
+  <span class="track-label disruptor">Disruptor Track</span>
+  <h2>Disruptor Analysis: Mapping the Discourse</h2>
+  <h3>Discursive Patterns (Predicate Analysis):</h3>
+  <table>
+    <tr><th>Term</th><th>Frequency (35 docs)</th><th>Typical Predicates</th></tr>
+    <tr><td>"irregular migration"</td><td>247 mentions</td><td>managed, combated, prevented, reduced</td></tr>
+    <tr><td>"labour mobility"</td><td>83 mentions</td><td>facilitated, encouraged, protected, promoted</td></tr>
+    <tr><td>"flows"</td><td>189 mentions</td><td>stemmed, diverted, controlled (hydraulic metaphor)</td></tr>
+    <tr><td>"people" / "persons"</td><td>41 mentions</td><td>vulnerable, rescued, returned, relocated</td></tr>
+  </table>
+  <h3>What the Discourse Produces:</h3>
+  <p>A two-tier system of movement: "mobility" (positive, European, facilitated) vs. "migration" (threatening, non-European, controlled). The hydraulic metaphor ("flows," "stemmed," "diverted") dehumanizes — people become a liquid to be managed, not individuals with agency.</p>
+  <h3>What the Discourse Forecloses:</h3>
+  <p>The language makes it nearly impossible to articulate a <strong>right to move</strong> for non-EU subjects. "Mobility" is never used for African or Middle Eastern movement. The framework excludes the possibility that borders themselves — not "irregular" movement — are the problem.</p>
+</div>
+
+<!-- ==================== SLIDE 16 ==================== -->
+<div class="slide" id="s16">
+  <span class="track-label disruptor">Disruptor Track</span>
+  <h2>Disruptor Analysis: The Verdict</h2>
+  <h3>Contrasting the Dominant Account:</h3>
+  <p>The official framing presents border policy as <em>neutral security management</em>. The analysis reveals it as a <strong>constitutive practice</strong> — the language doesn't just describe migration, it <em>creates</em> the categories through which some bodies are mobile and others are threats. The 6:1 ratio of "irregular migration" to "people" tells us what the discourse considers worth naming.</p>
+  <h3>Verdict:</h3>
+  <p><strong>The analysis reveals</strong> a discursive hierarchy that mirrors colonial-era distinctions between civilized mobility and uncivilized movement. This is not proven in the Strategist sense — it is <em>shown</em> through systematic textual evidence. The Disruptor doesn't "confirm a hypothesis." The Disruptor makes visible what the dominant account renders invisible.</p>
+  <div class="highlight-box">
+    <p><strong>Key lesson:</strong> A Disruptor's analysis is rigorous not because it's falsifiable, but because it's <em>systematic</em> — frequencies, patterns, predicates, absences. Impressionistic readings ("I feel like the language is biased") are not analysis. Counted predicates across a defined corpus <em>are</em>.</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 17 ==================== -->
+<div class="slide" id="s17">
+  <h2>Three Tracks, One Standard</h2>
+  <p class="subtitle">Different languages, same demands.</p>
+  <table>
+    <tr><th>Standard</th><th class="strategist" style="background:#1f3a1f;">Strategist</th><th class="storyteller" style="background:#1f2a3a;">Storyteller</th><th class="disruptor" style="background:#3a1f2a;">Disruptor</th></tr>
+    <tr><td><strong>Evidence</strong></td><td>Data, statistics, case comparisons</td><td>Documents, decisions, actions at each link</td><td>Texts, frequencies, predicates, absences</td></tr>
+    <tr><td><strong>Inference</strong></td><td>Does the data match the prediction?</td><td>Does the chain hold at every link?</td><td>What does the discourse produce/foreclose?</td></tr>
+    <tr><td><strong>Honesty</strong></td><td>Name what's "partially supported"</td><td>Name the weakest link in the chain</td><td>Name what your reading might miss</td></tr>
+    <tr><td><strong>Rival</strong></td><td>Test the alternative hypothesis</td><td>Trace the alternative pathway</td><td>Show how the dominant account differs</td></tr>
+    <tr><td><strong>Verifiability</strong></td><td>Another researcher could replicate with same data</td><td>Another researcher could trace the same process</td><td>Another researcher could read the same corpus</td></tr>
+  </table>
+  <p style="margin-top:1em;">No matter your track: <strong>show your evidence, state your inference, acknowledge your limits, address the rival, make it replicable.</strong></p>
+</div>
+
+<!-- ==================== SLIDE 18 ==================== -->
+<div class="slide" id="s18">
+  <h2>Common Analysis Failures</h2>
+  <table>
+    <tr><th>Failure</th><th>What It Looks Like</th><th>The Fix</th></tr>
+    <tr><td class="fatal">Assertion without evidence</td><td>"The data clearly shows…" (but no data is presented)</td><td>Every claim needs a citation, a number, or a quotation</td></tr>
+    <tr><td class="fatal">Confirming instead of testing</td><td>Ignoring evidence that doesn't fit the hypothesis</td><td>Report <em>all</em> findings — including disconfirming ones</td></tr>
+    <tr><td class="fatal">Summarizing instead of analyzing</td><td>"Country A did X and Country B did Y." (No comparison, no inference)</td><td>State what the comparison <em>means</em> for your theory</td></tr>
+    <tr><td class="fatal">Impressionistic reading (Disruptor)</td><td>"The language seems biased." (No systematic method)</td><td>Count predicates, map patterns, define the corpus boundaries</td></tr>
+    <tr><td class="fatal">Claiming proof</td><td>"This proves that…"</td><td>"This evidence supports / is consistent with / suggests…"</td></tr>
+  </table>
+  <table>
+    <tr><th>Strong Practice</th><th>What It Looks Like</th></tr>
+    <tr><td class="strong">Honest partial support</td><td>"Two of three observable implications are supported; the third is indeterminate due to data limitations."</td></tr>
+    <tr><td class="strong">Acknowledging weak links</td><td>"The perceptual step in the mechanism is inferred, not directly observed."</td></tr>
+    <tr><td class="strong">Productive failure</td><td>"The hypothesis was not supported, suggesting that the cultural backlash thesis may have greater explanatory power in this case."</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SLIDE 19 ==================== -->
+<div class="slide" id="s19">
+  <h2>From Analysis to Conclusion</h2>
+  <p class="subtitle">Baglione, Ch. 10</p>
+  <p>The conclusion is not a summary. It answers <strong>four questions</strong>:</p>
+  <div class="highlight-box">
+    <h4>1. So what?</h4>
+    <p>Why do your findings matter — for the scholarly debate, for policy, for the real world?</p>
+    <h4>2. What did you find?</h4>
+    <p>State the main finding in 2–3 sentences. Not "I looked at X" — rather "I found that X, which means Y."</p>
+    <h4>3. What are the limitations?</h4>
+    <p>Every study has limits. Name yours. Limited cases, limited time, missing data, weak links. This is a <em>strength</em>, not a confession.</p>
+    <h4>4. What comes next?</h4>
+    <p>If someone were to continue this research, what should they do? More cases? Different method? Longer time frame? New corpus?</p>
+  </div>
+  <p style="margin-top:1em;">Your conclusion should be <strong>300–500 words</strong>. Short, direct, honest.</p>
+</div>
+
+<!-- ==================== SLIDE 20 ==================== -->
+<div class="slide" id="s20">
+  <h2>Quick Recap: The Bridge</h2>
+  <p>Core Quest 3 gives you sections 1–5 of the final paper. Core Quest 4 adds sections 6–8.</p>
+  <table>
+    <tr><th>Section</th><th>CQ3?</th><th>CQ4?</th><th>Key Question</th></tr>
+    <tr><td>Introduction</td><td>✅</td><td>✅ (revised)</td><td>What's the puzzle?</td></tr>
+    <tr><td>Literature Review</td><td>✅</td><td>✅ (expanded)</td><td>Where do you stand in the debate?</td></tr>
+    <tr><td>Theory & Argument</td><td>✅</td><td>✅ (refined)</td><td>What's your causal claim?</td></tr>
+    <tr><td>Research Design</td><td>✅</td><td>✅ (as executed)</td><td>How did you test/trace/analyze?</td></tr>
+    <tr><td><strong>Analysis</strong></td><td>—</td><td>✅ <strong>NEW</strong></td><td>What did the evidence show?</td></tr>
+    <tr><td><strong>Findings</strong></td><td>—</td><td>✅ <strong>NEW</strong></td><td>Verdict: supported, partial, refuted?</td></tr>
+    <tr><td><strong>Conclusion</strong></td><td>—</td><td>✅ <strong>NEW</strong></td><td>So what? Limits? Next steps?</td></tr>
+  </table>
+  <p style="margin-top:1em;"><strong>This means:</strong> your Core Quest 3 submission becomes the first half of Core Quest 4. You don't start over — you build on it.</p>
+  <p style="margin-top:0.5em;"><em>Break time. When we come back: abstracts, symposium, and the rest of the semester.</em></p>
+</div>
+
+<!-- ==================== SLIDE 21 ==================== -->
+<div class="slide" id="s21">
+  <h2>Hour 2: The Abstract</h2>
+  <p class="subtitle">The hardest 150 words you'll ever write.</p>
+  <p>An abstract is <strong>not a summary</strong>. It is a <strong>compressed argument</strong>. It tells the reader: what you asked, why it matters, how you investigated, what you found, and what it means — in 150–200 words.</p>
+  <p>Why now? Two reasons:</p>
+  <ul>
+    <li>The <strong>Research Symposium</strong> (Week 15) requires one — it's your "conference submission."</li>
+    <li>Writing the abstract <strong>forces clarity</strong>. If you can't compress your design into 150 words, you don't fully understand it yet.</li>
+  </ul>
+  <blockquote>
+    "If you can't explain it simply, you don't understand it well enough."<br>
+    — attributed to Einstein (but good advice regardless)
+  </blockquote>
+</div>
+
+<!-- ==================== SLIDE 22 ==================== -->
+<div class="slide" id="s22">
+  <h2>The Five-Sentence Abstract</h2>
+  <p class="subtitle">A formula to get you started (then break it later).</p>
+  <table>
+    <tr><th>Sentence</th><th>Function</th><th>Starts with…</th></tr>
+    <tr><td>1</td><td><strong>The puzzle</strong> — why should anyone care?</td><td>"Despite…" / "While scholars agree…" / "The rise of…"</td></tr>
+    <tr><td>2</td><td><strong>The gap</strong> — what the literature misses</td><td>"Existing accounts overlook…" / "Less understood is…"</td></tr>
+    <tr><td>3</td><td><strong>The argument</strong> — your theory in one sentence</td><td>"This paper argues that…" / "I contend that…"</td></tr>
+    <tr><td>4</td><td><strong>The method</strong> — how you test/trace/analyze</td><td>"Using MSSD / process tracing / CDA of…"</td></tr>
+    <tr><td>5</td><td><strong>The contribution</strong> — what this adds</td><td>"This study contributes to… by showing…"</td></tr>
+  </table>
+  <p style="margin-top:1em;">Five sentences. ~150 words. This is your elevator pitch, your conference proposal, and your North Star for writing the paper.</p>
+</div>
+
+<!-- ==================== SLIDE 23 ==================== -->
+<div class="slide" id="s23">
+  <span class="track-label strategist">Strategist Example</span>
+  <h2>Sample Abstract: Populism in Crisis</h2>
+  <div class="highlight-box">
+    <p><strong>(1)</strong> The 2008 financial crisis reshaped European party systems, but populist parties surged in some countries and stalled in others. <strong>(2)</strong> Most comparative studies focus on demand-side cultural explanations, overlooking how <em>institutional trust collapse</em> mediates the economic-to-political transmission. <strong>(3)</strong> This paper argues that the severity of economic crisis drives populist support through the erosion of trust in mainstream parliamentary institutions. <strong>(4)</strong> Using a most-similar systems design comparing Italy's Five Star Movement and Germany's Alternative for Germany, the study tests three observable implications drawn from institutional trust theory against Eurobarometer and electoral data (2008–2018). <strong>(5)</strong> The findings contribute to the comparative populism literature by demonstrating that economic severity, not cultural backlash alone, explains divergent populist trajectories within the EU's core.</p>
+    <p style="color:#8b949e; font-size:0.9rem; margin-top:0.5em;">147 words · 5 sentences · puzzle → gap → argument → method → contribution</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 24 ==================== -->
+<div class="slide" id="s24">
+  <span class="track-label storyteller">Storyteller Example</span>
+  <h2>Sample Abstract: Youth & Parliament</h2>
+  <div class="highlight-box">
+    <p><strong>(1)</strong> Despite endorsing democratic values at high rates, Turkish youth report among the lowest levels of trust in parliament in Europe — just 14%. <strong>(2)</strong> Current explanations attribute this to generalized political cynicism or social media exposure, but neither accounts for why distrust is targeted at parliament specifically. <strong>(3)</strong> This paper argues that the 2017 constitutional shift to a presidential system reduced parliamentary autonomy, rendering the institution irrelevant in the eyes of politically aware youth. <strong>(4)</strong> Through process tracing of the institutional-change-to-perception pathway — drawing on legislative output data, constitutional texts, and World Values Survey longitudinal panels — the study reconstructs how institutional centralization translated into targeted distrust among 18–25-year-olds. <strong>(5)</strong> The analysis contributes to democratization studies by showing how formal institutional redesign can erode the legitimacy of representative bodies even among citizens who remain committed to democracy in principle.</p>
+    <p style="color:#8b949e; font-size:0.9rem; margin-top:0.5em;">158 words · 5 sentences · puzzle → gap → argument → method → contribution</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 25 ==================== -->
+<div class="slide" id="s25">
+  <span class="track-label disruptor">Disruptor Example</span>
+  <h2>Sample Abstract: Borders & Mobility</h2>
+  <div class="highlight-box">
+    <p><strong>(1)</strong> The European Union frames its border regime as a neutral instrument of security management, yet movement within and toward Europe is governed by starkly unequal logics. <strong>(2)</strong> Critical migration scholarship has examined policy outcomes, but less attention has been paid to how official EU discourse <em>constitutes</em> the categories through which some movement is celebrated as "mobility" and other movement is policed as "migration." <strong>(3)</strong> This paper argues that EU border discourse produces a racialized hierarchy of movement that mirrors colonial-era distinctions between civilized and uncivilized subjects. <strong>(4)</strong> Through critical discourse analysis of 35 EU policy documents (2015–2023) — including the European Agenda on Migration, Frontex risk analyses, and European Council conclusions — the study maps predicate patterns, metaphor systems, and strategic silences. <strong>(5)</strong> The analysis contributes to critical border studies by making visible the discursive architecture through which Europe's right to exclude is naturalized as governance rather than recognized as power.</p>
+    <p style="color:#8b949e; font-size:0.9rem; margin-top:0.5em;">169 words · 5 sentences · puzzle → gap → argument → method → contribution</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 26 ==================== -->
+<div class="slide" id="s26">
+  <h2>Common Abstract Mistakes</h2>
+  <table>
+    <tr><th>Mistake</th><th>Example</th><th>Fix</th></tr>
+    <tr><td class="fatal">Topic statement, not argument</td><td>"This paper examines the relationship between X and Y."</td><td>"This paper argues that X causes Y through mechanism M."</td></tr>
+    <tr><td class="fatal">No method</td><td>"Drawing on various sources…"</td><td>"Using MSSD with cases A and B…" / "Through CDA of N documents…"</td></tr>
+    <tr><td class="fatal">Too long</td><td>300+ words — this is a paragraph, not a page</td><td>Cut to 150–200 words. Every word must earn its place.</td></tr>
+    <tr><td class="fatal">Vague contribution</td><td>"This paper adds to the literature."</td><td>"This paper contributes to X literature by showing Y."</td></tr>
+    <tr><td class="fatal">Conclusions given away</td><td>"The hypothesis was confirmed." (in a design-stage abstract)</td><td>"The study expects to find…" (use future tense if you haven't done the analysis yet)</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SLIDE 27 ==================== -->
+<div class="slide" id="s27">
+  <h2>Live Drafting: Write Your Abstract Now</h2>
+  <p class="subtitle">20 minutes. Five sentences. 150 words.</p>
+  <div class="highlight-box">
+    <h4>Instructions:</h4>
+    <ol>
+      <li>Open a blank document or your notes app.</li>
+      <li>Write one sentence per line, following the five-sentence formula.</li>
+      <li>Don't overthink the first draft — you will revise it.</li>
+      <li>Aim for 150 words. If you're at 200+, cut adjectives and qualifiers first.</li>
+    </ol>
+    <h4>The Formula:</h4>
+    <p><strong>Sentence 1:</strong> The puzzle — what's surprising, important, or unexplained?<br>
+    <strong>Sentence 2:</strong> The gap — what does existing scholarship miss?<br>
+    <strong>Sentence 3:</strong> The argument — what do you claim?<br>
+    <strong>Sentence 4:</strong> The method — how do you investigate?<br>
+    <strong>Sentence 5:</strong> The contribution — what does this add to knowledge?</p>
+  </div>
+  <p style="margin-top:1em;">After 20 minutes, swap with a neighbor. Read theirs. Can you identify all five elements? If not, that's the feedback.</p>
+</div>
+
+<!-- ==================== SLIDE 28 ==================== -->
+<div class="slide" id="s28">
+  <h2>Peer Swap: 10 Minutes</h2>
+  <p class="subtitle">Read your partner's abstract. Answer three questions.</p>
+  <div class="highlight-box">
+    <ol>
+      <li><strong>Can you identify all five sentences?</strong> (puzzle, gap, argument, method, contribution) — If any is missing, circle where it should go.</li>
+      <li><strong>After reading this, do you know what the paper is about?</strong> — If not, what's unclear?</li>
+      <li><strong>Is there an argument, or just a topic?</strong> — "This paper examines…" is a topic. "This paper argues…" is an argument.</li>
+    </ol>
+  </div>
+  <p style="margin-top:1em;">Return the abstract with your notes. The author revises tonight and brings a clean version to the Symposium.</p>
+</div>
+
+<!-- ==================== SLIDE 29 ==================== -->
+<div class="slide" id="s29">
+  <h2>The Pivot Badge (+2 Bonus)</h2>
+  <p>The <strong>Pivot Badge</strong> rewards students who make a <strong>significant, documented revision</strong> to their research design based on feedback from the Saboteurs Workshop or the Research Panels.</p>
+  <div class="highlight-box">
+    <h4>To earn the badge:</h4>
+    <ol>
+      <li>In your Core Quest 3 (or Core Quest 4), include a footnote or paragraph that explains: <em>"Based on feedback from [name the source], I revised [specific element] from [old version] to [new version] because [reason]."</em></li>
+      <li>The revision must be <strong>substantive</strong> — not fixing typos, but changing your cases, redefining your variable, adding a rival, switching methods, or reframing your question.</li>
+    </ol>
+    <h4>Examples of qualifying pivots:</h4>
+    <ul>
+      <li>Switched from 1 case to 2 after the Saboteur identified selection bias</li>
+      <li>Added a rival explanation based on a panelist's suggestion</li>
+      <li>Reframed the research question from descriptive ("what") to explanatory ("why")</li>
+      <li>Changed method from large-N to MSSD after realizing N was insufficient</li>
+    </ul>
+  </div>
+  <p style="margin-top:1em;">+2 bonus points. Verified by the instructor when grading CQ3 or CQ4.</p>
+</div>
+
+<!-- ==================== SLIDE 30 ==================== -->
+<div class="slide" id="s30">
+  <h2>Week 15: The Research Symposium</h2>
+  <p class="subtitle">June 1–3 · Your Academic Conference</p>
+  <p>The Research Symposium is your chance to present your work the way scholars do: standing before peers, defending your argument, fielding questions.</p>
+  <div class="highlight-box">
+    <h4>Format:</h4>
+    <ul>
+      <li><strong>5-minute presentation</strong> per student — slides optional but recommended (3–5 slides max)</li>
+      <li><strong>3-minute Q&A</strong> — questions from classmates and the instructor</li>
+      <li>Panels of 3–4 students grouped by theme (same or revised from Week 12 panels)</li>
+    </ul>
+    <h4>What you present:</h4>
+    <ul>
+      <li>Research question & why it matters (30 seconds)</li>
+      <li>Theory & argument — your causal claim or analytical framework (1 minute)</li>
+      <li>Method, cases, and data (1 minute)</li>
+      <li>Preliminary findings or expected findings (1.5 minutes)</li>
+      <li>One honest limitation and next steps (1 minute)</li>
+    </ul>
+    <h4>Points:</h4>
+    <p><strong>8 Side Quest points</strong> (presentation + Q&A participation).</p>
+    <p><strong>Museum Bounty (+1 bonus)</strong>: after all presentations, vote for the design that taught you the most. Winner gets +1.</p>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 31 ==================== -->
+<div class="slide" id="s31">
+  <h2>Finals Period: What's Due</h2>
+  <p class="subtitle">June 15–27</p>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Final Exam Workshop — 10 pts</h4>
+      <p>Not a traditional exam. A <strong>methodological self-critique and applied exercise</strong>.</p>
+      <ul>
+        <li>Part 1: Audit your own research design — strengths, weaknesses, what you'd do differently</li>
+        <li>Part 2: Read an unfamiliar research design and evaluate it using the tools you've learned (KKV rules, G&B tasks, Milliken commitments)</li>
+        <li>Part 3: Methodological reflection — what has your paradigm track taught you about how knowledge is produced?</li>
+      </ul>
+      <p><em>Details and format TBA.</em></p>
+    </div>
+    <div class="col-box">
+      <h4>Core Quest 4 — Final Paper — 15 pts</h4>
+      <p>Your complete research paper: 4,000–6,000 words.</p>
+      <ul>
+        <li>Abstract (150–200 words)</li>
+        <li>Introduction, Literature Review, Theory, Research Design</li>
+        <li><strong>Analysis, Findings, Conclusion</strong> (the new sections)</li>
+        <li>Bibliography (Chicago Author-Date)</li>
+      </ul>
+      <p>Submit via Google Form (link TBA).</p>
+      <p><em>CQ3 is the foundation. CQ4 builds on it.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 32 ==================== -->
+<div class="slide" id="s32">
+  <h2>Action Items</h2>
+  <table>
+    <tr><th>What</th><th>When</th><th>Points</th></tr>
+    <tr><td>Core Quest 3 — Research Design (Google Form)</td><td>Friday May 23, 11:59 PM</td><td>15</td></tr>
+    <tr><td>Draft your 5-sentence abstract</td><td>Before the Symposium (June 1)</td><td>—</td></tr>
+    <tr><td>Prepare Symposium presentation (3–5 slides)</td><td>Dead week (May 25–29)</td><td>—</td></tr>
+    <tr><td>Research Symposium — present & participate</td><td>June 1–3</td><td>8 SQ</td></tr>
+    <tr><td>Final Exam Workshop</td><td>June 15–27</td><td>10</td></tr>
+    <tr><td>Core Quest 4 — Final Paper</td><td>June 15–27</td><td>15</td></tr>
+    <tr><td>Pivot Badge (optional)</td><td>Included in CQ3 or CQ4</td><td>+2 bonus</td></tr>
+    <tr><td>Museum Bounty (optional)</td><td>Symposium vote</td><td>+1 bonus</td></tr>
+  </table>
+  <p style="margin-top:1em;">Use the dead week (Kurban Bairam, May 25–29) wisely: finalize CQ3 revisions, draft your abstract, and start building your symposium slides. Office hours available by appointment.</p>
+</div>
+
+<!-- ==================== SLIDE 33 ==================== -->
+<div class="slide" id="s33">
+  <h2>The Bottom Line</h2>
+  <p style="font-size:1.3rem; color:#58a6ff; margin-bottom:1em;">You've built the engine. You've defended it. Now run it.</p>
+  <p>Your Research Design is the <strong>plan</strong>. Your Final Paper is the <strong>execution</strong>. The Symposium is the <strong>defense</strong>.</p>
+  <p>Three tracks, one standard: <strong>show your evidence, state your inference, acknowledge your limits, address the rival, make it replicable.</strong></p>
+  <div class="highlight-box" style="margin-top:1.5em;">
+    <p style="text-align:center; font-size:1.1rem;">
+      Strategists: test and report honestly.<br>
+      Storytellers: trace and name the weak link.<br>
+      Disruptors: show and count what others can't see.<br><br>
+      <strong>Good luck. See you at the Symposium.</strong>
+    </p>
+  </div>
+  <p style="margin-top:2em; color:#484f58; font-size:0.9rem;">Core Quest 3 due Friday May 23 · Symposium June 1–3 · CQ4 due during Finals</p>
+</div>
+
+<!-- ==================== NAVIGATION ==================== -->
+<div class="counter" id="counter">1 / 33</div>
+<div class="nav">
+  <button onclick="changeSlide(-1)">← Back</button>
+  <button onclick="changeSlide(1)">Next →</button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(slides.length - 1, current + dir));
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+  });
+</script>
+
+</body>
+</html>
