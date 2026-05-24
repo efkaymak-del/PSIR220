@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSIR220 · Analysis Exemplars</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0e1a;color:#c9d1d9;line-height:1.7}
+  .slide{display:none;min-height:100vh;padding:60px 80px;max-width:960px;margin:0 auto}
+  .slide.active{display:flex;flex-direction:column;justify-content:center}
+  h1{font-size:2.4rem;color:#58a6ff;margin-bottom:.3em}
+  h2{font-size:1.8rem;color:#58a6ff;margin-bottom:.6em}
+  h3{font-size:1.3rem;color:#79c0ff;margin-bottom:.4em}
+  h4{font-size:1.1rem;color:#d2a8ff;margin-bottom:.3em}
+  p,li{font-size:1.05rem;margin-bottom:.6em}
+  .subtitle{font-size:1.2rem;color:#8b949e;font-style:italic;margin-bottom:1.2em}
+  .track-label{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.85rem;font-weight:600;margin-bottom:.8em}
+  .strategist{background:#1f3a1f;color:#7ee787}
+  .storyteller{background:#1f2a3a;color:#79c0ff}
+  .disruptor{background:#3a1f2a;color:#f778ba}
+  .all-tracks{background:#2a2a1f;color:#e3b341}
+  table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.95rem}
+  th,td{border:1px solid #30363d;padding:10px 14px;text-align:left}
+  th{background:#161b22;color:#58a6ff;font-weight:600}
+  td{background:#0d1117}
+  blockquote{border-left:3px solid #58a6ff;padding:12px 20px;margin:1em 0;background:#161b22;font-style:italic;color:#8b949e}
+  blockquote strong{color:#c9d1d9}
+  ul,ol{padding-left:1.6em;margin-bottom:1em}
+  .highlight-box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;margin:1em 0}
+  .exemplar-box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;margin:1em 0;border-left:4px solid #58a6ff}
+  .exemplar-box.str{border-left-color:#7ee787}
+  .exemplar-box.sto{border-left-color:#79c0ff}
+  .exemplar-box.dis{border-left-color:#f778ba}
+  .fatal{color:#f85149;font-weight:600}
+  .strong{color:#7ee787;font-weight:600}
+  .partial{color:#e3b341;font-weight:600}
+  .nav{position:fixed;bottom:30px;right:40px;display:flex;gap:10px;z-index:100}
+  .nav button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:10px 20px;border-radius:6px;cursor:pointer;font-size:1rem}
+  .nav button:hover{background:#30363d}
+  .counter{position:fixed;bottom:35px;left:40px;color:#484f58;font-size:.9rem}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:1em 0}
+  .col-box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px}
+  em{color:#8b949e}
+  .verdict{font-size:1.1rem;padding:10px 16px;border-radius:6px;margin:12px 0;font-weight:600}
+  .verdict-supported{background:#1f3a1f;color:#7ee787;border:1px solid #2ea043}
+  .verdict-partial{background:#2a2a1f;color:#e3b341;border:1px solid #d29922}
+  .verdict-refuted{background:#3a1f1f;color:#f85149;border:1px solid #da3633}
+  .verdict-revealed{background:#3a1f2a;color:#f778ba;border:1px solid #db61a2}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 -->
+<div class="slide active" id="s1">
+  <h1>Analysis Exemplars</h1>
+  <p class="subtitle">What real analysis looks like — across methods, paradigms, and verdicts.</p>
+  <p>PSIR220 — Research Design (The Research Quest)<br>
+  Monday, May 25, 2026</p>
+  <p style="margin-top:1.5em;">Today's session (2 hours):</p>
+  <ul>
+    <li><strong>Hour 1:</strong> A gallery of exemplars — how published scholars analyze evidence in Strategist, Storyteller, and Disruptor research</li>
+    <li><strong>Hour 2:</strong> Applying the patterns to your own Core Quest 4 + abstract workshop + Symposium prep</li>
+  </ul>
+  <p style="margin-top:1em;color:#8b949e;">Core Quest 3 was due Friday. Core Quest 4 is the <strong>execution</strong>. Today we learn what that execution looks like.</p>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide" id="s2">
+  <h2>Why Exemplars?</h2>
+  <p>You've learned the <em>theory</em> of analysis — test observable implications, trace causal chains, map discursive patterns. But what does it look like <strong>on the page</strong>?</p>
+  <blockquote>"The best way to learn to write a research paper is to <strong>read</strong> research papers — not to summarize them, but to <strong>dissect</strong> them."<br>— Baglione, Ch. 8</blockquote>
+  <p>Today we dissect seven published studies. For each, we ask:</p>
+  <div class="highlight-box">
+    <ol>
+      <li>What was the hypothesis or framework?</li>
+      <li>What evidence did they present?</li>
+      <li>How did they structure the analysis?</li>
+      <li>What was the verdict — and how honest were they about it?</li>
+      <li>What made it <strong>convincing</strong> (or not)?</li>
+    </ol>
+  </div>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide" id="s3">
+  <h2>The Gallery</h2>
+  <table>
+    <tr><th>#</th><th>Study</th><th>Track</th><th>Method</th><th>Verdict</th></tr>
+    <tr><td>1</td><td>Putnam — <em>Making Democracy Work</em></td><td><span class="track-label strategist">Strategist</span></td><td>Large-N + comparative</td><td class="strong">Supported</td></tr>
+    <tr><td>2</td><td>Norris & Inglehart — <em>Cultural Backlash</em></td><td><span class="track-label strategist">Strategist</span></td><td>Large-N regression</td><td class="partial">Partially supported</td></tr>
+    <tr><td>3</td><td>Geddes — <em>Paradigms and Sand Castles</em></td><td><span class="track-label strategist">Strategist</span></td><td>Large-N (selection bias critique)</td><td class="fatal">Prior findings refuted</td></tr>
+    <tr><td>4</td><td>Tannenwald — <em>The Nuclear Taboo</em></td><td><span class="track-label storyteller">Storyteller</span></td><td>Process tracing</td><td class="strong">Traced</td></tr>
+    <tr><td>5</td><td>Collier — Process Tracing Tests</td><td><span class="track-label storyteller">Storyteller</span></td><td>Within-case (Sherlock Holmes!)</td><td class="strong">Method demo</td></tr>
+    <tr><td>6</td><td>Said — <em>Orientalism</em></td><td><span class="track-label disruptor">Disruptor</span></td><td>Discourse analysis / genealogy</td><td class="verdict" style="display:inline;background:#3a1f2a;color:#f778ba;padding:2px 8px;border-radius:4px;">Revealed</td></tr>
+    <tr><td>7</td><td>Doty — Immigration discourse</td><td><span class="track-label disruptor">Disruptor</span></td><td>Predicate analysis</td><td class="verdict" style="display:inline;background:#3a1f2a;color:#f778ba;padding:2px 8px;border-radius:4px;">Revealed</td></tr>
+  </table>
+  <p style="margin-top:1em;">Notice: the verdicts differ. <span class="strong">Supported</span>, <span class="partial">partially supported</span>, <span class="fatal">refuted</span>, <span style="color:#f778ba;">revealed</span>. All of them are good scholarship. A refuted hypothesis is still a contribution — if the analysis is honest.</p>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide" id="s4">
+  <span class="track-label strategist">Exemplar 1 · Strategist</span>
+  <h2>Putnam — <em>Making Democracy Work</em> (1993)</h2>
+  <div class="exemplar-box str">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> Why do some Italian regional governments perform better than others?</p>
+    <p><strong>Hypothesis:</strong> Regions with stronger civic traditions (civic engagement, trust, associational life) will have better-performing institutions.</p>
+    <p><strong>Method:</strong> Comparative analysis of 20 Italian regions, using an institutional performance index + a civic community index, spanning 1970s–1990s.</p>
+    <p><strong>Observable Implications:</strong></p>
+    <ul>
+      <li>OI-1: Regions with more associations, newspaper readership, and voter turnout should have higher institutional performance scores.</li>
+      <li>OI-2: The correlation should hold even when controlling for economic development.</li>
+      <li>OI-3: Historical civic traditions (1860–1920) should predict 1980s performance — a 100-year lag test.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide" id="s5">
+  <span class="track-label strategist">Exemplar 1 · Strategist</span>
+  <h2>Putnam — The Analysis</h2>
+  <div class="exemplar-box str">
+    <h4>What He Found</h4>
+    <table>
+      <tr><th>Test</th><th>Evidence</th><th>Result</th></tr>
+      <tr><td>OI-1: Civic life → performance</td><td>r = 0.92 between civic community index and institutional performance index across 20 regions</td><td class="strong">✅ Strong</td></tr>
+      <tr><td>OI-2: Controlling for wealth</td><td>Civic traditions predict performance even after controlling for economic development; wealth alone does not predict performance</td><td class="strong">✅ Holds</td></tr>
+      <tr><td>OI-3: 100-year lag</td><td>"Figure 5.4 presents the correlation between institutional performance in the 1980s and civic traditions in 1860–1920. The pattern is stark."</td><td class="strong">✅ Dramatic</td></tr>
+    </table>
+    <h4>The Rival</h4>
+    <p>Economic modernization theory: wealth, not civic culture, drives performance. Putnam tests it directly — and wealth fails as a predictor when civic traditions are included.</p>
+    <div class="verdict verdict-supported">Verdict: Hypothesis supported across all three tests.</div>
+  </div>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide" id="s6">
+  <span class="track-label strategist">Exemplar 1 · Strategist</span>
+  <h2>Putnam — Why It Convinces</h2>
+  <div class="highlight-box">
+    <h4>What makes this analysis strong:</h4>
+    <ul>
+      <li><strong>Multiple observable implications</strong> — not one test, but three, each progressively harder</li>
+      <li><strong>The rival is tested with the same data</strong> — economic development is not dismissed; it's measured and compared</li>
+      <li><strong>The 100-year lag</strong> — this is a creativity move. If civic traditions in 1870 predict institutional performance in 1980, the causal story deepens dramatically</li>
+      <li><strong>Quantitative evidence presented clearly</strong> — correlations, scatterplots, named regions</li>
+    </ul>
+    <h4>What critics attacked:</h4>
+    <ul>
+      <li>Tarrow (1996): the direction of causation may be reversed — good institutions may <em>produce</em> civic engagement, not the other way around</li>
+      <li>The 20 regions may not be independent observations (spatial correlation)</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> More OIs = stronger design. Test your rival, don't just name it. And look for the creative test — the one that would be really hard for the rival to explain.</p>
+  </div>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide" id="s7">
+  <span class="track-label strategist">Exemplar 2 · Strategist</span>
+  <h2>Norris & Inglehart — <em>Cultural Backlash</em> (2019)</h2>
+  <div class="exemplar-box str">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> What explains the rise of authoritarian populist parties across Western democracies?</p>
+    <p><strong>Hypothesis:</strong> Cultural backlash — once-dominant groups (older, less educated, male, religious, rural) react against progressive cultural change (gender equality, immigration, multiculturalism, LGBTQ rights).</p>
+    <p><strong>Rival:</strong> Economic insecurity thesis — globalization's "losers" turn to populism.</p>
+    <p><strong>Method:</strong> Large-N regression using European Social Survey and World Values Survey across 30+ countries.</p>
+  </div>
+</div>
+
+<!-- SLIDE 8 -->
+<div class="slide" id="s8">
+  <span class="track-label strategist">Exemplar 2 · Strategist</span>
+  <h2>Norris & Inglehart — The Analysis</h2>
+  <div class="exemplar-box str">
+    <h4>What They Found</h4>
+    <table>
+      <tr><th>Test</th><th>Evidence</th><th>Result</th></tr>
+      <tr><td>Cultural values predict populist vote</td><td>Authoritarian values (anti-immigration, traditional gender attitudes) are significant predictors of voting for populist parties</td><td class="strong">✅ Supported</td></tr>
+      <tr><td>Economic variables</td><td>Income and unemployment have weaker, less consistent effects than cultural attitudes</td><td class="partial">⚠️ Weak</td></tr>
+      <tr><td>Generational cohort</td><td>Older cohorts are more authoritarian — consistent with "backlash" against decades of liberalization</td><td class="strong">✅ Consistent</td></tr>
+      <tr><td>Cross-national</td><td>Pattern holds across 30+ countries — not country-specific</td><td class="strong">✅ Robust</td></tr>
+    </table>
+    <div class="verdict verdict-partial">Verdict: Cultural backlash thesis supported; economic thesis partially supported but weaker. The authors note both factors interact.</div>
+  </div>
+</div>
+
+<!-- SLIDE 9 -->
+<div class="slide" id="s9">
+  <span class="track-label strategist">Exemplar 2 · Strategist</span>
+  <h2>Norris & Inglehart — Honesty About Limits</h2>
+  <div class="highlight-box">
+    <h4>What makes this analysis instructive:</h4>
+    <ul>
+      <li><strong>They don't claim the rival is wrong</strong> — they show it's weaker. "We find the most consistent evidence supporting the cultural backlash thesis" ≠ "economics doesn't matter."</li>
+      <li><strong>They use "most consistent"</strong> — careful language, not "proves."</li>
+      <li><strong>Critics responded</strong> (e.g., Oesch 2008; Rovny & Rovny 2017) — showing that economics matters more in some countries. This is normal. Science is a conversation, not a verdict.</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> "Partially supported" is a perfectly respectable verdict. The key is: can you show <em>which</em> part is supported and <em>which</em> isn't? That's analytical precision.</p>
+  </div>
+</div>
+
+<!-- SLIDE 10 -->
+<div class="slide" id="s10">
+  <span class="track-label strategist">Exemplar 3 · Strategist</span>
+  <h2>Geddes — <em>Paradigms and Sand Castles</em> (2003)</h2>
+  <p class="subtitle">When the analysis refutes — and that's the contribution.</p>
+  <div class="exemplar-box str">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> Why do existing theories of democratization produce conflicting findings?</p>
+    <p><strong>Argument:</strong> The problem isn't theory — it's <strong>selection bias</strong>. Scholars study only cases that democratized, then find "causes" that are actually artifacts of selecting on the dependent variable.</p>
+    <p><strong>Evidence:</strong> Reviews large-N studies of democratization and shows that when you include countries that <em>didn't</em> democratize, the patterns disappear.</p>
+  </div>
+</div>
+
+<!-- SLIDE 11 -->
+<div class="slide" id="s11">
+  <span class="track-label strategist">Exemplar 3 · Strategist</span>
+  <h2>Geddes — The Analysis</h2>
+  <div class="exemplar-box str">
+    <h4>The Move</h4>
+    <p>Geddes doesn't test a new hypothesis. She shows that prior findings were <strong>built on sand</strong> — their research designs were flawed.</p>
+    <table>
+      <tr><th>Prior Finding</th><th>Geddes's Critique</th></tr>
+      <tr><td>"Economic crisis causes democratization"</td><td>Many countries had economic crises and did <em>not</em> democratize. Studying only the ones that did creates a false correlation.</td></tr>
+      <tr><td>"Pact-making between elites leads to stable democracy"</td><td>Scholars selected cases that succeeded. Cases where pacts failed (or never formed) were excluded. The finding is an artifact.</td></tr>
+      <tr><td>"Economic development causes democracy"</td><td>When you include non-democracies, the relationship weakens considerably. Modernization theory overstates the link.</td></tr>
+    </table>
+    <div class="verdict verdict-refuted">Verdict: Prior hypotheses refuted — not by finding new evidence, but by showing the old evidence was selected in a biased way.</div>
+  </div>
+</div>
+
+<!-- SLIDE 12 -->
+<div class="slide" id="s12">
+  <span class="track-label strategist">Exemplar 3 · Strategist</span>
+  <h2>Geddes — Why Refutation Is Valuable</h2>
+  <div class="highlight-box">
+    <h4>This study's contribution is entirely negative — and that's fine.</h4>
+    <ul>
+      <li>Geddes doesn't propose a new theory of democratization</li>
+      <li>She shows that the existing evidence is unreliable</li>
+      <li>This is a <strong>methodological</strong> contribution — it changes how the entire field does research</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> If your analysis doesn't support your hypothesis, <strong>don't panic</strong>. A well-designed study that honestly reports disconfirming evidence is better scholarship than a poorly designed study that "confirms" a hypothesis through selection bias. Remember KKV: "Maximise observable implications" — including the ones that might prove you wrong.</p>
+    <blockquote>"If all your evidence confirms your theory, you probably aren't looking hard enough."<br>— paraphrasing KKV, Ch. 1</blockquote>
+  </div>
+</div>
+
+<!-- SLIDE 13 -->
+<div class="slide" id="s13">
+  <span class="track-label storyteller">Exemplar 4 · Storyteller</span>
+  <h2>Tannenwald — <em>The Nuclear Taboo</em> (1999)</h2>
+  <div class="exemplar-box sto">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> Why hasn't the United States used nuclear weapons since 1945, even when it had military advantage?</p>
+    <p><strong>Expected process:</strong> The horrified public reaction to Hiroshima/Nagasaki created a normative taboo → the taboo was internalized by policymakers → it constrained US nuclear policy during subsequent crises (Korea, Vietnam, Gulf War).</p>
+    <p><strong>Rival pathways:</strong></p>
+    <ul>
+      <li>Deterrence: mutual assured destruction made use irrational</li>
+      <li>Tactical irrelevance: nukes simply weren't useful in these conflicts</li>
+    </ul>
+    <p><strong>Method:</strong> Process tracing through four Cold War decision points, using declassified documents, presidential memoirs, NSC minutes.</p>
+  </div>
+</div>
+
+<!-- SLIDE 14 -->
+<div class="slide" id="s14">
+  <span class="track-label storyteller">Exemplar 4 · Storyteller</span>
+  <h2>Tannenwald — The Analysis</h2>
+  <div class="exemplar-box sto">
+    <h4>Tracing the Chain</h4>
+    <table>
+      <tr><th>Link</th><th>Evidence</th><th>Source Type</th></tr>
+      <tr><td>1. Horror reaction (1945)</td><td>Public opinion data, newspaper editorials, congressional testimony documenting widespread moral revulsion</td><td>Descriptive inference</td></tr>
+      <tr><td>2. Taboo forms (1945–53)</td><td>Pattern of language in official documents shifts from "weapon of war" to "weapon of last resort"</td><td>Documentary analysis</td></tr>
+      <tr><td>3. Korea (1950–53)</td><td>Truman considered but rejected use; NSC documents show advisors explicitly cited moral/reputational costs</td><td>Declassified records</td></tr>
+      <tr><td>4. Vietnam (1960s)</td><td>Johnson and Nixon advisors discussed nuclear options; the taboo language reappears — "unthinkable," "civilized nations"</td><td>Presidential memoirs, NSC minutes</td></tr>
+    </table>
+    <h4>Testing the Rival (Deterrence)</h4>
+    <p>If deterrence alone explained non-use, decision-makers should cite only strategic/retaliatory risks. Instead, documents show they cited <strong>moral</strong> and <strong>normative</strong> reasons — even when the adversary lacked nuclear capability (Korea, early Vietnam).</p>
+    <div class="verdict verdict-supported">Verdict: Process fully traced. The taboo mechanism is present at every decision point, including when deterrence alone cannot explain non-use.</div>
+  </div>
+</div>
+
+<!-- SLIDE 15 -->
+<div class="slide" id="s15">
+  <span class="track-label storyteller">Exemplar 4 · Storyteller</span>
+  <h2>Tannenwald — Why It Convinces</h2>
+  <div class="highlight-box">
+    <h4>What makes this analysis exemplary:</h4>
+    <ul>
+      <li><strong>Evidence at every link</strong> — not "then the taboo formed." She shows <em>how</em> it formed, with specific documents, specific actors, specific language.</li>
+      <li><strong>Multiple decision points</strong> — tracing the same mechanism across Korea, Vietnam, and the Gulf War. Each case is an additional test.</li>
+      <li><strong>The rival is traced, not just named</strong> — she shows that deterrence was present but insufficient. At points where deterrence should have mattered most (enemy has nukes), the taboo language still appears.</li>
+      <li><strong>Descriptive inference matters</strong> — Collier (2011) notes that Tannenwald's first task was to establish that the horror reaction <em>actually occurred</em> and was widespread. This descriptive work is foundational.</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> Name dates. Name actors. Name documents. "The process unfolded" is not evidence. "In the March 1953 NSC meeting, Eisenhower's advisor stated…" — that's evidence.</p>
+  </div>
+</div>
+
+<!-- SLIDE 16 -->
+<div class="slide" id="s16">
+  <span class="track-label storyteller">Exemplar 5 · Storyteller</span>
+  <h2>Collier — Process Tracing Tests (2011)</h2>
+  <p class="subtitle">The four tests — illustrated with Sherlock Holmes.</p>
+  <div class="exemplar-box sto">
+    <h4>The Framework</h4>
+    <p>Collier formalized four types of evidence tests for process tracing. Each tells you something different about your hypothesis:</p>
+    <table>
+      <tr><th>Test</th><th>Passing</th><th>Failing</th><th>Analogy</th></tr>
+      <tr><td><strong>Straw-in-the-Wind</strong></td><td>Slightly strengthens hypothesis</td><td>Slightly weakens it</td><td>A clue that's consistent but not decisive</td></tr>
+      <tr><td><strong>Hoop Test</strong></td><td>Doesn't confirm, but keeps alive</td><td><strong>Eliminates</strong> hypothesis</td><td>A minimum requirement — must pass to stay</td></tr>
+      <tr><td><strong>Smoking Gun</strong></td><td><strong>Confirms</strong> hypothesis</td><td>Doesn't eliminate it</td><td>Caught holding the weapon</td></tr>
+      <tr><td><strong>Doubly Decisive</strong></td><td>Confirms <strong>and</strong> eliminates rivals</td><td>Eliminates hypothesis</td><td>Rare — the silver bullet</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SLIDE 17 -->
+<div class="slide" id="s17">
+  <span class="track-label storyteller">Exemplar 5 · Storyteller</span>
+  <h2>Collier — The Sherlock Holmes Example</h2>
+  <div class="exemplar-box sto">
+    <h4>"Silver Blaze" — Who Killed the Trainer?</h4>
+    <p>Three suspects: Simpson (a visitor), Straker (the trainer himself), or the horse.</p>
+    <table>
+      <tr><th>Evidence</th><th>Test Type</th><th>Result</th></tr>
+      <tr><td>Expensive dress bill in Straker's pocket; wife doesn't know</td><td>Straw-in-the-wind</td><td>Financial motive for Straker — plausible but not decisive</td></tr>
+      <tr><td>The dog didn't bark in the night</td><td>Straw-in-the-wind</td><td>Intruder was known to the dog → possibly Straker — but not confirmed</td></tr>
+      <tr><td>Simpson's timid appearance vs. "savage blow that shattered his head"</td><td>Hoop test</td><td class="fatal">Simpson fails — eliminated as suspect</td></tr>
+      <tr><td>Straker couldn't shatter his own head</td><td>Hoop test</td><td class="fatal">Straker (self-inflicted) fails — eliminated</td></tr>
+      <tr><td>Maid brought curried mutton → stable boy drugged</td><td>Smoking gun</td><td class="strong">Confirms chain started in Straker's household</td></tr>
+      <tr><td>Combined weight: two suspects eliminated + multiple straws point to horse</td><td>Doubly decisive (combined)</td><td class="strong">Horse killed Straker ✅</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SLIDE 18 -->
+<div class="slide" id="s18">
+  <span class="track-label storyteller">Exemplar 5 · Storyteller</span>
+  <h2>Collier — Why This Matters for You</h2>
+  <div class="highlight-box">
+    <p>You're not writing detective fiction. But the logic is identical:</p>
+    <ul>
+      <li><strong>Each piece of evidence is a test</strong> — know what kind of test it is. A straw-in-the-wind is honest. Claiming a smoking gun when you have a straw is dishonest.</li>
+      <li><strong>Elimination matters as much as confirmation</strong> — showing your rival <em>fails</em> a hoop test is as valuable as showing your hypothesis passes a smoking gun.</li>
+      <li><strong>Combined weight</strong> — four straws-in-the-wind can add up to something powerful. You don't always need a single decisive test.</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> Label your evidence. "This constitutes a hoop test for my hypothesis" or "This is a straw-in-the-wind that is consistent with my argument." This language signals methodological awareness.</p>
+  </div>
+</div>
+
+<!-- SLIDE 19 -->
+<div class="slide" id="s19">
+  <span class="track-label disruptor">Exemplar 6 · Disruptor</span>
+  <h2>Said — <em>Orientalism</em> (1978)</h2>
+  <div class="exemplar-box dis">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> How has Western scholarly and literary discourse constructed "the Orient" as an object of knowledge and domination?</p>
+    <p><strong>Framework:</strong> Drawing on Foucault's discourse/power nexus — Orientalism is not a collection of mistakes about the East but a <strong>system of knowledge production</strong> that makes colonial domination appear natural and inevitable.</p>
+    <p><strong>Corpus:</strong> European literary texts, travel writing, diplomatic correspondence, and academic scholarship from the 18th–20th centuries (primarily British and French).</p>
+    <p><strong>Method:</strong> Discourse analysis / genealogy — tracing how categories, images, and knowledge practices about "the Orient" were produced, circulated, and institutionalized.</p>
+  </div>
+</div>
+
+<!-- SLIDE 20 -->
+<div class="slide" id="s20">
+  <span class="track-label disruptor">Exemplar 6 · Disruptor</span>
+  <h2>Said — The Analysis</h2>
+  <div class="exemplar-box dis">
+    <h4>Discursive Patterns</h4>
+    <table>
+      <tr><th>Pattern</th><th>Evidence</th></tr>
+      <tr><td><strong>Binary construction</strong></td><td>"Orient" vs. "Occident" — rational/irrational, modern/backward, active/passive — recurring across hundreds of texts over two centuries</td></tr>
+      <tr><td><strong>Subject positions</strong></td><td>The Western scholar is the <em>knowing subject</em>; the Oriental is the <em>known object</em>. This hierarchy is embedded in grammar, not just content.</td></tr>
+      <tr><td><strong>Institutional productivity</strong></td><td>Orientalist discourse produced academic departments, museum collections, colonial administration categories, foreign policy doctrines</td></tr>
+      <tr><td><strong>Foreclosure</strong></td><td>Oriental self-representation is structurally excluded. "They cannot represent themselves; they must be represented."</td></tr>
+    </table>
+    <h4>The Dominant Account Challenged</h4>
+    <p>The mainstream view: Western scholarship about the Middle East is objective knowledge. Said: it is a <strong>power/knowledge formation</strong> that constitutes its object in the act of studying it.</p>
+    <div class="verdict verdict-revealed">Verdict: The analysis reveals Orientalism as a constitutive discourse — not a set of facts about the East, but a Western technology for producing "the East" as a governable category.</div>
+  </div>
+</div>
+
+<!-- SLIDE 21 -->
+<div class="slide" id="s21">
+  <span class="track-label disruptor">Exemplar 6 · Disruptor</span>
+  <h2>Said — Why It Convinces (and Where It's Contested)</h2>
+  <div class="highlight-box">
+    <h4>Strengths:</h4>
+    <ul>
+      <li><strong>Massive corpus</strong> — centuries of texts, not cherry-picked examples</li>
+      <li><strong>Patterns, not impressions</strong> — recurring binaries across genres (literature, diplomacy, scholarship) show systemic production, not individual bias</li>
+      <li><strong>Productivity shown concretely</strong> — colonial categories, academic departments, museum practices. The discourse <em>built</em> institutions.</li>
+      <li><strong>Influenced an entire generation</strong> of postcolonial scholarship</li>
+    </ul>
+    <h4>Critiques:</h4>
+    <ul>
+      <li>Lewis (1982) and others: Said overgeneralizes — not all Western scholarship is Orientalist</li>
+      <li>Lack of systematic counting — Said's method is more interpretive than methodical</li>
+      <li>Agency of the "Orient" — Said focuses on Western production; voices from the East are thin</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> A Disruptor analysis is powerful when the corpus is large, the patterns are recurring, and the productivity is concrete. It's weakened when it relies on selected quotes rather than systematic reading. Count your predicates. Name your absences.</p>
+  </div>
+</div>
+
+<!-- SLIDE 22 -->
+<div class="slide" id="s22">
+  <span class="track-label disruptor">Exemplar 7 · Disruptor</span>
+  <h2>Doty — Immigration and Predicate Analysis</h2>
+  <div class="exemplar-box dis">
+    <h4>The Setup</h4>
+    <p><strong>Question:</strong> How does US political discourse construct immigrants as subjects?</p>
+    <p><strong>Framework:</strong> Discourse constitutes the "immigrant" as a category — not describing pre-existing people but <em>producing</em> subject positions (threat, burden, victim, asset).</p>
+    <p><strong>Method:</strong> Predicate analysis — tracking which verbs, adjectives, and metaphors are systematically attached to "immigrants" vs. "citizens" in official documents.</p>
+    <p><strong>Corpus:</strong> Congressional hearing transcripts, INS policy documents, presidential speeches.</p>
+  </div>
+</div>
+
+<!-- SLIDE 23 -->
+<div class="slide" id="s23">
+  <span class="track-label disruptor">Exemplar 7 · Disruptor</span>
+  <h2>Doty — The Analysis</h2>
+  <div class="exemplar-box dis">
+    <h4>Predicate Patterns</h4>
+    <table>
+      <tr><th>Subject</th><th>Predicates (verbs/adjectives attached)</th></tr>
+      <tr><td>"Illegal immigrants"</td><td>flood, swarm, pour in, overrun, burden, threaten, exploit</td></tr>
+      <tr><td>"Citizens" / "Americans"</td><td>deserve, protect, benefit, work hard, pay taxes, belong</td></tr>
+    </table>
+    <h4>What the Discourse Produces</h4>
+    <p>A hierarchy of belonging: "citizens" as deserving subjects; "immigrants" as dehumanized flows. The hydraulic metaphor ("flood," "pour") removes agency and individuality.</p>
+    <h4>What the Discourse Forecloses</h4>
+    <p>The immigrant as rights-holder, contributor, or community member. These subject positions are structurally unavailable within the official discourse.</p>
+    <div class="verdict verdict-revealed">Verdict: Predicate analysis reveals a systematic discursive hierarchy. The categories are not neutral descriptions but power-laden constructions.</div>
+  </div>
+</div>
+
+<!-- SLIDE 24 -->
+<div class="slide" id="s24">
+  <span class="track-label disruptor">Exemplar 7 · Disruptor</span>
+  <h2>Doty — Why Predicate Analysis Works</h2>
+  <div class="highlight-box">
+    <h4>This is the method several of you should be using:</h4>
+    <ul>
+      <li><strong>It's systematic</strong> — you identify a subject ("immigrants"), then catalogue every predicate attached to it across the corpus. This is countable. This is replicable.</li>
+      <li><strong>It shows production</strong> — the predicates don't describe reality; they <em>construct</em> the subject. "Flood" is not a description of immigration; it's a metaphor that produces immigrants as a natural disaster.</li>
+      <li><strong>Absences are data</strong> — the predicates that are <em>never</em> attached to "immigrants" (belong, contribute, deserve) are as important as the ones that are.</li>
+    </ul>
+    <p style="margin-top:1em;"><strong>Lesson for your CQ4:</strong> If you're a Disruptor, build a predicate table. Two columns: subject and predicates. Count them. Show the pattern. Then show what's missing. That's your analysis.</p>
+  </div>
+</div>
+
+<!-- SLIDE 25 -->
+<div class="slide" id="s25">
+  <h2>The Exemplar Map — All Seven at a Glance</h2>
+  <table>
+    <tr><th>Study</th><th>Question Type</th><th>Evidence Type</th><th>Verdict Type</th><th>What Makes It Work</th></tr>
+    <tr><td>Putnam</td><td>Why do some regions perform better?</td><td>Indices, correlations, historical lag</td><td class="strong">Supported</td><td>Multiple OIs, 100-year test, rival tested</td></tr>
+    <tr><td>Norris & Inglehart</td><td>What drives populism?</td><td>Large-N survey regressions</td><td class="partial">Partial</td><td>Honest about economic thesis; "most consistent"</td></tr>
+    <tr><td>Geddes</td><td>Why do prior theories fail?</td><td>Re-analysis of existing studies</td><td class="fatal">Refuted (prior work)</td><td>Shows selection bias in others' designs</td></tr>
+    <tr><td>Tannenwald</td><td>Why no nuclear use?</td><td>Declassified docs, memoirs, NSC minutes</td><td class="strong">Traced</td><td>Evidence at every link, rival traced</td></tr>
+    <tr><td>Collier</td><td>How to test evidence?</td><td>Sherlock Holmes as framework</td><td>—</td><td>Four test types, method of elimination</td></tr>
+    <tr><td>Said</td><td>How is "the Orient" produced?</td><td>Centuries of texts across genres</td><td style="color:#f778ba;">Revealed</td><td>Massive corpus, recurring patterns, institutional productivity</td></tr>
+    <tr><td>Doty</td><td>How are immigrants constructed?</td><td>Predicate analysis of official texts</td><td style="color:#f778ba;">Revealed</td><td>Systematic predicates, absences as data</td></tr>
+  </table>
+</div>
+
+<!-- SLIDE 26 -->
+<div class="slide" id="s26">
+  <h2>What All Seven Share</h2>
+  <p class="subtitle">Despite different tracks, methods, and verdicts.</p>
+  <div class="highlight-box">
+    <table>
+      <tr><th>Standard</th><th>Every Exemplar Does This</th></tr>
+      <tr><td><strong>Specific evidence</strong></td><td>Numbers, documents, predicates, dates — not "the data shows." Named, cited, verifiable.</td></tr>
+      <tr><td><strong>Structure</strong></td><td>Each analysis follows a logic: present evidence → test/trace/map → address rival → state verdict.</td></tr>
+      <tr><td><strong>Honesty</strong></td><td>Partial support, weak links, limitations — acknowledged, not hidden. Geddes's entire contribution is showing others were dishonest.</td></tr>
+      <tr><td><strong>Rival engagement</strong></td><td>Not "I'm right" but "I'm <em>more convincing than the alternative</em>." The rival is tested, traced, or contrasted — not dismissed.</td></tr>
+      <tr><td><strong>Replicability</strong></td><td>Another researcher could follow the same method with the same sources and check the work.</td></tr>
+    </table>
+    <p style="margin-top:1em;">These five standards apply to <strong>every track</strong>. The language changes. The logic doesn't.</p>
+  </div>
+</div>
+
+<!-- SLIDE 27 -->
+<div class="slide" id="s27">
+  <h2>Common Analysis Failures — The Anti-Exemplars</h2>
+  <table>
+    <tr><th>Failure</th><th>What It Looks Like</th><th>Which Exemplar Shows the Fix?</th></tr>
+    <tr><td class="fatal">Assertion without evidence</td><td>"The data clearly shows…" (but no data presented)</td><td>Putnam: r = 0.92. That's evidence.</td></tr>
+    <tr><td class="fatal">Confirming only</td><td>Ignoring evidence that doesn't fit</td><td>Norris & Inglehart: economics has "weaker, less consistent effects" — reported honestly</td></tr>
+    <tr><td class="fatal">Selecting on the DV</td><td>Studying only successes</td><td>Geddes: this is her <em>entire</em> critique</td></tr>
+    <tr><td class="fatal">Narrative without evidence per link</td><td>"Then the process unfolded…" (but no documents at each step)</td><td>Tannenwald: NSC minutes, specific meetings, specific language at each decision point</td></tr>
+    <tr><td class="fatal">Impressionistic reading</td><td>"The language seems biased"</td><td>Doty: predicate table, counted, across defined corpus</td></tr>
+    <tr><td class="fatal">Claiming "proof"</td><td>"This proves that…"</td><td>All seven use "supports," "suggests," "reveals," "is consistent with" — never "proves"</td></tr>
+  </table>
+</div>
+
+<!-- SLIDE 28 -->
+<div class="slide" id="s28">
+  <h2>Mapping Exemplars to Your Projects</h2>
+  <p class="subtitle">Which exemplar(s) should YOU model?</p>
+  <table>
+    <tr><th>Your Design</th><th>Model Exemplar(s)</th><th>Key Takeaway</th></tr>
+    <tr><td>Halil (econ interdependence, MSSD)</td><td>Putnam + Norris</td><td>Multiple OIs, test rival with same data</td></tr>
+    <tr><td>Aysel (UNSC effectiveness, MSSD)</td><td>Putnam + Geddes</td><td>Comparative performance, avoid DV selection</td></tr>
+    <tr><td>Elif (populism Italy/Germany, MSSD)</td><td>Norris & Inglehart directly</td><td>Partial support is fine; show which part holds</td></tr>
+    <tr><td>Sabel & Melissa (large-N regression)</td><td>Norris & Inglehart</td><td>Report all coefficients, not just significant ones</td></tr>
+    <tr><td>Rifky (Turkish trust, process tracing)</td><td>Tannenwald + Collier</td><td>Evidence at every link, name the weak link</td></tr>
+    <tr><td>Kübra (principal-agent, process tracing)</td><td>Tannenwald + Collier</td><td>Hoop and smoking-gun tests; elimination logic</td></tr>
+    <tr><td>Ece G. (social media movements, MSSD)</td><td>Putnam + Geddes</td><td>Include failures (Kony 2012, slacktivism) — don't select on DV</td></tr>
+    <tr><td>Sesame (Africa-China, MSSD)</td><td>Putnam</td><td>Cross-case comparison with clear indicators</td></tr>
+    <tr><td>Zafer (Green State, CDA)</td><td>Said + Doty</td><td>Predicate analysis of policy documents; show foreclosure</td></tr>
+    <tr><td>Yaprak (wars & women, MSSD/Disruptor)</td><td>Norris + Said</td><td>Comparative + discursive dimensions</td></tr>
+    <tr><td>Ece Ö. (borders/caste, CDA)</td><td>Doty directly</td><td>Predicate table, hydraulic metaphors, absences</td></tr>
+    <tr><td>Aruzhan (Kazakh youth, discourse)</td><td>Doty + Said</td><td>Social media corpus, systematic coding</td></tr>
+  </table>
+</div>
+
+<!-- SLIDE 29 -->
+<div class="slide" id="s29">
+  <h2>Hour 2: Applying the Patterns</h2>
+  <p class="subtitle">30 minutes — individual work.</p>
+  <div class="highlight-box">
+    <h4>Exercise: Draft Your Analysis Outline</h4>
+    <p>Using the exemplar(s) mapped to your project, draft a <strong>one-page analysis outline</strong> for your Core Quest 4:</p>
+    <ol>
+      <li><strong>Evidence inventory</strong> — list every piece of evidence you have or will collect. Be specific: data source, dates, what it measures.</li>
+      <li><strong>Test/trace/map plan</strong> — for each piece of evidence, state what it tests (Strategist), which link it supports (Storyteller), or which pattern it reveals (Disruptor).</li>
+      <li><strong>Rival engagement</strong> — name the rival and identify which of your evidence addresses it.</li>
+      <li><strong>Anticipated verdict</strong> — based on what you know so far, what do you expect? Supported? Partial? Revealed?</li>
+      <li><strong>Weak spot</strong> — where is your evidence thinnest? Name it now so you can address it.</li>
+    </ol>
+    <p style="margin-top:1em;">Use the <strong>Analysis Walkthrough app</strong> (tools/analysis-walkthrough.html) if you want structured prompts.</p>
+  </div>
+</div>
+
+<!-- SLIDE 30 -->
+<div class="slide" id="s30">
+  <h2>Abstract Revision (15 min)</h2>
+  <p>If you drafted a 5-sentence abstract last time (or haven't yet), revise or draft it now. Your abstract is your symposium submission — it must be ready before June 1.</p>
+  <div class="highlight-box">
+    <p><strong>Sentence 1:</strong> Puzzle<br>
+    <strong>Sentence 2:</strong> Gap<br>
+    <strong>Sentence 3:</strong> Argument<br>
+    <strong>Sentence 4:</strong> Method<br>
+    <strong>Sentence 5:</strong> Contribution</p>
+    <p style="margin-top:1em;">150–200 words. Swap with a neighbor. Can they identify all five elements?</p>
+  </div>
+</div>
+
+<!-- SLIDE 31 -->
+<div class="slide" id="s31">
+  <h2>Symposium Preview</h2>
+  <p class="subtitle">Week 15 — Monday June 1 (2 hrs) & Wednesday June 3 (1 hr)</p>
+  <div class="highlight-box">
+    <ul>
+      <li><strong>5-minute presentation</strong> + 3-minute Q&A per student</li>
+      <li>Panels of 3–4 grouped by theme (same as Research Panels or revised)</li>
+      <li><strong>8 Side Quest points</strong> for presenting + participating</li>
+      <li><strong>Museum Bounty (+1 bonus)</strong> — vote for the design that taught you the most</li>
+    </ul>
+    <p style="margin-top:1em;">Use the <strong>Symposium Prep Kit</strong> (tools/symposium-prep.html) during the holiday week to build your slides, rehearse with the timer, and prepare for Q&A.</p>
+    <p><strong>Prepare:</strong> 3–5 slides maximum. Hook → Argument → Method → Findings (expected or preliminary) → Limitations. The exemplars you saw today show you what "findings" can look like — model yours on the exemplar mapped to your project.</p>
+  </div>
+</div>
+
+<!-- SLIDE 32 -->
+<div class="slide" id="s32">
+  <h2>Action Items</h2>
+  <table>
+    <tr><th>What</th><th>When</th><th>Points</th></tr>
+    <tr><td>Core Quest 3 — Research Design</td><td>Was due May 23</td><td>15</td></tr>
+    <tr><td>Prepare Symposium presentation (3–5 slides)</td><td>Holiday week (May 26–30)</td><td>—</td></tr>
+    <tr><td>Draft abstract (150–200 words)</td><td>Before June 1</td><td>—</td></tr>
+    <tr><td>Research Symposium — present & participate</td><td>June 1 & June 3</td><td>8 SQ</td></tr>
+    <tr><td>Final Exam Workshop (in-class)</td><td>Monday June 8</td><td>10</td></tr>
+    <tr><td>Core Quest 4 — Final Paper (4,000–6,000 words)</td><td>Finals period (June 15–27)</td><td>15</td></tr>
+  </table>
+  <p style="margin-top:1em;">Use the holiday week wisely: read your mapped exemplar(s), draft your analysis outline, build your slides, rehearse with the Prep Kit timer.</p>
+</div>
+
+<!-- SLIDE 33 -->
+<div class="slide" id="s33">
+  <h2>The Bottom Line</h2>
+  <p style="font-size:1.3rem;color:#58a6ff;margin-bottom:1em;">Good analysis is not about being right. It's about being honest, specific, and systematic.</p>
+  <div class="highlight-box" style="text-align:center;">
+    <p>Putnam tested three observable implications — and the 100-year test made the case.<br>
+    Norris & Inglehart found "most consistent" support — and named what was weaker.<br>
+    Geddes showed everyone else was wrong — and that was the contribution.<br>
+    Tannenwald traced every link with documents — and named the specific actors.<br>
+    Collier taught us to label our evidence — straw, hoop, or smoking gun.<br>
+    Said mapped centuries of texts — and showed how knowledge produces power.<br>
+    Doty counted predicates — and showed what was absent.</p>
+    <p style="margin-top:1.5em;font-size:1.2rem;"><strong>Your turn. See you at the Symposium.</strong></p>
+  </div>
+  <p style="margin-top:2em;color:#484f58;font-size:.9rem;">Symposium June 1 & 3 · Final Exam Workshop June 8 · CQ4 due during Finals</p>
+</div>
+
+<!-- NAVIGATION -->
+<div class="counter" id="counter">1 / 33</div>
+<div class="nav">
+  <button onclick="changeSlide(-1)">← Back</button>
+  <button onclick="changeSlide(1)">Next →</button>
+</div>
+
+<script>
+  let current=0;
+  const slides=document.querySelectorAll('.slide');
+  const counter=document.getElementById('counter');
+  function changeSlide(dir){
+    slides[current].classList.remove('active');
+    current=Math.max(0,Math.min(slides.length-1,current+dir));
+    slides[current].classList.add('active');
+    counter.textContent=(current+1)+' / '+slides.length;
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);}
+    if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);}
+  });
+</script>
+
+</body>
+</html>
